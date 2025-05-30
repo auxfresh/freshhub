@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fresh Hub</title>
+   <link rel="icon" type="image/x-icon" href="logo.png">
+  <link rel="stylesheet" href="style4.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- Loading Animation Start -->
+  <div id="loader">
+    <div class="loader-content">
+      <img src="logo.png" alt="Logo" class="loader-logo" />
+      <div class="spinner"></div>
+      <p class="loader-text">Loading Fresh Hub...</p>
+    </div>
+  </div>
+  <!-- Loading Animation End -->
+
+  <!-- Your existing website content goes here -->
+  <div class="main-content">
+    <!-- Your site layout, navbars, etc. -->
+  </div>
+
+  <!-- Place JavaScript at the bottom -->
+  <script>
+    window.addEventListener("load", function () {
+      document.getElementById("loader").style.display = "none";
+    });
+  </script>
+</body>
+  <header class="header">
+    <div>
+      <h1 class="title">Fresh HUB</h1>
+      <p class="welcome">Welcome</p>
+      <p>
+    <span id="userDisplay"></span>
+    <img id="verifiedBadge" src="verified.png" alt="Verified" style="height: 18px; vertical-align: middle; margin-left: 5px; display: none;">
+  </p>
+    </div>
+    <div class="balance">
+      <p>My Balance</p>
+      <strong id="balanceDisplay">₦0.00</strong>
+    </div>
+    <script>
+  const username = localStorage.getItem('username');
+  if (username) {
+    const userDisplay = document.getElementById('userDisplay');
+    const badge = document.getElementById('verifiedBadge');
+    userDisplay.textContent = username;
+
+    if (username.toLowerCase() === 'cryptoaux2') {
+      badge.style.display = 'inline';
+    }
+  } else {
+    window.location.href = 'index.html';
+  }
+  const balanceKey = `balance_${username}`;
+const balance = localStorage.getItem(balanceKey) || "0.00";
+document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+</script>
+
+  </header>
+    <div class="post-card">
+    <div class="post-header">
+      <img src="logo4.png" alt="User Profile" class="profile-pic">
+      <div>
+        <p class="author">Dapo Wahab AYATULLAHI</p>
+        <p class="meta">Few hours ago • Posted in League</p>
+      </div>
+    </div>
+    <h2 class="post-title">Deekay Fc VS ManchesterCity</h2>
+    <p class="post-subtitle">Full Time Result</p>
+    <div class="post-image">
+      <img src="blog1.jpg" alt="Match Result">
+    </div>
+    <div class="post-footer">
+      <button class="icon-button">&#10084;</button>
+      <button class="icon-button">&#128172;</button>
+      <span class="likes">2 likes</span>
+    </div>
+  </div>
+    <div class="post-card">
+    <div class="post-header">
+      <img src="logo4.png" alt="User Profile" class="profile-pic">
+      <div>
+        <p class="author">Dapo Wahab AYATULLAHI</p>
+        <p class="meta">Few Hours ago • Posted in League</p>
+      </div>
+    </div>
+    <h2 class="post-title">Manchester City VS Liverpool Fc</h2>
+    <p class="post-subtitle">Full Time Result</p>
+    <div class="post-image">
+      <img src="blog2.jpg" alt="Match Result">
+    </div>
+    <div class="post-footer">
+      <button class="icon-button">&#10084;</button>
+      <button class="icon-button">&#128172;</button>
+      <span class="likes">2 likes</span>
+    </div>
+  </div>
+    <div class="post-card">
+    <div class="post-header">
+      <img src="logo2.png" alt="User Profile" class="profile-pic">
+      <div>
+        <p class="author">Dapo Wahab AYATULLAHI</p>
+        <p class="meta">14d ago • Posted in League</p>
+      </div>
+    </div>
+    <h2 class="post-title">LAM FC VS FRESH FC</h2>
+    <p class="post-subtitle">Full Time Result</p>
+    <div class="post-image">
+      <img src="match.jpg" alt="Match Result">
+    </div>
+    <div class="post-footer">
+      <button class="icon-button">&#10084;</button>
+      <button class="icon-button">&#128172;</button>
+      <span class="likes">2 likes</span>
+    </div>
+  </div>
+    <div class="post-card">
+    <div class="post-header">
+      <img src="logo2.png" alt="User Profile" class="profile-pic">
+      <div>
+        <p class="author">Dapo Wahab AYATULLAHI</p>
+        <p class="meta">14d ago • Posted in League</p>
+      </div>
+    </div>
+    <h2 class="post-title">LAM FC VS FRESH FC</h2>
+    <p class="post-subtitle">Full Time Result</p>
+    <div class="post-image">
+      <img src="match.jpg" alt="Match Result">
+    </div>
+    <div class="post-footer">
+      <button class="icon-button">&#10084;</button>
+      <button class="icon-button">&#128172;</button>
+      <span class="likes">2 likes</span>
+    </div>
+  </div>
+    <div class="post-card">
+    <div class="post-header">
+      <img src="logo2.png" alt="User Profile" class="profile-pic">
+      <div>
+        <p class="author">Dapo Wahab AYATULLAHI</p>
+        <p class="meta">14d ago • Posted in League</p>
+      </div>
+    </div>
+    <h2 class="post-title">LAM FC VS FRESH FC</h2>
+    <p class="post-subtitle">Full Time Result</p>
+    <div class="post-image">
+      <img src="match.jpg" alt="Match Result">
+    </div>
+    <div class="post-footer">
+      <button class="icon-button">&#10084;</button>
+      <button class="icon-button">&#128172;</button>
+      <span class="likes">2 likes</span>
+    </div>
+  </div>
+    <div class="post-card">
+    <div class="post-header">
+      <img src="logo2.png" alt="User Profile" class="profile-pic">
+      <div>
+        <p class="author">Dapo Wahab AYATULLAHI</p>
+        <p class="meta">14d ago • Posted in League</p>
+      </div>
+    </div>
+    <h2 class="post-title">LAM FC VS FRESH FC</h2>
+    <p class="post-subtitle">Full Time Result</p>
+    <div class="post-image">
+      <img src="match.jpg" alt="Match Result">
+    </div>
+    <div class="post-footer">
+      <button class="icon-button">&#10084;</button>
+      <button class="icon-button">&#128172;</button>
+      <span class="likes">2 likes</span>
+    </div>
+  </div>
+  </div>
+  
+  <nav class="navbar">
+    <a href="dashboard.html"><i class="fa fa-home"></i><span>Home</span></a>
+    <a href="standings.html"><i class="fa fa-table"></i><span>Standings</span></a>
+    <a href="#" class="active"><i class="fa fa-comment"></i><span>Community</span></a>
+    <a href="more.html"><i class="fa fa-bars"></i><span>More</span></a>
+  </nav>
+
+</body>
+</html>
+
+

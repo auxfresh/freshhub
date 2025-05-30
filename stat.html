@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Player Cards</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+  <style>
+    body {
+      font-family: 'Arial', fantasy;
+      background: #f2f4f7;
+      padding: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .player-card {
+      background: white;
+      margin-top:15px;  
+      margin-bottom:15px;   
+       border-radius: 8px;
+       border-colour: red;
+       border: 5px solid #102F49;
+      box-shadow: 0 #00AEEF   
+      width: 260px;
+      text-align: center;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+
+    .player-card:hover {
+      transform: scale(1.03);
+    }
+
+    .player-image {
+      width: 100%;
+      height: 60%;
+      object-fit: cover;
+    }
+
+    .player-info {
+      padding: 15pxppP;
+    }
+
+    .player-name {
+      font-size: 23px;
+      font-weight: bold;
+      color: #fff;
+      font-family:fantasy;
+      background:#102F49;
+    }
+
+    .player-stat {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #fff;
+      text-align: left;
+      padding: 0 10px;
+      background:#102F49;
+      font-family:fantasy;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="players-container"></div>
+
+  <script>
+    // Firebase config (yours)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const playersContainer = document.getElementById("players-container");
+
+    db.ref("/details/teams").once("value").then(snapshot => {
+      const players = snapshot.val();
+      for (let id in players) {
+        const player = players[id];
+        const card = document.createElement("div");
+        card.className = "player-card";
+
+        card.innerHTML = `
+          <img src="${player.photo || 'https://via.placeholder.com/260x200'}" class="player-image" />
+          <div class="player-info">
+            <div class="player-name">${player.name || 'Unnamed Player'}</div>
+            <div class="player-stat"><strong>Goals:</strong> ${player.Goals || 0}</div>
+            <div class="player-stat"><strong>Shot:</strong> ${player.Shots || 0}</div>
+            <div class="player-stat"><strong>Rank:</strong> ${player.Rank || 'N/A'}</div>
+          </div>
+        `;
+        playersContainer.appendChild(card);
+      }
+    });
+  </script>
+</body>
+</html>

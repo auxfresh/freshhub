@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+  <title>Fresh Hub</title>
+  <link rel="icon" type="image/x-icon" href="logo.png">
+  <link rel="stylesheet" href="style1.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Loading Animation Start -->
+  <div id="loader">
+    <div class="loader-content">
+      <img src="logo.png" alt="Logo" class="loader-logo" />
+      <div class="spinner"></div>
+      <p class="loader-text">Loading Fresh Hub...</p>
+    </div>
+  </div>
+  <!-- Loading Animation End -->
+
+  <!-- Your existing website content goes here -->
+  <div class="main-content">
+    <!-- Your site layout, navbars, etc. -->
+  </div>
+
+  <header class="header">
+    <div class="header-content">
+      <div>
+        <h1 class="title">Fresh HUB</h1>
+        <h2>Welcome </h2>
+        <p> <span id="userDisplay"></span>
+        <img id="verifiedBadge" src="verified.png" alt="Verified" style="height: 18px; vertical-align: middle; margin-left: 5px; display: none;">
+        </p>
+      </div>
+      <div class="balance">
+        <p>My Balance</p>
+        <strong id="balanceDisplay">₦0.00</strong>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="button-grid">
+      <button class="btn" onclick="window.location.href='profile.html'">
+        <i class="fas fa-user"></i><span>My Profile</span>
+      </button>
+      <button class="btn" onclick="window.location.href='livestream.html'">
+        <i class="fa-solid fa-tower-broadcast"></i><span>Live Stream</span>
+      </button>
+      
+      <button class="btn" id="adminBtn" style="display: none;">
+  <i class="fas fa-user-shield"></i><span>Admin Panel</span>
+</button>
+      <button class="btn"><i class="fas fa-dice"></i><span>Betting</span></button>
+      <button class="btn"><i class="fas fa-store"></i><span>Store</span></button>
+      <button class="btn"><i class="fas fa-baseball-ball"></i><span>Tour Reg</span></button>
+      <button class="btn"><i class="fas fa-users"></i><span>Players Hub</span></button>
+      <button class="btn"><i class="fas fa-wallet"></i><span>My Wallet</span></button>
+<button class="btn" onclick="refreshPage()">
+  <i class="fas fa-sync-alt"></i><span>Refresh</span>
+</button>
+      <button class="btn" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </button>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <nav>
+      <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
+      <a href="standings.html"><i class="fas fa-table"></i><span>Standings</span></a>
+      <a href="blog.html"><i class="fas fa-comments"></i><span>Community</span></a>
+      <a href="#"><i class="fas fa-bars"></i><span>More</span></a>
+    </nav>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+  window.addEventListener("load", function () {
+    document.getElementById("loader").style.display = "none";
+  });
+
+  const username = localStorage.getItem('username');
+  if (username) {
+    const userDisplay = document.getElementById('userDisplay');
+    const badge = document.getElementById('verifiedBadge');
+    userDisplay.textContent = username;
+
+    if (username.toLowerCase() === 'cryptoaux2') {
+      badge.style.display = 'inline';
+    }
+
+    const balanceKey = `balance_${username}`;
+    const balance = localStorage.getItem(balanceKey) || "0.00";
+    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+  } else {
+    window.location.href = 'index.html';
+  }
+
+  function refreshPage() {
+    window.location.reload(true); // Forces a reload from the server
+  }
+
+  // Logout functionality
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("username");
+      window.location.href = "index.html";
+    });
+  }
+
+  // Admin button display & click handler
+  window.addEventListener("load", function () {
+    if (username && username.toLowerCase() === 'cryptoaux2') {
+      const adminBtn = document.getElementById('adminBtn');
+      if (adminBtn) {
+        adminBtn.style.display = 'inline-block'; // Show admin button
+        adminBtn.addEventListener('click', () => {
+          window.location.href = 'admin-login.html'; // Change to your admin login page URL
+        });
+      }
+    }
+  });
+</script>
+</body>
+</html>

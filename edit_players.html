@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Team Details</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .team-card {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+    input { margin: 5px 0; display: block; padding: 5px; width: 100%; }
+    button { padding: 6px 12px; margin-top: 10px; margin-right: 10px; }
+    .deleted-message {
+      background-color: #fff3cd;
+      color: #856404;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Edit Team Details</h2>
+  <div id="deletedMessage"></div>
+  <div id="teamContainer"></div>
+
+  <h2>Add New Team</h2>
+  <div class="team-card">
+    <label>Team Name: <input type="text" id="new-name" /></label>
+    <label>Wins: <input type="number" id="new-wins" /></label>
+    <label>Draws: <input type="number" id="new-draws" /></label>
+    <label>Losses: <input type="number" id="new-losses" /></label>
+    <label>Goals For: <input type="number" id="new-goalsFor" /></label>
+    <label>Goals Against: <input type="number" id="new-goalsAgainst" /></label>
+    <label>Logo URL: <input type="text" id="new-logo" /></label>
+    <button onclick="addNewTeam()">Add Team</button>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const container = document.getElementById('teamContainer');
+    const deletedMessage = document.getElementById('deletedMessage');
+    let recentlyDeleted = null;
+
+    function loadTeams() {
+      container.innerHTML = "";
+      db.ref('players').once('value').then(snapshot => {
+        const data = snapshot.val();
+        if (!data) {
+          container.innerHTML = "<p>No teams found in /players.</p>";
+          return;
+        }
+
+        Object.entries(data).forEach(([key, team]) => {
+          const div = document.createElement('div');
+          div.className = "team-card";
+          div.innerHTML = `
+            <label>Team Name: <input type="text" id="${key}-name" value="${team.name}" /></label>
+            <label>Wins: <input type="number" id="${key}-wins" value="${team.wins}" /></label>
+            <label>Draws: <input type="number" id="${key}-draws" value="${team.draws}" /></label>
+            <label>Losses: <input type="number" id="${key}-losses" value="${team.losses}" /></label>
+            <label>Goals For: <input type="number" id="${key}-goalsFor" value="${team.goalsFor}" /></label>
+            <label>Goals Against: <input type="number" id="${key}-goalsAgainst" value="${team.goalsAgainst}" /></label>
+            <label>Logo: <input type="text" id="${key}-logo" value="${team.logo}" /></label>
+            <button onclick="saveTeam('${key}')">Save</button>
+            <button onclick="deleteTeam('${key}', ${JSON.stringify(team).replace(/"/g, '&quot;')})" style="background-color:red; color:white;">Delete</button>
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+
+    function saveTeam(key) {
+      const updated = {
+        name: document.getElementById(`${key}-name`).value,
+        wins: parseInt(document.getElementById(`${key}-wins`).value),
+        draws: parseInt(document.getElementById(`${key}-draws`).value),
+        losses: parseInt(document.getElementById(`${key}-losses`).value),
+        goalsFor: parseInt(document.getElementById(`${key}-goalsFor`).value),
+        goalsAgainst: parseInt(document.getElementById(`${key}-goalsAgainst`).value),
+        logo: document.getElementById(`${key}-logo`).value
+      };
+
+      db.ref(`players/${key}`).update(updated)
+        .then(() => alert("Team updated successfully!"))
+        .catch(err => alert("Update failed: " + err.message));
+    }
+
+    function addNewTeam() {
+      const newTeam = {
+        name: document.getElementById('new-name').value,
+        wins: parseInt(document.getElementById('new-wins').value) || 0,
+        draws: parseInt(document.getElementById('new-draws').value) || 0,
+        losses: parseInt(document.getElementById('new-losses').value) || 0,
+        goalsFor: parseInt(document.getElementById('new-goalsFor').value) || 0,
+        goalsAgainst: parseInt(document.getElementById('new-goalsAgainst').value) || 0,
+        logo: document.getElementById('new-logo').value
+      };
+
+      if (!newTeam.name) {
+        alert("Team name is required.");
+        return;
+      }
+
+      db.ref('players').push(newTeam)
+        .then(() => {
+          alert("New team added!");
+          location.reload();
+        })
+        .catch(err => alert("Failed to add team: " + err.message));
+    }
+
+    function deleteTeam(key, teamData) {
+      if (confirm("Are you sure you want to delete this team?")) {
+        recentlyDeleted = { key, data: teamData };
+        db.ref(`players/${key}`).remove()
+          .then(() => {
+            showUndoMessage(teamData.name);
+            loadTeams();
+          })
+          .catch(err => alert("Failed to delete team: " + err.message));
+      }
+    }
+
+    function showUndoMessage(teamName) {
+      deletedMessage.innerHTML = `
+        <div class="deleted-message">
+          Team "${teamName}" deleted.
+          <button onclick="undoDelete()">Undo</button>
+        </div>
+      `;
+      setTimeout(() => { deletedMessage.innerHTML = ""; recentlyDeleted = null; }, 10000);
+    }
+
+    function undoDelete() {
+      if (!recentlyDeleted) return;
+      db.ref(`players/${recentlyDeleted.key}`).set(recentlyDeleted.data)
+        .then(() => {
+          alert("Team restored.");
+          recentlyDeleted = null;
+          deletedMessage.innerHTML = "";
+          loadTeams();
+        })
+        .catch(err => alert("Failed to restore team: " + err.message));
+    }
+
+    loadTeams();
+  </script>
+
+</body>
+</html>

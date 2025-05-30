@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fresh Hub</title>
+  <meta name="description" content="Fresh Hub - Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />
+<meta name="keywords" content="Fresh Hub, football fixtures, live sports, league matches, sports streaming" />
+<meta name="author" content="Fresh Hub" />
+<meta property="og:title" content="Fresh Hub - Fixtures & Live Sports" />
+<meta property="og:description" content="Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://freshhub.netly.space/standings.html" />
+<meta property="og:image" content="https://freshhub.netly.space/logo4.png" />
+  <link rel="icon" type="image/x-icon" href="logo.png">
+  <link rel="stylesheet" href="style2.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+  <!-- Loading Animation Start -->
+  <div id="loader">
+    <div class="loader-content">
+      <img src="logo.png" alt="Logo" class="loader-logo" />
+      <div class="spinner"></div>
+      <p class="loader-text">Loading Fresh Hub...</p>
+    </div>
+  </div>
+  <!-- Loading Animation End -->
+
+  <header class="header">
+    <div>
+      <h1 class="title">Fresh HUB</h1>
+      <p class="welcome">Welcome<br>
+        <span id="userDisplay"></span>
+        <img id="verifiedBadge" src="verified.png" alt="Verified" style="height: 18px; vertical-align: middle; margin-left: 5px; display: none;">
+      </p>
+    </div>
+    <div class="balance">
+      <p>My Balance</p>
+      <strong id="balanceDisplay">₦0.00</strong>
+    </div>
+  </header>
+
+  <div class="buttons">
+    <button>League 1</button>
+    <button>League 2</button>
+    <button>Knockout</button>
+  </div>
+
+  <section class="standings">
+    <h2>League 1</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Pos</th><th>Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>F</th><th>A</th><th>GD</th><th>Pts</th>
+          </tr>
+        </thead>
+        <tbody id="standingsBody">
+          <!-- Dynamic content will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <nav class="navbar">
+    <a href="dashboard.html"><i class="fa fa-home"></i><span>Home</span></a>
+    <a href="#" class="active"><i class="fa fa-table"></i><span>Standings</span></a>
+    <a href="blog.html"><i class="fa fa-comment"></i><span>Community</span></a>
+    <a href="more.html"><i class="fa fa-bars"></i><span>More</span></a>
+  </nav>
+<script>
+    window.addEventListener("load", function () {
+      document.getElementById("loader").style.display = "none";
+    });
+
+  const username = localStorage.getItem('username');
+  if (username) {
+    const userDisplay = document.getElementById('userDisplay');
+    const badge = document.getElementById('verifiedBadge');
+    userDisplay.textContent = username;
+
+    if (username.toLowerCase() === 'cryptoaux2') {
+      badge.style.display = 'inline';
+    }
+  } else {
+    window.location.href = 'index.html';
+ 
+    }
+    
+    const balanceKey = `balance_${username}`;
+    const balance = localStorage.getItem(balanceKey) || "0.00";
+    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+  </script>
+
+      
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    function calculateAndSortStandings(teams) {
+      teams.forEach(team => {
+        team.played = team.wins + team.draws + team.losses;
+        team.points = (team.wins * 3) + team.draws;
+        team.goalDifference = team.goalsFor - team.goalsAgainst;
+      });
+
+      return teams.sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        return b.goalDifference - a.goalDifference;
+      });
+    }
+
+    function renderStandings(teams) {
+      const tbody = document.getElementById("standingsBody");
+      tbody.innerHTML = '';
+
+      teams.forEach((team, index) => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td class="club"><img src="${team.logo || 'default.png'}" alt="${team.name}">${team.name}</td>
+          <td>${team.played}</td>
+          <td>${team.wins}</td>
+          <td>${team.draws}</td>
+          <td>${team.losses}</td>
+          <td>${team.goalsFor}</td>
+          <td>${team.goalsAgainst}</td>
+          <td>${team.goalDifference}</td>
+          <td>${team.points}</td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    }
+
+    function fetchAndDisplayStandings() {
+      const playersRef = ref(db, 'players');
+      onValue(playersRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+
+        // If your Firebase data has keys like player1, player2 etc., convert to array
+        const teams = Object.values(data);
+        const sorted = calculateAndSortStandings(teams);
+        renderStandings(sorted);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', fetchAndDisplayStandings);
+  </script>
+</body>
+</html>

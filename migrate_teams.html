@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Migrate Teams to 'teams' Node</title>
+</head>
+<body>
+  <h2>Migrate Teams</h2>
+  <button onclick="migrateTeams()">Start Migration</button>
+
+  <p id="status"></p>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const statusEl = document.getElementById('status');
+
+    function migrateTeams() {
+      db.ref('/').once('value').then(snapshot => {
+        const data = snapshot.val();
+        const teamEntries = Object.entries(data).filter(([key]) => key.startsWith('team'));
+
+        if (teamEntries.length === 0) {
+          statusEl.textContent = "No teams found to migrate.";
+          return;
+        }
+
+        const updates = {};
+        teamEntries.forEach(([key, value]) => {
+          updates[`teams/${key}`] = value;
+          updates[key] = null; // remove from root
+        });
+
+        db.ref('/').update(updates)
+          .then(() => {
+            statusEl.textContent = "Teams migrated successfully!";
+          })
+          .catch((err) => {
+            statusEl.textContent = "Migration failed: " + err.message;
+          });
+      });
+    }
+  </script>
+</body>
+</html>

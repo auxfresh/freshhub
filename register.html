@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fresh Hub Registration</title>
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-container {
+      background: rgba(0, 123, 255, 0.05);
+      border: 5px solid #102F49;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 0 25px #102F49;
+      color: white;
+      width: 320px;
+      text-align: center;
+    }
+    .login-container img {
+      width: 80px;
+      margin-bottom: 20px;
+    }
+    .login-container input[type="text"],
+    .login-container input[type="email"],
+    .login-container input[type="date"],
+    .login-container input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background-color: #102F49;
+      color: white;
+    }
+    .login-container input::placeholder {
+      color: #fff;
+    }
+    .login-container .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+    .login-container .options label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .login-container a {
+      color: #aaa;
+      text-decoration: none;
+    }
+    .login-container a:hover {
+      color: #fff;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #102F49;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .login-container button:hover {
+      background-color: #102F49;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="logo4.png" alt="Logo">
+    <form id="registerForm">
+      <input type="text" name="username" id="username" placeholder="Username" required>
+      <input type="email" name="email" id="email" placeholder="Email" required>
+     
+      <input type="password" name="password" placeholder="Password" id="password" required>
+      <div class="options">
+        <label><input type="checkbox" onclick="togglePassword()"> Show Password</label>
+        <label><input type="checkbox" name="remember"> Remember me</label>
+      </div>
+      <button type="submit">REGISTER</button>
+      <div style="text-align: right; font-size: 12px; margin-top: 10px;">
+        <a href="index.html">Already have an account? Login</a>
+      </div>
+    </form>
+  </div>
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.querySelector('#registerForm');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+
+        const res = await fetch('https://freshhub-backend-3.onrender.com/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+        alert('Registration successful!');
+        window.location.href = 'index.html';
+      } else {
+        alert(data.message || data.error || 'Registration failed');
+      }
+      });
+    });
+  </script>
+</body>
+</html>

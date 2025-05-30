@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>Fixtures Page</title>  
+  <meta name="description" content="Fresh Hub - Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />  
+<meta name="keywords" content="Fresh Hub, football fixtures, live sports, league matches, sports streaming" />  
+<meta name="author" content="Fresh Hub" />  
+<meta property="og:title" content="Fresh Hub - Fixtures & Live Sports" />  
+<meta property="og:description" content="Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />  
+<meta property="og:type" content="website" />  
+<meta property="og:url" content="https://freshhub.netly.space/dashboard.html" />  
+<meta property="og:image" content="https://freshhub.netly.space/logo4.png" />  
+ <!-- Open Graph / Social Sharing -->  
+  <meta property="og:title" content="Fresh Hub - Fixtures & Live Sports" />  
+  <meta property="og:description" content="Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />  
+  <meta property="og:type" content="website" />  
+  <meta property="og:url" content="https://freshhub.netly.space" />  
+  <meta property="og:image" content="https://freshhub.netly.space/logo4.png" />  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>  
+  <style>  
+    /* Your existing styles unchanged */  
+    * {  
+      margin: 0;  
+      padding: 0;  
+      box-sizing: border-box;  
+      font-family: fantasy;  
+    }  body {  
+  background: #000;  
+  color: #fff;  
+  display: flex;  
+  flex-direction: column;  
+  min-height: 100vh;  
+  padding-top: 80px;  
+  padding-bottom: 60px;  
+}  
+
+#loader {  
+  position: fixed;  
+  top: 0;  
+  left: 0;  
+  width: 100%;  
+  height: 100%;  
+  background: #000;  
+  display: flex;  
+  align-items: center;  
+  justify-content: center;  
+  z-index: 9999;  
+}  
+
+.loader-content {  
+  display: flex;  
+  flex-direction: column;  
+  align-items: center;  
+  color: #fff;  
+}  
+
+.loader-logo {  
+  width: 80px;  
+  margin-bottom: 20px;  
+}  
+
+.spinner {  
+  width: 50px;  
+  height: 50px;  
+  border: 6px solid #fff;  
+  border-top: 6px solid #00bfff;  
+  border-radius: 50%;  
+  animation: spin 1s linear infinite;  
+  margin-bottom: 15px;  
+}  
+
+.loader-text {  
+  font-family: 'Arial', sans-serif;  
+  font-size: 18px;  
+  color: #ccc;  
+}  
+
+@keyframes spin {  
+  0% { transform: rotate(0deg); }  
+  100% { transform: rotate(360deg); }  
+}  
+
+.header {  
+  position: fixed;  
+  top: 0;  
+  width: 100%;  
+  background: #102F49;  
+  box-shadow: 0 0 20px #00AEEF;  
+  padding: 16px;  
+  color: white;  
+  display: flex;  
+  justify-content: space-between;  
+  align-items: center;  
+  z-index: 1000;  
+  flex-wrap: wrap;  
+}  
+
+.title {  
+  font-size: 24px;  
+  margin-bottom: 10px;  
+}  
+
+.welcome {  
+  font-size: 18px;  
+  margin-top: 10px;  
+}  
+
+.balance {  
+  text-align: right;  
+}  
+
+.balance p {  
+  font-size: 14px;  
+}  
+
+.balance strong {  
+  font-size: 20px;  
+}  
+
+.hero-banner {  
+  background-color: #102F49;  
+  border: 2px solid white;  
+  border-radius: 8px;  
+  margin: 16px;  
+  padding: 16px;  
+  margin-top: 80px;  
+  display: flex;  
+  justify-content: space-between;  
+  align-items: center;  
+  position: relative;  
+  overflow: hidden;  
+}  
+
+.hero-text {  
+  color: white;  
+}  
+
+.hero-text p {  
+  font-size: 12px;  
+  margin: 4px 0;  
+}  
+
+.hero-text h2 {  
+  font-size: 20px;  
+  font-weight: bold;  
+  margin-top: 16px;  
+}  
+
+.hero-image {  
+  width: 120px;  
+  height: 120px;  
+  background-color: #000;  
+  border-radius: 8px;  
+  display: flex;  
+  justify-content: center;  
+  align-items: center;  
+  color: white;  
+  text-align: center;  
+}  
+
+.fixtures-container {  
+  margin: 1px 16px 50px 16px;  
+  background-color: #102F49;  
+  border-radius: 8px;  
+  overflow: hidden;  
+}  
+
+.fixtures-title {  
+  color: white;  
+  padding: 12px 16px;  
+  font-size: 16px;  
+  font-weight: bold;  
+  background-color: #114b78;  
+  box-shadow: 0 0 20px #00AEEF;  
+}  
+
+/* Updated Table Styling */  
+.fixtures-table {  
+  width: 100%;  
+  border-collapse: separate;  
+  border-spacing: 0;  
+  color: white;  
+  font-family: sans-serif;  
+  background-color: #102F49;  
+  border-radius: 12px;  
+  overflow: hidden;  
+  box-shadow: 0 0 20px #00AEEF;  
+}  
+
+.fixtures-table thead tr {  
+  background-color: #0d3b66;  
+}  
+
+.fixtures-table th,  
+.fixtures-table td {  
+  padding: 18px 20px;  
+  text-align: center;  
+  font-size: 18px;  
+  border-bottom: 1px solid #144d7e;  
+  white-space: nowrap;  
+}  
+
+.fixtures-table th {  
+  font-weight: bold;  
+}  
+
+.fixtures-table td:nth-child(2),  
+.fixtures-table th:nth-child(2) {  
+  white-space: normal;  
+  max-width: 100%;  
+  word-wrap: break-word;  
+}  
+
+.fixtures-table tbody tr:last-child td {  
+  border-bottom: none;  
+}  
+
+.fixtures-table tbody tr:hover {  
+  background-color: #114b78;  
+  cursor: default;  
+}  
+
+.footer {  
+  position: fixed;  
+  bottom: 0;  
+  width: 100%;  
+  background-color: #102F49;  
+  box-shadow: 0 -2px 10px #00AEEF;  
+  padding: 10px 0;  
+  z-index: 1000;  
+}  
+
+.footer nav {  
+  display: flex;  
+  justify-content: space-around;  
+  align-items: center;  
+}  
+
+.footer a {  
+  color: #fff;  
+  text-decoration: none;  
+  font-size: 14px;  
+  text-align: center;  
+}  
+
+.footer a i {  
+  display: block;  
+  font-size: 20px;  
+  margin-bottom: 4px;  
+}  
+
+.footer a.active {  
+  background: #ffffff30;  
+  border-radius: 10px;  
+  padding: 5px 10px;  
+}  
+
+@media (max-width: 600px) {  
+  .hero-banner {  
+    flex-direction: column;  
+    align-items: flex-start;  
+  }  
+
+  .hero-image {  
+    width: 100%;  
+    height: auto;  
+    margin-top: 12px;  
+  }  
+
+  .header-box {  
+    flex-direction: column;  
+    align-items: flex-start;  
+    gap: 10px;  
+  }  
+
+  .fixtures-table th,  
+  .fixtures-table td {  
+    font-size: 12px;  
+    padding: 8px 10px;  
+  }  
+
+  .fixtures-table td:nth-child(2),  
+  .fixtures-table th:nth-child(2) {  
+    max-width: 150px;  
+  }  
+
+  .footer a {  
+    font-size: 14px;  
+  }  
+
+  .footer a i {  
+    font-size: 20px;  
+  }  
+
+
+a[href*="http://onenetly.com/"]{
+  display: none !important;
+}
+}
+  </style>  
+</head>  
+<body>  
+  <div id="loader">  
+    <div class="loader-content">  
+      <img src="logo.png" alt="Logo" class="loader-logo" />  
+      <div class="spinner"></div>  
+      <p class="loader-text">Loading Fresh Hub...</p>  
+    </div>  
+  </div>    <header class="header">  
+    <div>  
+      <h1 class="title">Fresh HUB</h1>  
+      <p class="welcome">Welcome<br>  
+    <span id="userDisplay"></span>  
+    <img id="verifiedBadge" src="verified.png" alt="Verified" style="height: 18px; vertical-align: middle; margin-left: 5px; display: none;">  
+      </p>  
+    </div>  
+    <div class="balance">  
+      <p>My Balance</p>  
+      <strong id="balanceDisplay">₦0.00</strong>  
+    </div>  
+  </header>    <section class="hero-banner">  
+    <div class="hero-text">  
+      <p>Livestream</p>  
+      <p>HD Quality</p>  
+      <p>Seamless</p>  
+      <a href="livestream.html">  
+      <h2 style="color:#fff;font-family:fantasy;"><i class="fa-solid fa-arrow-right"></i><span> Go To Livestream</span></h2>  
+      </a>  
+    </div>  
+    <div class="hero-image">  
+    <a href="livestream.html">  
+      <img style="width: 100%;" src="livestream.png" alt="Fresh Hub Logo" />  
+    </a>  
+    </div>  
+  </section>    <section class="fixtures-container">  
+    <h3 class="fixtures-title">Today's Fixtures</h3>  
+    <table class="fixtures-table">  
+      <thead>  
+        <tr>  
+          <th>Date</th>  
+          <th>Match</th>  
+          <th>Time/Results</th>  
+          <th>Match Day</th>  
+        </tr>  
+      </thead>  
+      <tbody id="todayFixturesBody"></tbody>  
+    </table>  
+  </section>    <section class="fixtures-container">  
+    <h3 class="fixtures-title"> Upcoming League Fixtures</h3>  
+    <table class="fixtures-table">  
+      <thead>  
+        <tr>  
+          <th>Date</th>  
+          <th>Match</th>  
+          <th>Time/Results</th>  
+          <th>Match Day</th>  
+        </tr>  
+      </thead>  
+      <tbody id="upcomingFixturesBody"></tbody>  
+    </table>  
+  </section>    <section class="fixtures-container">  
+    <h3 class="fixtures-title">Past Fixtures</h3>  
+    <table class="fixtures-table">  
+      <thead>  
+        <tr>  
+          <th>Date</th>  
+          <th>Match</th>  
+          <th>Time/Results</th>  
+          <th>Match Day</th>  
+        </tr>  
+      </thead>  
+      <tbody id="pastFixturesBody"></tbody>  
+    </table>  
+  </section>    <footer class="footer">  
+    <nav>  
+      <a href="#" class="active"><i class="fas fa-home"></i><span>Home</span></a>  
+      <a href="standings.html"><i class="fas fa-table"></i><span>Standings</span></a>  
+      <a href="blog.html"><i class="fas fa-comments"></i><span>Community</span></a>  
+      <a href="more.html"><i class="fas fa-bars"></i><span>More</span></a>  
+    </nav>  
+  </footer>    <script>  
+     window.addEventListener("load", function () {
+    document.getElementById("loader").style.display = "none";
+  });
+
+  const username = localStorage.getItem('username');
+  if (username) {
+    const userDisplay = document.getElementById('userDisplay');
+    const badge = document.getElementById('verifiedBadge');
+    userDisplay.textContent = username;
+
+    if (username.toLowerCase() === 'cryptoaux2') {
+      badge.style.display = 'inline';
+    }
+
+    const balanceKey = `balance_${username}`;
+    const balance = localStorage.getItem(balanceKey) || "0.00";
+    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+  } else {
+    window.location.href = 'index.html';
+  }  
+  </script>    
+  
+  <script type="module">  
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";  
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";  
+  
+    const firebaseConfig = {  
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",  
+      authDomain: "fresh-hub-d509f.firebaseapp.com",  
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",  
+      projectId: "fresh-hub-d509f",  
+      storageBucket: "fresh-hub-d509f.appspot.com",  
+      messagingSenderId: "101887757266",  
+      appId: "1:101887757266:web:80c054959f6588771fd60b"  
+    };  
+  
+    const app = initializeApp(firebaseConfig);  
+    const database = getDatabase(app);  
+  
+    function fillFixtures(tbodyId, fixtures) {  
+      const tbody = document.getElementById(tbodyId);  
+      tbody.innerHTML = '';  
+      fixtures.forEach(fixture => {  
+        const tr = document.createElement('tr');  
+        tr.innerHTML = `  
+          <td>${fixture.date}</td>  
+          <td>${fixture.match}</td>  
+          <td>${fixture.timeResults}</td>  
+          <td>${fixture.matchDay}</td>  
+        `;  
+        tbody.appendChild(tr);  
+      });  
+    }  
+  
+    function loadFixtures() {  
+      const todayRef = ref(database, 'fixtures/today');  
+      const upcomingRef = ref(database, 'fixtures/upcoming');  
+      const pastRef = ref(database, 'fixtures/past');  
+  
+         onValue(todayRef, (snapshot) => {  
+        const data = snapshot.val();  
+        if (data) fillFixtures('todayFixturesBody', Object.values(data));  
+      });  
+  
+      onValue(upcomingRef, (snapshot) => {  
+        const data = snapshot.val();  
+        if (data) fillFixtures('upcomingFixturesBody', Object.values(data));  
+      });  
+  
+      onValue(pastRef, (snapshot) => {  
+        const data = snapshot.val();  
+        if (data) fillFixtures('pastFixturesBody', Object.values(data));  
+      });  
+    }  
+  
+    window.addEventListener('DOMContentLoaded', loadFixtures);  
+  </script>  </body>  
+</html>

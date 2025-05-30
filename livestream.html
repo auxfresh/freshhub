@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Stream</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      padding-top: 100px;
+      padding-bottom: 60px;
+      background: #000;
+      color: #fff;
+      font-family: fantasy;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #102F49;
+      box-shadow: 0 0 20px #00AEEF;
+      padding: 10px 0px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      z-index: 1000;
+    }
+
+    .title {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .welcome {
+      font-size: 18px;
+      margin: 5px 0 0;
+    }
+
+    .balance {
+      text-align: right;
+    }
+
+    .balance p {
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .balance strong {
+      font-size: 20px;
+    }
+
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #102F49;
+      box-shadow: 0 -2px 10px #00AEEF;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    .footer nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .footer a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .footer a i {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .footer a.active {
+      background: #ffffff30;
+      border-radius: 10px;
+      padding: 5px 10px;
+    }
+
+    .live-container {
+      padding: 20px;
+      margin-top: 100px;
+      text-align: center;
+    }
+
+    video {
+      width: 100%;
+      max-width: 800px;
+      border: 2px solid #00AEEF;
+      border-radius: 12px;
+    }
+
+    #noStreamMessage {
+      display: none;
+      color: #ffcc00;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div>
+      <h1 class="title">Fresh HUB</h1>
+      <p class="welcome">Welcome<br>
+        <span id="userDisplay"></span>
+        <img id="verifiedBadge" src="verified.png" alt="Verified" style="height: 18px; vertical-align: middle; margin-left: 5px; display: none;">
+      </p>
+    </div>
+    <div class="balance">
+      <p>My Balance</p>
+      <strong id="balanceDisplay">₦0.00</strong>
+    </div>
+    <script>
+      window.addEventListener("load", function () {
+        document.getElementById("loader").style.display = "none";
+      });
+
+      const username = localStorage.getItem('username');
+      if (username) {
+        const userDisplay = document.getElementById('userDisplay');
+        const badge = document.getElementById('verifiedBadge');
+        userDisplay.textContent = username;
+
+        if (username.toLowerCase() === 'cryptoaux2') {
+          badge.style.display = 'inline';
+        }
+      } else {
+        window.location.href = 'index.html';
+      }
+
+      const balanceKey = `balance_${username}`;
+      const balance = localStorage.getItem(balanceKey) || "0.00";
+      document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+    </script>
+  </header>
+
+  <!-- Live Stream Section -->
+  <div class="live-container">
+    <h2>Live Match</h2>
+    <video id="livePlayer" controls autoplay></video>
+    <div id="noStreamMessage">No Livestream Ongoing</div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <nav>
+      <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
+      <a href="standings.html"><i class="fas fa-table"></i><span>Standings</span></a>
+      <a href="blog.html"><i class="fas fa-comments"></i><span>Community</span></a>
+      <a href="more.html" class="active"><i class="fas fa-bars"></i><span>More</span></a>
+    </nav>
+  </footer>
+
+  <!-- HLS.js player -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const video = document.getElementById('livePlayer');
+    const message = document.getElementById('noStreamMessage');
+    const streamUrl = "https://livepeercdn.studio/hls/b314kwd1heh1hpu2/index.m3u8";
+
+    function showMessage() {
+      video.style.display = "none";
+      message.style.display = "block";
+    }
+
+    function showVideo() {
+      video.style.display = "block";
+      message.style.display = "none";
+    }
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(streamUrl);
+      hls.attachMedia(video);
+
+      hls.on(Hls.Events.MANIFEST_PARSED, function () {
+        showVideo();
+        video.play();
+      });
+
+      hls.on(Hls.Events.ERROR, function (event, data) {
+        if (data.fatal) {
+          showMessage();
+        }
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = streamUrl;
+
+      video.addEventListener('loadedmetadata', function () {
+        showVideo();
+        video.play();
+      });
+
+      video.addEventListener('error', function () {
+        showMessage();
+      });
+    } else {
+      showMessage();
+    }
+  </script>
+
+</body>
+</html>

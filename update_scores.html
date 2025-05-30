@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin: Manage Match Fixtures with Scores</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 700px; margin: auto; }
+    input, button { padding: 6px 10px; margin: 5px 4px; }
+    ul { list-style-type: none; padding: 0; }
+    li { background: #f4f4f4; margin: 10px 0; padding: 10px; border-radius: 6px; display: flex; align-items: center; gap: 10px; }
+    .fixture-info { flex-grow: 1; }
+    .btn-delete { background: red; color: white; border: none; cursor: pointer; padding: 6px 12px; border-radius: 4px; }
+    .btn-update { background: #007bff; color: white; border: none; cursor: pointer; padding: 6px 12px; border-radius: 4px; }
+    input.score-input { width: 40px; text-align: center; }
+  </style>
+</head>
+<body>
+
+<h2>Manage Match Fixtures with Scores</h2>
+
+<form id="addFixtureForm">
+  <input type="text" id="teamA" placeholder="Team A" required />
+  <input type="text" id="teamB" placeholder="Team B" required />
+  <input type="date" id="matchDate" required />
+  <button type="submit">Add Fixture</button>
+</form>
+
+<h3>Existing Fixtures</h3>
+<ul id="fixturesList"></ul>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+    authDomain: "fresh-hub-d509f.firebaseapp.com",
+    databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+    projectId: "fresh-hub-d509f",
+    storageBucket: "fresh-hub-d509f.appspot.com",
+    messagingSenderId: "101887757266",
+    appId: "1:101887757266:web:80c054959f6588771fd60b"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const fixturesList = document.getElementById('fixturesList');
+  const addFixtureForm = document.getElementById('addFixtureForm');
+
+  function loadFixtures() {
+    db.ref('fixtures').on('value', snapshot => {
+      fixturesList.innerHTML = '';
+      const fixtures = snapshot.val();
+      if (fixtures) {
+        Object.entries(fixtures).forEach(([key, fixture]) => {
+          const li = document.createElement('li');
+
+          li.innerHTML = `
+            <div class="fixture-info">
+              <strong>${fixture.teamA}</strong> vs <strong>${fixture.teamB}</strong> on ${fixture.matchDate}
+              <br/>
+              Score: 
+              <input class="score-input" type="number" min="0" value="${fixture.scoreA ?? ''}" placeholder="0" data-key="${key}" data-team="A" />
+              -
+              <input class="score-input" type="number" min="0" value="${fixture.scoreB ?? ''}" placeholder="0" data-key="${key}" data-team="B" />
+            </div>
+            <button class="btn-update" data-key="${key}">Update Score</button>
+            <button class="btn-delete" data-key="${key}">Delete</button>
+          `;
+
+          fixturesList.appendChild(li);
+        });
+      } else {
+        fixturesList.innerHTML = '<li>No fixtures found.</li>';
+      }
+    });
+  }
+
+  addFixtureForm.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const teamA = document.getElementById('teamA').value.trim();
+    const teamB = document.getElementById('teamB').value.trim();
+    const matchDate = document.getElementById('matchDate').value;
+
+    if (!teamA || !teamB || !matchDate) return alert('Please fill all fields');
+
+    const newFixture = { teamA, teamB, matchDate };
+
+    db.ref('fixtures').push(newFixture)
+      .then(() => addFixtureForm.reset())
+      .catch(error => alert('Error adding fixture: ' + error.message));
+  });
+
+  fixturesList.addEventListener('click', e => {
+    const key = e.target.getAttribute('data-key');
+
+    if (e.target.classList.contains('btn-delete')) {
+      if (confirm('Are you sure you want to delete this fixture?')) {
+        db.ref('fixtures/' + key).remove();
+      }
+    }
+
+    if (e.target.classList.contains('btn-update')) {
+      const li = e.target.parentElement;
+      const inputs = li.querySelectorAll('input.score-input');
+
+      const scoreAInput = [...inputs].find(i => i.dataset.team === 'A');
+      const scoreBInput = [...inputs].find(i => i.dataset.team === 'B');
+
+      const scoreA = scoreAInput.value.trim();
+      const scoreB = scoreBInput.value.trim();
+
+      if (scoreA === '' || scoreB === '') {
+        alert('Please enter both scores before updating.');
+        return;
+      }
+      if (isNaN(scoreA) || isNaN(scoreB) || scoreA < 0 || scoreB < 0) {
+        alert('Scores must be valid non-negative numbers.');
+        return;
+      }
+
+      db.ref('fixtures/' + key).update({
+        scoreA: Number(scoreA),
+        scoreB: Number(scoreB)
+      }).then(() => {
+        alert('Score updated!');
+      }).catch(err => {
+        alert('Error updating score: ' + err.message);
+      });
+    }
+  });
+
+  loadFixtures();
+</script>
+
+</body>
+</html>

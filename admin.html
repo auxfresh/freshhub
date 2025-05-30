@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Fresh Hub</title>
+  <link rel="stylesheet" href="style5.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+</head>
+<body>
+
+  <!-- Admin Header -->
+  <header class="header">
+    <div class="header-content">
+      <h2>Fresh Hub <span>Admin Panel</span></h2>
+      <div class="balance">
+        <p>Welcome, Admin</p>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div style="margin-top: 120px; padding: 16px;">
+    <h3>Admin Controls</h3>
+    <ul>
+      <li><a href="edit_players.html">Edit Player Details</a></li>
+      <li><a href="manage_fixtures.html">Manage Fixtures</a></li>
+      <li><a href="update_scores.html">Update Scores</a></li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <nav>
+      <a href="home.html"><i class="fas fa-home"></i><span>Home</span></a>
+      <a href="standings.html"><i class="fas fa-table"></i><span>Standings</span></a>
+      <a href="blog.html"><i class="fas fa-comments"></i><span>Community</span></a>
+      <a href="more.html"><i class="fas fa-bars"></i><span>More</span></a>
+    </nav>
+  </footer>
+
+  <!-- Firebase Auth Check Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user || user.email !== "freshcoindrop@gmail.com") {
+        alert("Unauthorized Access");
+        window.location.href = "admin-login.html";
+      }
+    });
+
+    window.logout = () => {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    };
+  </script>
+
+</body>
+</html>

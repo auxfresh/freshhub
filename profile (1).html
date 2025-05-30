@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: fantasy; }
+    body {
+      background: #000; color: #fff;
+      display: flex; flex-direction: column; min-height: 100vh;
+    }
+    .header {
+      background: #102F49; box-shadow: 0 0 20px #00AEEF;
+      padding: 20px; color: white; position: fixed;
+      top: 0; width: 100%; z-index: 1000;
+    }
+    .header-content {
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .title { font-size: 24px; margin-bottom: 5px; }
+    .header h2 { font-size: 20px; font-weight: bold; }
+    .header p { font-size: 16px; }
+    .balance p, .balance h3 {
+      font-size: 14px; text-align: right; margin: 2px 0;
+    }
+    .main-content {
+      margin-top: 140px; margin-bottom: 100px; padding: 20px;
+    }
+    .profile-container {
+      background: white; color: black; max-width: 400px;
+      margin: auto; padding: 20px; border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .profile-pic {
+      text-align: center; margin-bottom: 20px;
+    }
+    .profile-pic img {
+      width: 120px; height: 120px; object-fit: cover;
+      border-radius: 50%; margin-bottom: 10px;
+    }
+    .profile-info label {
+      display: block; margin: 10px 0 5px;
+    }
+    .profile-info input {
+      width: 100%; padding: 8px; margin-bottom: 15px;
+      border: 1px solid #ccc; border-radius: 5px;
+    }
+    button {
+      width: 100%; padding: 10px; background-color: #102F49;
+      border: none; color: white; font-weight: bold;
+      border-radius: 5px; cursor: pointer;
+    }
+    button:hover { background-color: #218838; }
+    .footer nav {
+      position: fixed; bottom: 0; width: 100%; background: #102F49;
+      box-shadow: 0 0 20px #00AEEF; display: flex; justify-content: space-around;
+      padding: 10px 0; border-top-left-radius: 20px;
+      border-top-right-radius: 20px; z-index: 1000;
+    }
+    .footer nav a {
+      color: white; text-decoration: none; font-weight: bold;
+      display: flex; flex-direction: column; align-items: center; font-size: 14px;
+    }
+    .footer nav i { font-size: 18px; margin-bottom: 5px; }
+    .footer a.active {
+      background: #ffffff30; border-radius: 10px;
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div>
+        <h1 class="title">Fresh HUB</h1>
+        <h2>Welcome</h2>
+        <p><span id="userDisplay"></span><img id="verifiedBadge" src="verified.png" alt="Verified"
+     style="height: 18px; vertical-align: middle; margin-left: 5px; display: none;">
+        </p>
+      </div>
+      <div class="balance">
+        <p>My Balance</p>
+        <strong id="balanceDisplay">₦0.00</strong>
+      </div>
+    </div>
+    <script>
+      const username = localStorage.getItem('username');
+  if (username) {
+    const userDisplay = document.getElementById('userDisplay');
+    const badge = document.getElementById('verifiedBadge');
+    userDisplay.textContent = username;
+
+    if (username.toLowerCase() === 'cryptoaux2') {
+      badge.style.display = 'inline';
+    }
+  } else {
+    window.location.href = 'index.html';
+  }
+  const balanceKey = `balance_${username}`;
+const balance = localStorage.getItem(balanceKey) || "0.00";
+document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+</script>
+
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="profile-container">
+      <h2>User Profile</h2>
+      <div class="profile-pic">
+        <img id="preview" src="default-profile.png" alt="Profile Photo" />
+        <input type="file" id="photoUpload" accept="image/*" />
+      </div>
+      <div class="profile-info">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" />
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" />
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Enter your phone number" />
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" />
+        <label for="location">Country</label>
+        <input type="text" id="location" placeholder="Enter your Country" />
+        <label for="platform">Gaming Platform</label>
+        <input type="text" id="platform" placeholder="Enter your Gaming Platform" />
+        <button onclick="saveProfile()">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <nav>
+      <a href="dashboard.html"><i class="fas fa-home"></i><span>Home</span></a>
+      <a href="standings.html"><i class="fas fa-table"></i><span>Standings</span></a>
+      <a href="blog.html"><i class="fas fa-comments"></i><span>Community</span></a>
+      <a href="more.html"><i class="fas fa-bars"></i><span>More</span></a>
+    </nav>
+  </footer>
+
+  <!-- Firebase App & Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <!-- Scripts -->
+  <script>
+    async function saveProfile() {
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const dob = document.getElementById("dob").value;
+      const location = document.getElementById("location").value;
+      const platform = document.getElementById("platform").value;
+
+      // Save to localStorage
+      localStorage.setItem("username", username);
+      localStorage.setItem("email", email);
+      localStorage.setItem("phone", phone);
+      localStorage.setItem("dob", dob);
+      localStorage.setItem("location", location);
+      localStorage.setItem("platform", platform);
+
+      try {
+        await db.collection("userProfiles").add({
+          username, email, phone, dob, location, platform,
+          createdAt: new Date()
+          // Don't store large image here
+        });
+        alert("Profile saved to Firebase!");
+      } catch (error) {
+        console.error("Error saving to Firestore:", error);
+        alert("Error saving profile.");
+      }
+    }
+
+    // Handle image upload and preview
+    document.getElementById("photoUpload").addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const base64 = e.target.result;
+        document.getElementById("preview").src = base64;
+        localStorage.setItem("profilePic", base64);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Load saved data on page load
+    window.onload = function () {
+      // Load saved image
+      const savedPhoto = localStorage.getItem("profilePic");
+      if (savedPhoto) document.getElementById("preview").src = savedPhoto;
+
+      // Load form fields
+      document.getElementById("username").value = localStorage.getItem("username") || "";
+      document.getElementById("email").value = localStorage.getItem("email") || "";
+      document.getElementById("phone").value = localStorage.getItem("phone") || "";
+      document.getElementById("dob").value = localStorage.getItem("dob") || "";
+      document.getElementById("location").value = localStorage.getItem("location") || "";
+      document.getElementById("platform").value = localStorage.getItem("platform") || "";
+    };
+  </script>
+</body>
+</html>

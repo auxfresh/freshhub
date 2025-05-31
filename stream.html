@@ -17,7 +17,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      background-color: #000;
+      background-color: #111; /* Slightly lighter black */
       padding: 15px 20px;
       z-index: 1000;
       box-shadow: 0 2px 5px rgba(255, 165, 0, 0.1);
@@ -51,6 +51,22 @@
       margin-top: 20px;
       color: orange;
     }
+
+    .home-button {
+      margin-top: 25px;
+      padding: 12px 25px;
+      background-color: #111; /* Same lighter black */
+      border: 2px solid orange;
+      color: orange;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .home-button:hover {
+      background-color: #222;
+    }
   </style>
 </head>
 <body>
@@ -62,6 +78,7 @@
     <h1>Live Football Stream</h1>
     <video id="video" controls autoplay></video>
     <div id="statusMessage">Checking stream status...</div>
+    <button class="home-button" onclick="window.location.href='/'">Home</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -72,7 +89,6 @@
 
     if (Hls.isSupported()) {
       const hls = new Hls();
-
       hls.loadSource(streamURL);
       hls.attachMedia(video);
 

@@ -111,7 +111,7 @@
       }
 
       // Fetch balance from Firebase
-      const balanceRef = db.ref(`balance/teams/${username}`);
+      const balanceRef = db.ref(`balance/teams/${username}/balance`);
       balanceRef.once('value')
         .then(snapshot => {
           const balance = snapshot.val();

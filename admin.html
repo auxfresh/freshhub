@@ -4,11 +4,145 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Panel - Fresh Hub</title>
-  <link rel="stylesheet" href="style5.css" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: white;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      padding: 20px 40px;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-content h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #facc15;
+    }
+
+    .header-content h2 span {
+      color: #fff;
+      font-weight: 300;
+    }
+
+    .balance p {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .balance button {
+      background-color: #00ffd5;
+      color: black;
+      border: none;
+      padding: 8px 16px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .balance button:hover {
+      background-color: #00bba3;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 130px;
+      padding: 24px;
+    }
+
+    .main-content h3 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .main-content ul {
+      list-style: none;
+    }
+
+    .main-content li {
+      background-color: rgba(255, 255, 255, 0.05);
+      margin-bottom: 16px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    .main-content li:hover {
+      transform: scale(1.03);
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .main-content li a {
+      color: #00ffd5;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer nav {
+      display: flex;
+      width: 100%;
+      justify-content: space-around;
+    }
+
+    .footer a {
+      color: #facc15;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #ffffff;
+    }
+
+    .footer i {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+  </style>
 </head>
 <body>
 
@@ -24,13 +158,13 @@
   </header>
 
   <!-- Main Content -->
-  <div style="margin-top: 120px; padding: 16px;">
+  <div class="main-content">
     <h3>Admin Controls</h3>
     <ul>
       <li><a href="edit_players.html">Edit Player Details</a></li>
       <li><a href="manage_fixtures.html">Manage Fixtures</a></li>
       <li><a href="update_scores.html">Update Scores</a></li>
-         <li><a href="edit_stat.html">Update Stats</a></li>
+      <li><a href="edit_stat.html">Update Stats</a></li>
     </ul>
   </div>
 

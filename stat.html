@@ -83,6 +83,37 @@
       font-size: 14px;
       margin-top: 2px;
     }
+    .navbar { 
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background:  #102F49;
+  box-shadow: 0 0 20px #00AEEF;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  z-index: 1000;
+}
+
+.navbar a {
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.navbar a i {
+  display: block;
+  font-size: 20px;
+}
+
+.navbar a.active {
+  background: #ffffff30;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
 
     .stats {
       display: flex;
@@ -115,6 +146,7 @@
     .goals { color: #34d399; }
     .conceded { color: #60a5fa; }
     .shots { color: #c084fc; }
+    
   </style>
 </head>
 <body>
@@ -171,5 +203,11 @@
       });
     });
   </script>
+  <nav class="navbar">
+    <a href="dashboard.html"><i class="fa fa-home"></i><span>Home</span></a>
+    <a href="#" class="active"><i class="fa fa-table"></i><span>Standings</span></a>
+    <a href="blog.html"><i class="fa fa-comment"></i><span>Community</span></a>
+    <a href="more.html"><i class="fa fa-bars"></i><span>More</span></a>
+  </nav>
 </body>
 </html>

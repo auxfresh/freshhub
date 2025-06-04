@@ -200,6 +200,29 @@
       <p>My Balance</p>
       <strong id="balanceDisplay">₦0.00</strong>
     </div>
+    <script>
+    window.addEventListener("load", function () {
+      document.getElementById("loader").style.display = "none";
+    });
+
+  const username = localStorage.getItem('username');
+  if (username) {
+    const userDisplay = document.getElementById('userDisplay');
+    const badge = document.getElementById('verifiedBadge');
+    userDisplay.textContent = username;
+
+    if (username.toLowerCase() === 'cryptoaux2') {
+      badge.style.display = 'inline';
+    }
+  } else {
+    window.location.href = 'index.html';
+ 
+    }
+    
+    const balanceKey = `balance_${username}`;
+    const balance = localStorage.getItem(balanceKey) || "0.00";
+    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+    </script>
   </header>
 
   <h1>Live Team Stats</h1>

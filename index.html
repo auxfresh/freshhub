@@ -105,79 +105,93 @@
     </form>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<!-- Add Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
-      authDomain: "fresh-hub-d509f.firebaseapp.com",
-      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
-      projectId: "fresh-hub-d509f",
-      storageBucket: "fresh-hub-d509f.firebasestorage.app",
-      messagingSenderId: "101887757266",
-      appId: "1:101887757266:web:80c054959f6588771fd60b"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+<script>
+  // 1. Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+    authDomain: "fresh-hub-d509f.firebaseapp.com",
+    databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+    projectId: "fresh-hub-d509f",
+    storageBucket: "fresh-hub-d509f.appspot.com",
+    messagingSenderId: "101887757266",
+    appId: "1:101887757266:web:80c054959f6588771fd60b"
+  };
 
-    function togglePassword() {
-      const passwordInput = document.getElementById("password");
-      passwordInput.type = passwordInput.type === "password" ? "text" : "password";
-    }
+  // 2. Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.querySelector("#loginForm");
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+  function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+  }
 
-        try {
-          const res = await fetch("https://freshhub-backend-3.onrender.com/api/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("#loginForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await fetch("https://freshhub-backend-3.onrender.com/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await res.json();
+
+        if (data.token && data.user && data.user.username) {
+          const username = data.user.username;
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("username", username);
+
+          const today = new Date().toISOString().split("T")[0];
+          const lastLoginDateKey = `lastLogin_${username}`;
+          const lastLoginDate = localStorage.getItem(lastLoginDateKey);
+
+          const userRef = db.ref(`balance/teams/${username}`);
+
+          userRef.once("value", (snapshot) => {
+            const userData = snapshot.val();
+            let currentBalance = userData && userData.balance ? userData.balance : 0;
+
+            if (lastLoginDate !== today) {
+              const newBalance = currentBalance + 50;
+              const txnRef = userRef.child("transactions").push();
+              txnRef.set({
+                type: "reward",
+                amount: 50,
+                date: today,
+                note: "Daily login bonus"
+              });
+
+              userRef.update({
+                balance: newBalance
+              });
+
+              localStorage.setItem(lastLoginDateKey, today);
+              alert("Login successful. ₦50 daily bonus added!");
+            } else {
+              alert("Login successful.");
+            }
+
+            window.location.href = "more.html";
           });
-
-          const data = await res.json();
-          console.log("Login response:", data);
-
-          if (data.token && data.user && data.user.username) {
-            const username = data.user.username;
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("username", username);
-
-            const today = new Date().toISOString().split("T")[0];
-            const lastLoginKey = `lastLogin_${username}`;
-            const lastLoginDate = localStorage.getItem(lastLoginKey);
-
-            const userRef = db.ref(`/details/teams/${username}`);
-
-            userRef.once("value").then((snapshot) => {
-              let balance = snapshot.val()?.balance || 0;
-
-              if (lastLoginDate !== today) {
-                balance += 50;
-                userRef.update({ balance });
-                localStorage.setItem(lastLoginKey, today);
-                alert("Login successful. ₦50 added to your balance for today.");
-              } else {
-                alert("Login successful.");
-              }
-
-              window.location.href = "more.html";
-            });
-          } else {
-            alert(data.error || "Login failed: Missing token or user data.");
-          }
-        } catch (err) {
-          console.error("Login error:", err);
-          alert("Something went wrong. Please try again later.");
+        } else {
+          alert(data.error || "Login failed: Missing token or user data.");
         }
-      });
+      } catch (err) {
+        console.error("Login error:", err);
+        alert("Something went wrong. Please try again later.");
+      }
     });
-  </script>
+  });
+</script>
 </body>
 </html>

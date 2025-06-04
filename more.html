@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Fresh Hub</title>
   <link rel="icon" type="image/x-icon" href="logo.png">
   <link rel="stylesheet" href="style1.css" />
@@ -51,21 +51,20 @@
       <button class="btn" onclick="window.location.href='livestream.html'">
         <i class="fa-solid fa-tower-broadcast"></i><span>Live Stream</span>
       </button>
-            <button class="btn" onclick="window.location.href='stat.html'">
+      <button class="btn" onclick="window.location.href='stat.html'">
         <i class="fa fa-bar-chart" aria-hidden="true"></i><span>Stats</span>
-            </button>
+      </button>
       
       <button class="btn" id="adminBtn" style="display: none;">
-  <i class="fas fa-user-shield"></i><span>Admin Panel</span>
-</button>
+        <i class="fas fa-user-shield"></i><span>Admin Panel</span>
+      </button>
       <button class="btn"><i class="fas fa-dice"></i><span>Betting</span></button>
       <button class="btn"><i class="fas fa-store"></i><span>Store</span></button>
-      
       <button class="btn"><i class="fas fa-users"></i><span>Players Hub</span></button>
       <button class="btn"><i class="fas fa-wallet"></i><span>My Wallet</span></button>
-<button class="btn" onclick="refreshPage()">
-  <i class="fas fa-sync-alt"></i><span>Refresh</span>
-</button>
+      <button class="btn" onclick="refreshPage()">
+        <i class="fas fa-sync-alt"></i><span>Refresh</span>
+      </button>
       <button class="btn" id="logoutBtn">
         <i class="fas fa-sign-out-alt"></i><span>Logout</span>
       </button>
@@ -79,54 +78,78 @@
     <a href="#" class="active"><i class="fa fa-bars"></i><span>More</span></a>
   </nav>
 
-  <!-- Scripts -->
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
   <script>
-  window.addEventListener("load", function () {
-    document.getElementById("loader").style.display = "none";
-  });
-
-  const username = localStorage.getItem('username');
-  if (username) {
-    const userDisplay = document.getElementById('userDisplay');
-    const badge = document.getElementById('verifiedBadge');
-    userDisplay.textContent = username;
-
-    if (username.toLowerCase() === 'cryptoaux2') {
-      badge.style.display = 'inline';
-    }
-
-    const balanceKey = `balance_${username}`;
-    const balance = localStorage.getItem(balanceKey) || "0.00";
-    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
-  } else {
-    window.location.href = 'index.html';
-  }
-
-  function refreshPage() {
-    window.location.reload(true); // Forces a reload from the server
-  }
-
-  // Logout functionality
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("username");
-      window.location.href = "index.html";
+    window.addEventListener("load", function () {
+      document.getElementById("loader").style.display = "none";
     });
-  }
 
-  // Admin button display & click handler
-  window.addEventListener("load", function () {
-    if (username && username.toLowerCase() === 'cryptoaux2') {
-      const adminBtn = document.getElementById('adminBtn');
-      if (adminBtn) {
-        adminBtn.style.display = 'inline-block'; // Show admin button
-        adminBtn.addEventListener('click', () => {
-          window.location.href = 'admin-login.html'; // Change to your admin login page URL
-        });
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const username = localStorage.getItem('username');
+    if (username) {
+      const userDisplay = document.getElementById('userDisplay');
+      const badge = document.getElementById('verifiedBadge');
+      userDisplay.textContent = username;
+
+      if (username.toLowerCase() === 'cryptoaux2') {
+        badge.style.display = 'inline';
       }
+
+      // Fetch balance from Firebase
+      const balanceRef = db.ref(`balance/teams/${username}`);
+      balanceRef.once('value')
+        .then(snapshot => {
+          const balance = snapshot.val();
+          document.getElementById("balanceDisplay").textContent = `₦${(balance || 0).toFixed(2)}`;
+        })
+        .catch(error => {
+          console.error("Error fetching balance:", error);
+          document.getElementById("balanceDisplay").textContent = "₦0.00";
+        });
+    } else {
+      window.location.href = 'index.html';
     }
-  });
-</script>
+
+    function refreshPage() {
+      window.location.reload(true); // Forces a reload from the server
+    }
+
+    // Logout functionality
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("username");
+        window.location.href = "index.html";
+      });
+    }
+
+    // Admin button display
+    window.addEventListener("load", function () {
+      if (username && username.toLowerCase() === 'cryptoaux2') {
+        const adminBtn = document.getElementById('adminBtn');
+        if (adminBtn) {
+          adminBtn.style.display = 'inline-block';
+          adminBtn.addEventListener('click', () => {
+            window.location.href = 'admin-login.html';
+          });
+        }
+      }
+    });
+  </script>
 </body>
-</html>
+  </html>

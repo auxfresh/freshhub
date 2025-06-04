@@ -3,84 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Teams</title>
+  <title>Teams Dashboard</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
     body {
       margin: 0;
       padding: 20px;
-      background-color: #000;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: #fff;
-      font-family: "Segoe UI", sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
     }
 
     h1 {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 20px;
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #facc15;
+      text-shadow: 0 0 10px #facc15;
+    }
+
+    #teams {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
     }
 
     .team-card {
-      background-color: #1c1c1e;
-      border-radius: 12px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
       padding: 20px;
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       gap: 16px;
-      margin-bottom: 16px;
+      box-shadow: 0 4px 20px rgba(255, 255, 255, 0.1);
+      transform: scale(0.95) translateY(20px);
       opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.5s ease forwards;
+      animation: fadeUp 0.6s ease forwards;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    @keyframes fadeInUp {
+    .team-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px #00ffd5;
+    }
+
+    @keyframes fadeUp {
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1) translateY(0);
       }
     }
 
-    .team-card img {
-      width: 50px;
-      height: 50px;
-      object-fit: contain;
-    }
+.team-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #facc15; /* 🔶 GOLD BORDER — REPLACE THIS */
+  background-color: white;
+}
 
     .team-details {
       flex: 1;
     }
 
     .team-name {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
+      color: #0ef;
+      text-shadow: 0 0 6px #0ef;
     }
 
     .team-league {
-      color: #aaa;
+      color: #d1d5db;
       font-size: 14px;
       margin-top: 2px;
     }
 
     .stats {
       display: flex;
-      gap: 28px;
-      margin-top: 12px;
       flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
     }
 
     .stat {
       text-align: center;
-      min-width: 70px;
+      min-width: 60px;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 6px 10px;
+      border-radius: 8px;
+      transition: transform 0.2s ease;
+    }
+
+    .stat:hover {
+      transform: scale(1.1);
     }
 
     .stat .number {
-      font-size: 20px;
-      font-weight: 700;
+      font-size: 18px;
+      font-weight: 600;
     }
 
     .wins { color: #facc15; }
-    .draws { color: #d1d5db; }
+    .draws { color: #a3e635; }
     .losses { color: #f87171; }
     .goals { color: #34d399; }
     .conceded { color: #60a5fa; }
@@ -88,7 +118,7 @@
   </style>
 </head>
 <body>
-  <h1>Teams</h1>
+  <h1>Live Team Stats</h1>
   <div id="teams">Loading...</div>
 
   <script>
@@ -97,13 +127,13 @@
       authDomain: "fresh-hub-d509f.firebaseapp.com",
       databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
       projectId: "fresh-hub-d509f",
-      storageBucket: "https://firebasestorage.googleapis.com/v0/b/fresh-hub-d509f.appspot.com/o/",
+      storageBucket: "fresh-hub-d509f.appspot.com",
       messagingSenderId: "101887757266",
       appId: "1:101887757266:web:80c054959f6588771fd60b"
     };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     const teamsRef = db.ref('/details/teams');
     const container = document.getElementById('teams');
 
@@ -121,6 +151,7 @@
         const card = document.createElement('div');
         card.className = 'team-card';
         card.style.animationDelay = `${index * 0.1}s`;
+
         card.innerHTML = `
           <img src="${team.logo}" alt="${team.name}">
           <div class="team-details">

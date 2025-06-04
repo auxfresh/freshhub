@@ -142,7 +142,7 @@
       color: #000;
       transform: translateY(-3px);
 }
-  .footer {
+.navbar { 
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -155,21 +155,18 @@
   border-top-right-radius: 20px;
   z-index: 1000;
 }
-.footer a {
-  color: white;
+
+.navbar a {
+  color: #fff;
+  text-align: center;
   text-decoration: none;
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   font-size: 14px;
 }
-
-.footer i {
-  font-size: 18px;
-  margin-bottom: 5px;
+.navbar a i {
+  display: block;
+  font-size: 20px;
 }
-.footer a.active {
+.navbar a.active {
   background: #ffffff30;
   border-radius: 10px;
   padding: 5px 10px;

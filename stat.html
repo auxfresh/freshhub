@@ -17,7 +17,39 @@
       font-family: 'Segoe UI', fantasy;
       min-height: 100vh;
     }
+    .header {
+  position:fixed;
+  top:0;
+  width:100%;
+  background:  #102F49;
+  box-shadow: 0 0 20px #00AEEF;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
 
+.title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.welcome {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.balance {
+  text-align: right;
+}
+
+.balance p {
+  font-size: 14px;
+}
+
+.balance strong {
+  font-size: 20px;
+}
     h1 {
       font-size: 32px;
       text-align: center;
@@ -152,6 +184,19 @@
   </style>
 </head>
 <body>
+    <header class="header">
+    <div>
+      <h1 class="title">Fresh HUB</h1>
+      <p class="welcome">Welcome<br>
+        <span id="userDisplay"></span>
+        <img id="verifiedBadge" src="verified.png" alt="Verified" style="height: 18px; vertical-align: middle; margin-left: 5px; display: none;">
+      </p>
+    </div>
+    <div class="balance">
+      <p>My Balance</p>
+      <strong id="balanceDisplay">₦0.00</strong>
+    </div>
+    </header>
   <h1>Live Team Stats</h1>
   <div id="teams">Loading...</div>
 
@@ -211,5 +256,28 @@
     <a href="blog.html"><i class="fa fa-comment"></i><span>Community</span></a>
     <a href="more.html"><i class="fa fa-bars"></i><span>More</span></a>
   </nav>
+  <script>
+    window.addEventListener("load", function () {
+      document.getElementById("loader").style.display = "none";
+    });
+
+  const username = localStorage.getItem('username');
+  if (username) {
+    const userDisplay = document.getElementById('userDisplay');
+    const badge = document.getElementById('verifiedBadge');
+    userDisplay.textContent = username;
+
+    if (username.toLowerCase() === 'cryptoaux2') {
+      badge.style.display = 'inline';
+    }
+  } else {
+    window.location.href = 'index.html';
+ 
+    }
+    
+    const balanceKey = `balance_${username}`;
+    const balance = localStorage.getItem(balanceKey) || "0.00";
+    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+  </script>
 </body>
 </html>

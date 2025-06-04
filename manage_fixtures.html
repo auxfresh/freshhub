@@ -1,21 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Manage Fixtures - Fresh Hub</title>
-  <link rel="stylesheet" href="style5.css" />
-</head>
-<body>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  color: white;
+  min-height: 100vh;
+}
 
-  <header class="header">
+.header {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  padding: 20px 40px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h2 {
+  color: #facc15;
+}
+
+.header button {
+  background-color: #00ffd5;
+  color: black;
+  border: none;
+  padding: 8px 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+main {
+  margin-top: 130px;
+  padding: 24px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  margin-bottom: 40px;
+}
+
+input, select {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+button[type="submit"] {
+  background-color: #facc15;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 12px;
+  border: none;
+  transition: background 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #fcd34d;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li button {
+  background: #ef4444;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+li button:hover {
+  background: #dc2626;
+}
+
+  </style>
+</head>
+<body>  <header class="header">
     <div class="header-content">
       <h2>Manage Fixtures</h2>
-      <button onclick="logout()">Logout</button>
     </div>
-  </header>
-
-  <main style="margin-top: 130px; padding: 20px;">
+    <button onclick="logout()">Logout</button>
+  </header>  <main>
     <h3>Add New Fixture</h3>
     <form id="fixtureForm">
       <input type="text" id="date" placeholder="Date (e.g. 2025-05-21)" required />
@@ -28,20 +127,23 @@
         <option value="past">Past</option>
       </select>
       <button type="submit">Add Fixture</button>
-    </form>
+    </form><h3>Current Fixtures</h3>
+<select id="filterCategory">
+  <option value="today">Today</option>
+  <option value="upcoming">Upcoming</option>
+  <option value="past">Past</option>
+</select>
+<ul id="fixtureList"></ul>
 
-    <h3 style="margin-top: 40px;">Current Fixtures (Today)</h3>
-    <ul id="fixtureList"></ul>
-  </main>
-
-  <script type="module">
+  </main>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import {
       getDatabase,
       ref,
       push,
       onValue,
-      remove
+      remove,
+      update
     } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
@@ -59,7 +161,6 @@
     const db = getDatabase(app);
     const auth = getAuth(app);
 
-    // Auth check
     onAuthStateChanged(auth, (user) => {
       if (!user || user.email !== "freshcoindrop@gmail.com") {
         alert("Access denied.");
@@ -69,6 +170,7 @@
 
     const fixtureForm = document.getElementById('fixtureForm');
     const fixtureList = document.getElementById('fixtureList');
+    const filterCategory = document.getElementById('filterCategory');
 
     fixtureForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -78,49 +180,67 @@
       const matchDay = fixtureForm.matchDay.value;
       const category = fixtureForm.category.value;
 
-      const newFixture = {
-        date,
-        match,
-        timeResults,
-        matchDay
-      };
-
+      const newFixture = { date, match, timeResults, matchDay };
       const fixtureRef = ref(db, `fixtures/${category}`);
+
       push(fixtureRef, newFixture).then(() => {
         fixtureForm.reset();
         alert("Fixture added!");
+        loadFixtures();
       });
     });
 
-    const loadFixtures = () => {
-      const todayRef = ref(db, 'fixtures/today');
-      onValue(todayRef, (snapshot) => {
+    filterCategory.addEventListener('change', loadFixtures);
+
+    function loadFixtures() {
+      const selected = filterCategory.value;
+      const selectedRef = ref(db, `fixtures/${selected}`);
+
+      onValue(selectedRef, (snapshot) => {
         fixtureList.innerHTML = '';
         const data = snapshot.val();
         if (data) {
           Object.entries(data).forEach(([key, fixture]) => {
             const li = document.createElement('li');
-            li.textContent = `${fixture.date} - ${fixture.match} - ${fixture.timeResults} - ${fixture.matchDay}`;
-            const delBtn = document.createElement('button');
-            delBtn.textContent = "Delete";
-            delBtn.onclick = () => {
-              remove(ref(db, `fixtures/today/${key}`));
-            };
-            li.appendChild(delBtn);
+            li.innerHTML = `
+              <span>${fixture.date} - ${fixture.match} - ${fixture.timeResults} - ${fixture.matchDay}</span>
+              <div>
+                <button onclick="editFixture('${selected}', '${key}', ${JSON.stringify(fixture).replace(/"/g, '&quot;')})">Edit</button>
+                <button onclick="deleteFixture('${selected}', '${key}')">Delete</button>
+              </div>
+            `;
             fixtureList.appendChild(li);
           });
         }
       });
+    }
+
+    window.deleteFixture = (category, key) => {
+      remove(ref(db, `fixtures/${category}/${key}`));
     };
 
-    loadFixtures();
+    window.editFixture = (category, key, fixture) => {
+      const newDate = prompt("Edit Date", fixture.date);
+      const newMatch = prompt("Edit Match", fixture.match);
+      const newTimeResults = prompt("Edit Time/Result", fixture.timeResults);
+      const newMatchDay = prompt("Edit Match Day", fixture.matchDay);
 
-    // Logout
+      if (newDate && newMatch && newTimeResults && newMatchDay) {
+        update(ref(db, `fixtures/${category}/${key}`), {
+          date: newDate,
+          match: newMatch,
+          timeResults: newTimeResults,
+          matchDay: newMatchDay
+        });
+      }
+    };
+
     window.logout = () => {
       signOut(auth).then(() => {
         window.location.href = 'login.html';
       });
     };
-  </script>
-</body>
+
+    loadFixtures();
+  </script></body>
 </html>

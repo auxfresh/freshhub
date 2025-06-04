@@ -1,164 +1,183 @@
-<!DOCTYPE html>  <html lang="en">  
-<head>  
-  <meta charset="UTF-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
-  <title>Login</title>  
-  <meta name="description" content="Fresh Hub - Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />  
-<meta name="keywords" content="Fresh Hub,Fresh-Hub,Fresh Hub standings, football fixtures, live sports, league matches, sports streaming" />  
-<meta name="author" content="Fresh Hub" />  
-<meta property="og:title" content="Fresh Hub - Fixtures & Live Sports" />  
-<meta property="og:description" content="Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />  
-<meta property="og:type" content="website" />  
-<meta property="og:url" content="https://freshhub.netly.space/dashboard.html" />  
-<meta property="og:image" content="https://freshhub.netly.space/logo4.png" />  
- <!-- Open Graph / Social Sharing -->  
-  <meta property="og:title" content="Fresh Hub - Fixtures & Live Sports" />  
-  <meta property="og:description" content="Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />  
-  <meta property="og:type" content="website" />  
-  <meta property="og:url" content="https://freshhub.netly.space" />  
-  <meta property="og:image" content="https://freshhub.netly.space/logo4.png" />  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>    <style>  
-    body {  
-      margin: 0;  
-      font-family: Arial, sans-serif;  
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);  
-      height: 100vh;  
-      display: flex;  
-      justify-content: center;  
-      align-items: center;  
-    }  
-    .login-container {  
-      background: rgba(0, 123, 255, 0.05);  
-      border: 5px solid #102F49;  
-      border-radius: 20px;  
-      padding: 40px 30px;  
-      box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);  
-      color: white;  
-      width: 320px;  
-      text-align: center;  
-    }  
-    .login-container img {  
-      width: 80px;  
-      margin-bottom: 20px;  
-    }  
-    .login-container input[type="email"],  
-    .login-container input[type="password"] {  
-      width: 100%;  
-      padding: 12px;  
-      margin: 10px 0;  
-      border: none;  
-      border-radius: 5px;  
-      background-color: #102F49;  
-      color: white;  
-    }  
-    .login-container input::placeholder {  
-      color: #fff;  
-    }  
-    .login-container .options {  
-      display: flex;  
-      justify-content: space-between;  
-      align-items: center;  
-      font-size: 13px;  
-      margin-top: 10px;  
-    }  
-    .login-container .options label {  
-      display: flex;  
-      align-items: center;  
-      gap: 5px;  
-    }  
-    .login-container a {  
-      color: #aaa;  
-      text-decoration: none;  
-    }  
-    .login-container a:hover {  
-      color: #fff;  
-    }  
-    .login-container button {  
-      width: 100%;  
-      padding: 12px;  
-      background-color: #102F49;  
-      color: white;  
-      border: none;  
-      border-radius: 5px;  
-      cursor: pointer;  
-      margin-top: 20px;  
-      font-weight: bold;  
-    }  
-    .login-container button:hover {  
-      background-color: #000;  
-    }  
-  </style>  </head>  
-<body>  
-  <div class="login-container">  
-    <img src="logo4.png" alt="Logo" />  
-    <form id="loginForm">  
-      <input type="email" name="email" id="email" placeholder="Email" required />  
-      <input type="password" name="password" id="password" placeholder="Password" required />  
-      <div class="options">  
-        <label><input type="checkbox" onclick="togglePassword()" /> Show Password</label>  
-        <label><input type="checkbox" name="remember" /> Remember me</label>  
-      </div>  
-      <button type="submit">LOGIN</button>  
-      <div style="text-align: right; font-size: 12px; margin-top: 10px;">  
-        <a href="#">Forgot Password?</a>  
-      </div>  
-      <div style="text-align: right; font-size: 12px; margin-top: 10px;">  
-        <a href="register.html"> Don't have an account? Register</a>  
-      </div>  
-    </form>  
-  </div>    <script>  
-    function togglePassword() {  
-      const passwordInput = document.getElementById("password");  
-      passwordInput.type = passwordInput.type === "password" ? "text" : "password";  
-    }  
-  
-    document.addEventListener("DOMContentLoaded", () => {  
-      const form = document.querySelector("#loginForm");  
-      form.addEventListener("submit", async (e) => {  
-        e.preventDefault();  
-        const email = document.getElementById("email").value;  
-        const password = document.getElementById("password").value;  
-  
-        try {  
-          const res = await fetch("https://freshhub-backend-3.onrender.com/api/auth/login", {  
-            method: "POST",  
-            headers: { "Content-Type": "application/json" },  
-            body: JSON.stringify({ email, password }),  
-          });  
-  
-          const data = await res.json();  
-          console.log("Login response:", data);  
-  
-          if (data.token && data.user && data.user.username) {  
-            const username = data.user.username;  
-            localStorage.setItem("token", data.token);  
-            localStorage.setItem("username", username);  
-  
-            const today = new Date().toISOString().split("T")[0];  
-            const lastLoginDateKey = `lastLogin_${username}`;  
-            const balanceKey = `balance_${username}`;  
-  
-            const lastLoginDate = localStorage.getItem(lastLoginDateKey);  
-            let currentBalance = parseFloat(localStorage.getItem(balanceKey)) || 0;  
-  
-            if (lastLoginDate !== today) {  
-              currentBalance += 50;  
-              localStorage.setItem(balanceKey, currentBalance.toFixed(2));  
-              localStorage.setItem(lastLoginDateKey, today);  
-              alert("Login successful.");  
-            } else {  
-              alert("Login successful.");  
-            }  
-  
-            window.location.href = "more.html";  
-          } else {  
-            alert(data.error || "Login failed: Missing token or user data.");  
-          }  
-        } catch (err) {  
-          console.error("Login error:", err);  
-          alert("Something went wrong. Please try again later.");  
-        }  
-      });  
-    });  
-  </script>  </body>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <meta name="description" content="Fresh Hub - Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />
+  <meta name="keywords" content="Fresh Hub,Fresh-Hub,Fresh Hub standings, football fixtures, live sports, league matches, sports streaming" />
+  <meta name="author" content="Fresh Hub" />
+  <meta property="og:title" content="Fresh Hub - Fixtures & Live Sports" />
+  <meta property="og:description" content="Stay updated with today's fixtures, upcoming league matches, and past results in high-quality live sports streaming." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://freshhub.netly.space/dashboard.html" />
+  <meta property="og:image" content="https://freshhub.netly.space/logo4.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .login-container {
+      background: rgba(0, 123, 255, 0.05);
+      border: 5px solid #102F49;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.4);
+      color: white;
+      width: 320px;
+      text-align: center;
+    }
+    .login-container img {
+      width: 80px;
+      margin-bottom: 20px;
+    }
+    .login-container input[type="email"],
+    .login-container input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background-color: #102F49;
+      color: white;
+    }
+    .login-container input::placeholder {
+      color: #fff;
+    }
+    .login-container .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+    .login-container .options label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .login-container a {
+      color: #aaa;
+      text-decoration: none;
+    }
+    .login-container a:hover {
+      color: #fff;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #102F49;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .login-container button:hover {
+      background-color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <img src="logo4.png" alt="Logo" />
+    <form id="loginForm">
+      <input type="email" name="email" id="email" placeholder="Email" required />
+      <input type="password" name="password" id="password" placeholder="Password" required />
+      <div class="options">
+        <label><input type="checkbox" onclick="togglePassword()" /> Show Password</label>
+        <label><input type="checkbox" name="remember" /> Remember me</label>
+      </div>
+      <button type="submit">LOGIN</button>
+      <div style="text-align: right; font-size: 12px; margin-top: 10px;">
+        <a href="#">Forgot Password?</a>
+      </div>
+      <div style="text-align: right; font-size: 12px; margin-top: 10px;">
+        <a href="register.html">Don't have an account? Register</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.firebasestorage.app",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.querySelector("#loginForm");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+          const res = await fetch("https://freshhub-backend-3.onrender.com/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await res.json();
+          console.log("Login response:", data);
+
+          if (data.token && data.user && data.user.username) {
+            const username = data.user.username;
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("username", username);
+
+            const today = new Date().toISOString().split("T")[0];
+            const lastLoginKey = `lastLogin_${username}`;
+            const lastLoginDate = localStorage.getItem(lastLoginKey);
+
+            const userRef = db.ref(`/details/teams/${username}`);
+
+            userRef.once("value").then((snapshot) => {
+              let balance = snapshot.val()?.balance || 0;
+
+              if (lastLoginDate !== today) {
+                balance += 50;
+                userRef.update({ balance });
+                localStorage.setItem(lastLoginKey, today);
+                alert("Login successful. ₦50 added to your balance for today.");
+              } else {
+                alert("Login successful.");
+              }
+
+              window.location.href = "more.html";
+            });
+          } else {
+            alert(data.error || "Login failed: Missing token or user data.");
+          }
+        } catch (err) {
+          console.error("Login error:", err);
+          alert("Something went wrong. Please try again later.");
+        }
+      });
+    });
+  </script>
+</body>
 </html>

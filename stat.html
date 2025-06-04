@@ -6,50 +6,54 @@
   <title>Teams Dashboard</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>  
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>  
+
   <style>
     body {
       margin: 0;
       padding: 2px;
+      padding-top: 120px; /* ✅ Fix for header overlap */
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: #fff;
       font-family: 'Segoe UI', fantasy;
       min-height: 100vh;
     }
+
     .header {
-  position:fixed;
-  top:0;
-  width:100%;
-  background:  #102F49;
-  box-shadow: 0 0 20px #00AEEF;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background:  #102F49;
+      box-shadow: 0 0 20px #00AEEF;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      z-index: 1000;
+    }
 
-.title {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
+    .title {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
 
-.welcome {
-  font-size: 18px;
-  margin-top: 10px;
-}
+    .welcome {
+      font-size: 18px;
+      margin-top: 10px;
+    }
 
-.balance {
-  text-align: right;
-}
+    .balance {
+      text-align: right;
+    }
 
-.balance p {
-  font-size: 14px;
-}
+    .balance p {
+      font-size: 14px;
+    }
 
-.balance strong {
-  font-size: 20px;
-}
+    .balance strong {
+      font-size: 20px;
+    }
+
     h1 {
       font-size: 32px;
       text-align: center;
@@ -92,14 +96,14 @@
       }
     }
 
-.team-card img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid blue; /* 🔶 GOLD BORDER — REPLACE THIS */
-  background-color: white;
-}
+    .team-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid blue;
+      background-color: white;
+    }
 
     .team-details {
       flex: 1;
@@ -117,37 +121,38 @@
       font-size: 14px;
       margin-top: 2px;
     }
-    .navbar { 
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background:  #102F49;
-  box-shadow: 0 0 20px #00AEEF;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  z-index: 1000;
-}
 
-.navbar a {
-  color: #fff;
-  text-align: center;
-  text-decoration: none;
-  font-size: 14px;
-}
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #102F49;
+      box-shadow: 0 0 20px #00AEEF;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      z-index: 1000;
+    }
 
-.navbar a i {
-  display: block;
-  font-size: 20px;
-}
+    .navbar a {
+      color: #fff;
+      text-align: center;
+      text-decoration: none;
+      font-size: 14px;
+    }
 
-.navbar a.active {
-  background: #ffffff30;
-  border-radius: 10px;
-  padding: 5px 10px;
-}
+    .navbar a i {
+      display: block;
+      font-size: 20px;
+    }
+
+    .navbar a.active {
+      background: #ffffff30;
+      border-radius: 10px;
+      padding: 5px 10px;
+    }
 
     .stats {
       display: flex;
@@ -180,11 +185,10 @@
     .goals { color: #34d399; }
     .conceded { color: #60a5fa; }
     .shots { color: #c084fc; }
-    
   </style>
 </head>
 <body>
-    <header class="header">
+  <header class="header">
     <div>
       <h1 class="title">Fresh HUB</h1>
       <p class="welcome">Welcome<br>
@@ -196,7 +200,8 @@
       <p>My Balance</p>
       <strong id="balanceDisplay">₦0.00</strong>
     </div>
-    </header>
+  </header>
+
   <h1>Live Team Stats</h1>
   <div id="teams">Loading...</div>
 
@@ -250,31 +255,32 @@
       });
     });
   </script>
+
   <nav class="navbar">
     <a href="dashboard.html"><i class="fa fa-home"></i><span>Home</span></a>
     <a href="#" class="active"><i class="fa fa-table"></i><span>Standings</span></a>
     <a href="blog.html"><i class="fa fa-comment"></i><span>Community</span></a>
     <a href="more.html"><i class="fa fa-bars"></i><span>More</span></a>
   </nav>
+
   <script>
     window.addEventListener("load", function () {
-      document.getElementById("loader").style.display = "none";
+      document.getElementById("loader")?.style?.display = "none";
     });
 
-  const username = localStorage.getItem('username');
-  if (username) {
-    const userDisplay = document.getElementById('userDisplay');
-    const badge = document.getElementById('verifiedBadge');
-    userDisplay.textContent = username;
+    const username = localStorage.getItem('username');
+    if (username) {
+      const userDisplay = document.getElementById('userDisplay');
+      const badge = document.getElementById('verifiedBadge');
+      userDisplay.textContent = username;
 
-    if (username.toLowerCase() === 'cryptoaux2') {
-      badge.style.display = 'inline';
+      if (username.toLowerCase() === 'cryptoaux2') {
+        badge.style.display = 'inline';
+      }
+    } else {
+      window.location.href = 'index.html';
     }
-  } else {
-    window.location.href = 'index.html';
- 
-    }
-    
+
     const balanceKey = `balance_${username}`;
     const balance = localStorage.getItem(balanceKey) || "0.00";
     document.getElementById("balanceDisplay").textContent = `₦${balance}`;

@@ -112,6 +112,11 @@
   flex: 1;
   padding: 20px;
 }
+  .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+  }
    .btn {
       background-color: #102F49;
       border: 2px solid #00AEEF;

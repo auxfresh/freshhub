@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Teams</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
     body {
       margin: 0;
@@ -27,7 +29,16 @@
       align-items: center;
       gap: 16px;
       margin-bottom: 16px;
-      box-shadow: 0 2px 5px rgba(255, 255, 255, 0.05);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .team-card img {
@@ -42,7 +53,7 @@
 
     .team-name {
       font-size: 18px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .team-league {
@@ -68,94 +79,65 @@
       font-weight: 700;
     }
 
-    .wins { color: #facc15; }   /* yellow */
-    .draws { color: #d1d5db; }  /* gray-300 */
-    .losses { color: #f87171; } /* red-400 */
-    .goals { color: #34d399; }  /* green-400 */
-    .conceded { color: #60a5fa; } /* blue-400 */
-    .shots { color: #c084fc; }  /* purple-400 */
+    .wins { color: #facc15; }
+    .draws { color: #d1d5db; }
+    .losses { color: #f87171; }
+    .goals { color: #34d399; }
+    .conceded { color: #60a5fa; }
+    .shots { color: #c084fc; }
   </style>
 </head>
 <body>
   <h1>Teams</h1>
-  <div id="teams"></div>
+  <div id="teams">Loading...</div>
 
   <script>
-    const teams = [
-      {
-        name: 'Arsenal FC',
-        league: 'Premier League',
-        wins: 20,
-        draws: 14,
-        losses: 4,
-        goals: 72,
-        conceded: 28,
-        shots: 512,
-        logo: 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg',
-      },
-      {
-        name: 'Chelsea FC',
-        league: 'Premier League',
-        wins: 20,
-        draws: 9,
-        losses: 9,
-        goals: 66,
-        conceded: 39,
-        shots: 480,
-        logo: 'https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg',
-      },
-      {
-        name: 'Manchester City',
-        league: 'Premier League',
-        wins: 21,
-        draws: 8,
-        losses: 9,
-        goals: 85,
-        conceded: 32,
-        shots: 558,
-        logo: 'https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg',
-      }
-    ];
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.apppost.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
+    const teamsRef = db.ref('/details/teams');
     const container = document.getElementById('teams');
 
-    teams.forEach(team => {
-      const card = document.createElement('div');
-      card.className = 'team-card';
-      card.innerHTML = `
-        <img src="${team.logo}" alt="${team.name}">
-        <div class="team-details">
-          <div class="team-name">${team.name}</div>
-          <div class="team-league">${team.league}</div>
-          <div class="stats">
-            <div class="stat">
-              <div class="number wins">${team.wins}</div>
-              <div>Wins</div>
-            </div>
-            <div class="stat">
-              <div class="number draws">${team.draws}</div>
-              <div>Draws</div>
-            </div>
-            <div class="stat">
-              <div class="number losses">${team.losses}</div>
-              <div>Losses</div>
-            </div>
-            <div class="stat">
-              <div class="number goals">${team.goals}</div>
-              <div>Goals</div>
-            </div>
-            <div class="stat">
-              <div class="number conceded">${team.conceded}</div>
-              <div>Conceded</div>
-            </div>
-            <div class="stat">
-              <div class="number shots">${team.shots}</div>
-              <div>Shots</div>
+    teamsRef.on('value', (snapshot) => {
+      const teams = snapshot.val();
+      container.innerHTML = '';
+
+      const sorted = Object.values(teams).sort((a, b) => {
+        const pointsA = (a.wins * 3) + a.draws;
+        const pointsB = (b.wins * 3) + b.draws;
+        return pointsB - pointsA;
+      });
+
+      sorted.forEach((team, index) => {
+        const card = document.createElement('div');
+        card.className = 'team-card';
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.innerHTML = `
+          <img src="${team.logo}" alt="${team.name}">
+          <div class="team-details">
+            <div class="team-name">${team.name}</div>
+            <div class="team-league">${team.league}</div>
+            <div class="stats">
+              <div class="stat"><div class="number wins">${team.wins}</div><div>Wins</div></div>
+              <div class="stat"><div class="number draws">${team.draws}</div><div>Draws</div></div>
+              <div class="stat"><div class="number losses">${team.losses}</div><div>Losses</div></div>
+              <div class="stat"><div class="number goals">${team.goals}</div><div>Goals</div></div>
+              <div class="stat"><div class="number conceded">${team.conceded}</div><div>Conceded</div></div>
+              <div class="stat"><div class="number shots">${team.shots}</div><div>Shots</div></div>
             </div>
           </div>
-        </div>
-      `;
-      container.appendChild(card);
+        `;
+        container.appendChild(card);
+      });
     });
   </script>
 </body>

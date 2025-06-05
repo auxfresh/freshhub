@@ -438,7 +438,7 @@
     // Function to notify the sender of a successful transfer
     async function notifySender(email, senderUsername, recipientUsername, amount) {
         try {
-            await emailjs.send("service_cvgwdjb", "YOUR_SEND_TEMPLATE_ID", { // Use your specific SEND template ID
+            await emailjs.send("service_cvgwdjb", "template_9yx9srx", { // Use your specific SEND template ID
                 to_email: email,
                 sender_username: senderUsername,
                 recipient_username: recipientUsername,
@@ -454,7 +454,7 @@
     // Function to notify the recipient of a new transfer
     async function notifyRecipient(email, senderUsername, recipientUsername, amount) {
         try {
-            await emailjs.send("service_cvgwdjb", "YOUR_RECEIVE_TEMPLATE_ID", { // Use your specific RECEIVE template ID
+            await emailjs.send("service_cvgwdjb", "template_1wxuu6w", { // Use your specific RECEIVE template ID
                 to_email: email,
                 sender_username: senderUsername,
                 recipient_username: recipientUsername,

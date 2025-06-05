@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wallet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+      color: white;
+      padding: 20px;
+    }
+    .wallet-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    .balance {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .buttons button {
+      margin: 10px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      background: #00bcd4;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .buttons button:hover {
+      background: #0097a7;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #102f49;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: left;
+      width: 300px;
+      color: white;
+    }
+    .modal-content input {
+      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: #2c5364;
+      color: white;
+    }
+    .modal-content button {
+      padding: 10px;
+      width: 100%;
+      border-radius: 8px;
+      border: none;
+      background: #00bcd4;
+      color: white;
+      font-weight: bold;
+    }
+    .close {
+      float: right;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .transactions {
+      margin-top: 40px;
+      text-align: left;
+    }
+    .transaction {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px 20px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .transaction span {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wallet-box">
+  <h1>My Wallet</h1>
+  <div class="balance" id="balanceDisplay">₦0</div>
+  <div class="buttons">
+    <button onclick="showModal('sendModal')">Send</button>
+    <button onclick="showModal('receiveModal')">Receive</button>
+  </div>
+
+  <div class="transactions">
+    <h3>Transaction History</h3>
+    <div id="transactionList"></div>
+  </div>
+</div>
+
+<!-- Send Modal -->
+<div class="modal" id="sendModal">
+  <div class="modal-content">
+    <span class="close" onclick="hideModal('sendModal')">&times;</span>
+    <h3>Send Money</h3>
+    <input type="text" id="sendToUser" placeholder="Recipient Username" />
+    <input type="number" id="sendAmount" placeholder="Amount" />
+    <button onclick="sendMoney()">Send</button>
+  </div>
+</div>
+
+<!-- Receive Modal -->
+<div class="modal" id="receiveModal">
+  <div class="modal-content">
+    <span class="close" onclick="hideModal('receiveModal')">&times;</span>
+    <h3>Your Username</h3>
+    <p id="yourUsername" style="font-size: 18px; font-weight: bold;"></p>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+  import {
+    getDatabase, ref, onValue, update, get, push
+  } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+    authDomain: "fresh-hub-d509f.firebaseapp.com",
+    databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+    projectId: "fresh-hub-d509f",
+    storageBucket: "fresh-hub-d509f.appspot.com",
+    messagingSenderId: "101887757266",
+    appId: "1:101887757266:web:80c054959f6588771fd60b"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const username = localStorage.getItem("username");
+
+  document.getElementById("yourUsername").textContent = username;
+
+  const balanceRef = ref(db, `/details/users/${username}/balance`);
+  onValue(balanceRef, (snapshot) => {
+    const balance = snapshot.val() || 0;
+    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+  });
+
+  const transactionRef = ref(db, `/details/users/${username}/transactions`);
+  onValue(transactionRef, (snapshot) => {
+    const list = document.getElementById("transactionList");
+    list.innerHTML = "";
+    const data = snapshot.val();
+    if (data) {
+      Object.values(data).reverse().forEach(tx => {
+        const item = document.createElement("div");
+        item.className = "transaction";
+        item.innerHTML = `
+          <span><strong>${tx.type.toUpperCase()}</strong> ₦${tx.amount}</span>
+          <span>${tx.type === "send" ? "To" : "From"}: ${tx.type === "send" ? tx.to : tx.from}</span>
+          <span>${new Date(tx.timestamp).toLocaleString()}</span>
+        `;
+        list.appendChild(item);
+      });
+    } else {
+      list.innerHTML = "<p>No transactions yet.</p>";
+    }
+  });
+
+  window.sendMoney = async () => {
+    const toUser = document.getElementById("sendToUser").value.trim();
+    const amount = parseFloat(document.getElementById("sendAmount").value);
+
+    if (!toUser || !amount || amount <= 0) return alert("Enter valid recipient and amount");
+
+    const senderRef = ref(db, `/details/users/${username}`);
+    const receiverRef = ref(db, `/details/users/${toUser}`);
+
+    const [senderSnap, receiverSnap] = await Promise.all([get(senderRef), get(receiverRef)]);
+
+    if (!receiverSnap.exists()) return alert("Recipient does not exist");
+
+    const senderBal = senderSnap.val()?.balance || 0;
+    const receiverBal = receiverSnap.val()?.balance || 0;
+
+    if (senderBal < amount) return alert("Insufficient balance");
+
+    await update(senderRef, { balance: senderBal - amount });
+    await update(receiverRef, { balance: receiverBal + amount });
+
+    const transaction = {
+      type: 'send',
+      from: username,
+      to: toUser,
+      amount,
+      timestamp: new Date().toISOString()
+    };
+
+    const senderTxRef = ref(db, `/details/users/${username}/transactions`);
+    const receiverTxRef = ref(db, `/details/users/${toUser}/transactions`);
+    const txKey = push(senderTxRef).key;
+
+    await update(senderTxRef, { [txKey]: transaction });
+    await update(receiverTxRef, { [txKey]: { ...transaction, type: "receive" } });
+
+    alert("Transaction successful");
+    hideModal("sendModal");
+  };
+
+  window.showModal = id => document.getElementById(id).style.display = "flex";
+  window.hideModal = id => document.getElementById(id).style.display = "none";
+</script>
+
+</body>
+</html>

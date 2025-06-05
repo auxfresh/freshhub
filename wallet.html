@@ -226,7 +226,7 @@ font-weight: bold;
     <span class="close" onclick="hideModal('receiveModal')">&times;</span>
     <h3>Receive Money</h3>
     <p>Share your username to receive money:</p>
-    <p><strong id="welcomeMessage"></strong></p>
+    <p><strong id="displayUsername"></strong></p>
     <button onclick="hideModal('receiveModal')">Close</button>
   </div>
 </div>
@@ -238,7 +238,7 @@ if (username) {
   document.getElementById("goBackBtn").addEventListener("click", () => {
     window.location.href = "more.html";
   }
-     document.getElementById("displayUsername").textContent = `Check ${username}` || "";
+     document.getElementById("displayUsername").textContent = `Check ${username}`;
   });
 </script>
 

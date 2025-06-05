@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Wallet</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
@@ -100,99 +100,103 @@
       display: block;
     }
     .go-back-btn {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #102F49;
-  color: #fff;
-  border: none;
-  border-radius: 30px;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-.go-back-btn:hover {
-  background-color: #0d2538;
-  transform: translateX(-3px);
-}
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #102F49;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .go-back-btn:hover {
+      background-color: #0d2538;
+      transform: translateX(-3px);
+    }
     .welcome-message {
-  font-size: 30px;
-  font-family: fantasy;  
-font-weight: bold;
-  color: #00ffff;
-  text-align: center;
-  margin-bottom: 10px;
-  animation: fadeIn 1s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+      font-size: 30px;
+      font-family: fantasy;  
+      font-weight: bold;
+      color: #00ffff;
+      text-align: center;
+      margin-bottom: 10px;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .floating-help-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #102F49;
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 50px;
-  font-size: 14px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 999;
-  transition: background 0.3s ease;
-}
-.floating-help-btn:hover {
-  background: #0a1c30;
-}
-
-.help-modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.help-modal-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 30px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
-  font-size: 14px;
-  color: #333;
-  line-height: 1.6;
-  position: relative;
-}
-
-.help-modal-content h2 {
-  margin-top: 0;
-  color: #102F49;
-}
-
-.help-modal-content ul {
-  padding-left: 20px;
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px; right: 15px;
-  font-size: 22px;
-  color: #333;
-  cursor: pointer;
-}
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #102F49;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 50px;
+      font-size: 14px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 999;
+      transition: background 0.3s ease;
+    }
+    .floating-help-btn:hover {
+      background: #0a1c30;
+    }
+    .help-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+    }
+    .help-modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+      position: relative;
+    }
+    .help-modal-content h2 {
+      margin-top: 0;
+      color: #102F49;
+    }
+    .help-modal-content ul {
+      padding-left: 20px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px; right: 15px;
+      font-size: 22px;
+      color: #333;
+      cursor: pointer;
+    }
   </style>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("017c9GlwpBSK92Tuv"); // Your EmailJS public key
+    })();
+  </script>
 </head>
 <body>
 
@@ -204,35 +208,26 @@ font-weight: bold;
   <div class="buttons">
     <button onclick="showModal('sendModal')">Send</button>
     <button onclick="showModal('receiveModal')">Receive</button>
-    <button id="goBackBtn" class="go-back-btn">
-  <i class="fas fa-arrow-left"></i> Go Back
+    <button id="goBackBtn" class="go-back-btn" style="display:none;">
+      <i class="fas fa-arrow-left"></i> Go Back
     </button>
   </div> 
-  <script>
-    const username = localStorage.getItem("username");
-if (username) {
-  document.getElementById("welcomeMessage").textContent = `Welcome ${username}`;
-  document.getElementById("displayUsername").textContent = username || "";
-}
-  document.getElementById("goBackBtn").addEventListener("click", () => {
-    window.location.href = "more.html";
-  });
-</script>
 
   <div class="transactions">
     <h3>Transaction History</h3>
     <div id="transactionList"></div>
   </div>
 </div>
+
 <!-- Floating Help Button -->
 <button id="helpBtn" class="floating-help-btn">
   <i class="fas fa-info-circle"></i> How to Use
 </button>
 
-<!-- Modal -->
+<!-- Help Modal -->
 <div id="helpModal" class="help-modal">
   <div class="help-modal-content">
-    <span class="close-btn">&times;</span>
+    <span class="close-btn" id="helpCloseBtn">&times;</span>
     <h2>How to Use Your Wallet</h2>
     <ul>
       <li><strong>🔐 Login Daily To Earn:</strong> Every day you log in for the first time, you’ll automatically earn ₦50.<br>
@@ -255,23 +250,7 @@ Each transaction includes type, amount, and date.</li>
     </ul>
   </div>
 </div>
-  <script>
-  const helpBtn = document.getElementById("helpBtn");
-  const helpModal = document.getElementById("helpModal");
-  const closeBtn = document.querySelector(".close-btn");
 
-  helpBtn.onclick = () => {
-    helpModal.style.display = "block";
-  };
-  closeBtn.onclick = () => {
-    helpModal.style.display = "none";
-  };
-  window.onclick = (e) => {
-    if (e.target == helpModal) {
-      helpModal.style.display = "none";
-    }
-  };
-    </script>
 <!-- Send Modal -->
 <div class="modal" id="sendModal">
   <div class="modal-content">
@@ -292,136 +271,232 @@ Each transaction includes type, amount, and date.</li>
   </div>
 </div>
 
-  
-<!-- Firebase SDK -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-  import {
-    getDatabase, ref, onValue, update, get, push
-  } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+  import { getDatabase, ref, get, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 
+  // Firebase config - replace with your actual config
   const firebaseConfig = {
-    apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
-    authDomain: "fresh-hub-d509f.firebaseapp.com",
-    databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
-    projectId: "fresh-hub-d509f",
-    storageBucket: "fresh-hub-d509f.appspot.com",
-    messagingSenderId: "101887757266",
-    appId: "1:101887757266:web:80c054959f6588771fd60b"
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
   };
 
+  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  const username = localStorage.getItem("username");
 
-  document.getElementById("yourUsername").textContent = username;
+  // Grab from localStorage
+  const username = localStorage.getItem('username');
+  const welcomeMessageEl = document.getElementById('welcomeMessage');
+  const balanceDisplay = document.getElementById('balanceDisplay');
+  const transactionList = document.getElementById('transactionList');
+  const yourUsernameEl = document.getElementById('yourUsername');
+  const goBackBtn = document.getElementById('goBackBtn');
 
+  if (!username) {
+    alert('No username found. Please login first.');
+    // Redirect or handle as needed
+  } else {
+    yourUsernameEl.textContent = username;
+    welcomeMessageEl.textContent = `Welcome back, ${username}!`;
+  }
+
+  // Reference paths for user data
+  const userRef = ref(db, `/blance/teams/${username}`);
   const balanceRef = ref(db, `/balance/teams/${username}/balance`);
+  const transactionsRef = ref(db, `/balance/teams/${username}/transactions`);
+
+  // Show user balance
+  function updateBalanceDisplay(value) {
+    balanceDisplay.textContent = `₦${value.toLocaleString()}`;
+  }
+
+  // Load and listen for balance changes
   onValue(balanceRef, (snapshot) => {
-    const balance = snapshot.val() || 0;
-    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+    const balance = snapshot.val() ?? 0;
+    updateBalanceDisplay(balance);
   });
 
-  const transactionRef = ref(db, `/balance/teams/${username}/transactions`);
-  onValue(transactionRef, (snapshot) => {
-    const list = document.getElementById("transactionList");
-    list.innerHTML = "";
-    const data = snapshot.val();
-    if (data) {
-      Object.values(data).reverse().forEach(tx => {
-        const item = document.createElement("div");
-        item.className = "transaction";
-        item.innerHTML = `
-          <span><strong>${tx.type.toUpperCase()}</strong> ₦${tx.amount}</span>
-          <span>${tx.type === "send" ? "To" : "From"}: ${tx.type === "send" ? tx.to : tx.from}</span>
-          <span>${new Date(tx.timestamp).toLocaleString()}</span>
+  // Load transaction history
+  function loadTransactions() {
+    get(transactionsRef).then(snapshot => {
+      const data = snapshot.val();
+      transactionList.innerHTML = "";
+      if (!data) {
+        transactionList.textContent = "No transactions yet.";
+        return;
+      }
+      const transactions = Object.values(data).sort((a,b) => b.timestamp - a.timestamp);
+      transactions.forEach(tx => {
+        const div = document.createElement('div');
+        div.className = 'transaction';
+        div.innerHTML = `
+          <span><strong>Type:</strong> ${tx.type}</span>
+          <span><strong>Amount:</strong> ₦${tx.amount.toLocaleString()}</span>
+          <span><strong>Date:</strong> ${new Date(tx.timestamp).toLocaleString()}</span>
+          ${tx.toUser ? `<span><strong>To:</strong> ${tx.toUser}</span>` : ''}
+          ${tx.fromUser ? `<span><strong>From:</strong> ${tx.fromUser}</span>` : ''}
         `;
-        list.appendChild(item);
+        transactionList.appendChild(div);
       });
-    } else {
-      list.innerHTML = "<p>No transactions yet.</p>";
-    }
-  });
-// Initialize EmailJS
-  emailjs.init("017c9GlwpBSK92Tuv");
-
-  function sendEmailNotification({ to_name, to_email, from_name, from_email, amount, type }) {
-    const templateParams = {
-      to_name,
-      to_email,
-      from_name,
-      from_email,
-      amount,
-      timestamp: new Date().toLocaleString(),
-      type: type === 'receive' ? 'Received' : 'Sent'
-    };
-
-    emailjs.send("service_cvgwdjb", "template_9yx9srx", templateParams)
-      .then(res => console.log("Email sent", res))
-      .catch(err => console.error("Email error", err));
-    }
-  window.sendMoney = async () => {
-    const toUser = document.getElementById("sendToUser").value.trim();
-    const amount = parseFloat(document.getElementById("sendAmount").value);
-
-    if (!toUser || !amount || amount <= 0) return alert("Enter valid recipient and amount");
-
-    const senderRef = ref(db, `/balance/teams/${username}`);
-    const receiverRef = ref(db, `/balance/teams/${toUser}`);
-    const senderBal = senderData?.balance || 0;
-    const receiverBal = receiverData?.balance || 0;
-    const [senderSnap, receiverSnap] = await Promise.all([get(senderRef), get(receiverRef)]);
-
-    if (!receiverSnap.exists()) return alert("Recipient does not exist");
-
-    const senderBal = senderSnap.val()?.balance || 0;
-    const receiverBal = receiverSnap.val()?.balance || 0;
-
-    if (senderBal < amount) return alert("Insufficient balance");
-
-    await update(senderRef, { balance: senderBal - amount });
-    await update(receiverRef, { balance: receiverBal + amount });
-
-    const transaction = {
-      type: 'send',
-      from: username,
-      to: toUser,
-      amount,
-      timestamp: new Date().toISOString()
-    };
-
-    const senderTxRef = ref(db, `/balance/teams/${username}/transactions`);
-    const receiverTxRef = ref(db, `/balance/teams/${toUser}/transactions`);
-    const txKey = push(senderTxRef).key;
-
-    await update(senderTxRef, { [txKey]: transaction });
-    await update(receiverTxRef, { [txKey]: { ...transaction, type: "receive" } });
-// Send email to sender and receiver
-    sendEmailNotification({
-      to_name: username,
-      to_email: senderData.email,
-      from_name: username,
-      from_email: senderData.email,
-      amount,
-      type: 'send'
     });
-    sendEmailNotification({
-      to_name: toUser,
-      to_email: receiverData.email,
-      from_name: username,
-      from_email: senderData.email,
-      amount,
-      type: 'receive'
-    });
+  }
 
-    alert("Transaction successful");
-    hideModal("sendModal");
+  loadTransactions();
+
+  // Show/Hide modal helpers
+  function showModal(id) {
+    document.getElementById(id).style.display = "flex";
+    goBackBtn.style.display = "inline-flex";
+  }
+  function hideModal(id) {
+    document.getElementById(id).style.display = "none";
+    goBackBtn.style.display = "none";
+  }
+
+  goBackBtn.onclick = () => {
+    // Hide all modals when going back
+    ['sendModal','receiveModal'].forEach(id => hideModal(id));
   };
-    
 
-  window.showModal = id => document.getElementById(id).style.display = "flex";
-  window.hideModal = id => document.getElementById(id).style.display = "none";
+  // Send money function
+  async function sendMoney() {
+    const toUser = document.getElementById('sendToUser').value.trim();
+    const amount = Number(document.getElementById('sendAmount').value);
+
+    if (!toUser || amount <= 0) {
+      alert('Please enter a valid username and amount.');
+      return;
+    }
+    if (toUser === username) {
+      alert("You can't send money to yourself.");
+      return;
+    }
+
+    // Fetch sender balance and recipient data
+    const senderSnapshot = await get(userRef);
+    if (!senderSnapshot.exists()) {
+      alert("Sender data not found.");
+      return;
+    }
+    const senderData = senderSnapshot.val();
+    if (!senderData.balance || senderData.balance < amount) {
+      alert("Insufficient balance.");
+      return;
+    }
+
+    const recipientRef = ref(db, `/balance/teams/${toUser}`);
+    const recipientSnapshot = await get(recipientRef);
+    if (!recipientSnapshot.exists()) {
+      alert("Recipient username does not exist.");
+      return;
+    }
+
+    // All good, proceed to update balances and transactions atomically
+    const updates = {};
+
+    // Deduct from sender
+    updates[`/balance/teams/${username}/balance`] = senderData.balance - amount;
+    // Add to recipient balance
+    const recipientData = recipientSnapshot.val();
+    const recipientBalance = recipientData.balance ?? 0;
+    updates[`/balance/teams/${toUser}/balance`] = recipientBalance + amount;
+
+    const timestamp = Date.now();
+
+    // Push transaction for sender (Send)
+    const senderTxKey = push(ref(db, `/balance/teams/${username}/transactions`)).key;
+    updates[`/balance/teams/${username}/transactions/${senderTxKey}`] = {
+      type: "Send",
+      amount,
+      toUser,
+      timestamp,
+    };
+
+    // Push transaction for recipient (Receive)
+    const recipientTxKey = push(ref(db, `/balance/teams/${toUser}/transactions`)).key;
+    updates[`/balance/teams/${toUser}/transactions/${recipientTxKey}`] = {
+      type: "Receive",
+      amount,
+      fromUser: username,
+      timestamp,
+    };
+
+    try {
+      await update(ref(db), updates);
+      alert(`Successfully sent ₦${amount.toLocaleString()} to ${toUser}.`);
+      // Refresh transaction list and balance
+      loadTransactions();
+      hideModal('sendModal');
+      // Clear inputs
+      document.getElementById('sendToUser').value = "";
+      document.getElementById('sendAmount').value = "";
+
+      // Send EmailJS notification to sender
+      sendEmailNotification(username, toUser, amount);
+
+    } catch (error) {
+      console.error("Transaction failed:", error);
+      alert("Transaction failed. Please try again.");
+    }
+  }
+
+  // EmailJS send function for Send transaction notification
+  function sendEmailNotification(fromUser, toUser, amount) {
+    // Fetch sender email and recipient email from DB for emails
+    Promise.all([
+      get(ref(db, `/details/users/${fromUser}/email`)),
+      get(ref(db, `/details/users/${toUser}/email`))
+    ]).then(([senderEmailSnap, recipientEmailSnap]) => {
+      const senderEmail = senderEmailSnap.val();
+      const recipientEmail = recipientEmailSnap.val();
+
+      if (!senderEmail) {
+        console.warn("Sender email not found; skipping email notification.");
+        return;
+      }
+
+      // Prepare EmailJS params
+      const templateParams = {
+        from_username: fromUser,
+        to_username: toUser,
+        amount: amount.toLocaleString(),
+        from_email: senderEmail,
+        to_email: recipientEmail || "",
+        date: new Date().toLocaleString(),
+      };
+
+      emailjs.send('service_cvgwdjb', 'template_9yx9srx', templateParams)
+      .then(() => {
+        console.log("Email notification sent successfully.");
+      }, (error) => {
+        console.error("Email notification error:", error);
+      });
+
+    }).catch(err => {
+      console.error("Failed to fetch emails for notification:", err);
+    });
+  }
+
+  // Help modal controls
+  const helpBtn = document.getElementById('helpBtn');
+  const helpModal = document.getElementById('helpModal');
+  const helpCloseBtn = document.getElementById('helpCloseBtn');
+
+  helpBtn.onclick = () => {
+    helpModal.style.display = 'flex';
+  };
+  helpCloseBtn.onclick = () => {
+    helpModal.style.display = 'none';
+  };
+  window.onclick = (e) => {
+    if (e.target === helpModal) helpModal.style.display = 'none';
+  };
 </script>
-
 </body>
 </html>

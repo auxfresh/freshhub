@@ -331,92 +331,103 @@ window.hideModal = function(id) {
   };
 
   async function sendMoney() {
-    const toUser = document.getElementById('sendToUser').value.trim();
-    const amount = Number(document.getElementById('sendAmount').value);
+  const toUser = document.getElementById('sendToUser').value.trim();
+  const amount = Number(document.getElementById('sendAmount').value);
 
-    if (!toUser || amount <= 0) {
-      alert('Please enter a valid username and amount.');
-      return;
-    }
-    if (toUser === username) {
-      alert("You can't send money to yourself.");
-      return;
-    }
-
-    const senderSnapshot = await get(userRef);
-    if (!senderSnapshot.exists()) {
-      alert("Sender data not found.");
-      return;
-    }
-    const senderData = senderSnapshot.val();
-    if (!senderData.balance || senderData.balance < amount) {
-      alert("Insufficient balance.");
-      return;
-    }
-
-    const recipientRef = ref(db, `/balance/teams/${toUser}`);
-    const recipientSnapshot = await get(recipientRef);
-    if (!recipientSnapshot.exists()) {
-      alert("Recipient username does not exist.");
-      return;
-    }
-
-    const updates = {};
-    updates[`/balance/teams/${username}/balance`] = senderData.balance - amount;
-    const recipientData = recipientSnapshot.val();
-    const recipientBalance = recipientData.balance ?? 0;
-    updates[`/balance/teams/${toUser}/balance`] = recipientBalance + amount;
-
-    const timestamp = Date.now();
-    const senderTxKey = push(ref(db, `/balance/teams/${username}/transactions`)).key;
-    updates[`/balance/teams/${username}/transactions/${senderTxKey}`] = {
-      type: "Send",
-      amount,
-      toUser,
-      timestamp,
-    };
-
-    const recipientTxKey = push(ref(db, `/balance/teams/${toUser}/transactions`)).key;
-    updates[`/balance/teams/${toUser}/transactions/${recipientTxKey}`] = {
-      type: "Receive",
-      amount,
-      fromUser: username,
-      timestamp,
-    };
-
-    try {
-      await update(ref(db), updates);
-      alert(`Successfully sent ₦${amount.toLocaleString()} to ${toUser}.`);
-      loadTransactions();
-      hideModal('sendModal');
-      document.getElementById('sendToUser').value = "";
-      document.getElementById('sendAmount').value = "";
-
-      // Send email notification
-      if (senderData.email) {
-        sendEmailNotification(senderData.email, toUser, amount);
-      }
-
-    } catch (error) {
-      console.error("Transaction failed:", error);
-      alert("Transaction failed. Please try again.");
-    }
+  if (!toUser || amount <= 0) {
+    alert('Please enter a valid username and amount.');
+    return;
+  }
+  if (toUser === username) {
+    alert("You can't send money to yourself.");
+    return;
   }
 
-  function sendEmailNotification(email, toUser, amount) {
-    emailjs.send("service_cvgwdjb", "template_9yx9srx", {
-      to_email: email,
-      to_user: toUser,
-      amount: `₦${amount.toLocaleString()}`,
-      message: `You have successfully sent ₦${amount.toLocaleString()} to ${toUser}.`,
-    })
-    .then(() => {
-      console.log("Email sent!");
-    })
-    .catch((error) => {
-      console.error("Email failed:", error);
-    });
+  const senderSnapshot = await get(userRef);
+  if (!senderSnapshot.exists()) {
+    alert("Sender data not found.");
+    return;
   }
+  const senderData = senderSnapshot.val();
+  if (!senderData.balance || senderData.balance < amount) {
+    alert("Insufficient balance.");
+    return;
+  }
+
+  const recipientRef = ref(db, `/balance/teams/${toUser}`);
+  const recipientSnapshot = await get(recipientRef);
+  if (!recipientSnapshot.exists()) {
+    alert("Recipient username does not exist.");
+    return;
+  }
+  const recipientData = recipientSnapshot.val();
+  const senderEmail = senderData.email ?? "";
+  const recipientEmail = recipientData.email ?? "";
+
+  const updates = {};
+  updates[`/balance/teams/${username}/balance`] = senderData.balance - amount;
+  updates[`/balance/teams/${toUser}/balance`] = (recipientData.balance ?? 0) + amount;
+
+  const timestamp = Date.now();
+  const senderTxKey = push(ref(db, `/balance/teams/${username}/transactions`)).key;
+  updates[`/balance/teams/${username}/transactions/${senderTxKey}`] = {
+    type: "Send",
+    amount,
+    toUser,
+    timestamp,
+  };
+
+  const recipientTxKey = push(ref(db, `/balance/teams/${toUser}/transactions`)).key;
+  updates[`/balance/teams/${toUser}/transactions/${recipientTxKey}`] = {
+    type: "Receive",
+    amount,
+    fromUser: username,
+    timestamp,
+  };
+
+  try {
+    await update(ref(db), updates);
+    alert(`Successfully sent ₦${amount.toLocaleString()} to ${toUser}.`);
+    loadTransactions();
+    hideModal('sendModal');
+    document.getElementById('sendToUser').value = "";
+    document.getElementById('sendAmount').value = "";
+
+    // Notify both sender and recipient
+    if (senderEmail) notifySender(senderEmail, toUser, amount);
+    if (recipientEmail) notifyRecipient(recipientEmail, username, amount);
+
+  } catch (error) {
+    console.error("Transaction failed:", error);
+    alert("Transaction failed. Please try again.");
+  }
+}
+
+function notifySender(email, toUser, amount) {
+  emailjs.send("service_cvgwdjb", "template_9yx9srx", {
+    to_email: email,
+    to_user: toUser,
+    amount: `₦${amount.toLocaleString()}`,
+    message: `You have successfully sent ₦${amount.toLocaleString()} to ${toUser}.`,
+  }).then(() => {
+    console.log("Sender email sent.");
+  }).catch((err) => {
+    console.error("Sender email failed:", err);
+  });
+}
+
+function notifyRecipient(email, fromUser, amount) {
+  emailjs.send("service_cvgwdjb", "template_9yx9srx", {
+    to_email: email,
+    to_user: fromUser,
+    amount: `₦${amount.toLocaleString()}`,
+    message: `You have received ₦${amount.toLocaleString()} from ${fromUser}.`,
+  }).then(() => {
+    console.log("Recipient email sent.");
+  }).catch((err) => {
+    console.error("Recipient email failed:", err);
+  });
+    }
 </script>
 
 </body>

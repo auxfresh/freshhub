@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wallet</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <title>Wallet</title> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -271,28 +272,6 @@ Each transaction includes type, amount, and date.</li>
     }
   };
     </script>
-<!-- Send Modal -->
-<div class="modal" id="sendModal">
-  <div class="modal-content">
-    <span class="close" onclick="hideModal('sendModal')">&times;</span>
-    <h3>Send Money</h3>
-    <input type="text" id="sendToUser" placeholder="Recipient Username" />
-    <input type="number" id="sendAmount" placeholder="Amount" />
-    <button onclick="sendMoney()">Send</button>
-  </div>
-</div>
-
-<!-- Receive Modal -->
-<div class="modal" id="receiveModal">
-  <div class="modal-content">
-    <span class="close" onclick="hideModal('receiveModal')">&times;</span>
-    <h3>Your Username</h3>
-    <p id="yourUsername" style="font-size: 18px; font-weight: bold;"></p>
-  </div>
-</div>
-
-  
-<!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
   import {
@@ -342,21 +321,42 @@ Each transaction includes type, amount, and date.</li>
     }
   });
 
+  // Initialize EmailJS
+  emailjs.init("017c9GlwpBSK92Tuv");
+
+  function sendEmailNotification({ to_name, to_email, from_name, from_email, amount, type }) {
+    const templateParams = {
+      to_name,
+      to_email,
+      from_name,
+      from_email,
+      amount,
+      timestamp: new Date().toLocaleString(),
+      type: type === 'receive' ? 'Received' : 'Sent'
+    };
+
+    emailjs.send("service_cvgwdjb", "template_9yx9srx", templateParams)
+      .then(res => console.log("Email sent", res))
+      .catch(err => console.error("Email error", err));
+  }
+
   window.sendMoney = async () => {
     const toUser = document.getElementById("sendToUser").value.trim();
     const amount = parseFloat(document.getElementById("sendAmount").value);
 
     if (!toUser || !amount || amount <= 0) return alert("Enter valid recipient and amount");
 
-    const senderRef = ref(db, `/details/users/${username}`);
-    const receiverRef = ref(db, `/details/users/${toUser}`);
+    const senderRef = ref(db, `/balance/teams/${username}`);
+    const receiverRef = ref(db, `/balance/teams/${toUser}`);
 
     const [senderSnap, receiverSnap] = await Promise.all([get(senderRef), get(receiverRef)]);
 
     if (!receiverSnap.exists()) return alert("Recipient does not exist");
 
-    const senderBal = senderSnap.val()?.balance || 0;
-    const receiverBal = receiverSnap.val()?.balance || 0;
+    const senderData = senderSnap.val();
+    const receiverData = receiverSnap.val();
+    const senderBal = senderData?.balance || 0;
+    const receiverBal = receiverData?.balance || 0;
 
     if (senderBal < amount) return alert("Insufficient balance");
 
@@ -371,12 +371,30 @@ Each transaction includes type, amount, and date.</li>
       timestamp: new Date().toISOString()
     };
 
-    const senderTxRef = ref(db, `/details/users/${username}/transactions`);
-    const receiverTxRef = ref(db, `/details/users/${toUser}/transactions`);
+    const senderTxRef = ref(db, `/balance/teams/${username}/transactions`);
+    const receiverTxRef = ref(db, `/balance/teams/${toUser}/transactions`);
     const txKey = push(senderTxRef).key;
 
     await update(senderTxRef, { [txKey]: transaction });
     await update(receiverTxRef, { [txKey]: { ...transaction, type: "receive" } });
+
+    // Send email to sender and receiver
+    sendEmailNotification({
+      to_name: username,
+      to_email: senderData.email,
+      from_name: username,
+      from_email: senderData.email,
+      amount,
+      type: 'send'
+    });
+    sendEmailNotification({
+      to_name: toUser,
+      to_email: receiverData.email,
+      from_name: username,
+      from_email: senderData.email,
+      amount,
+      type: 'receive'
+    });
 
     alert("Transaction successful");
     hideModal("sendModal");

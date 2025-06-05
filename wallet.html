@@ -405,27 +405,23 @@ window.hideModal = function(id) {
 
 function notifySender(email, toUser, amount) {
   emailjs.send("service_cvgwdjb", "template_9yx9srx", {
-    to_email: email,
-    to_user: toUser,
-    amount: `₦${amount.toLocaleString()}`,
-    message: `You have successfully sent ₦${amount.toLocaleString()} to ${toUser}.`,
-  }).then(() => {
-    console.log("Sender email sent.");
-  }).catch((err) => {
-    console.error("Sender email failed:", err);
+    to_user: username,
+    from_user: username,
+    other_user: toUser,
+    amount: amount.toLocaleString(),
+    type: "Send",
+    timestamp: new Date().toLocaleString()
   });
 }
 
 function notifyRecipient(email, fromUser, amount) {
   emailjs.send("service_cvgwdjb", "template_9yx9srx", {
-    to_email: email,
-    to_user: fromUser,
-    amount: `₦${amount.toLocaleString()}`,
-    message: `You have received ₦${amount.toLocaleString()} from ${fromUser}.`,
-  }).then(() => {
-    console.log("Recipient email sent.");
-  }).catch((err) => {
-    console.error("Recipient email failed:", err);
+    to_user: toUser,
+    from_user: fromUser,
+    other_user: fromUser,
+    amount: amount.toLocaleString(),
+    type: "Receive",
+    timestamp: new Date().toLocaleString()
   });
     }
 </script>

@@ -189,10 +189,15 @@
       cursor: pointer;
     }
   </style>
-<script>
-  import emailjs from 'https://cdn.emailjs.com/dist/email.esm.min.js';
-
-emailjs.init("017c9GlwpBSK92Tuv"); // Your EmailJS public key
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "017c9GlwpBSK92Tuv",
+      });
+   })();
 </script>
 </head>
 <body>

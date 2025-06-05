@@ -160,13 +160,13 @@
 
   document.getElementById("yourUsername").textContent = username;
 
-  const balanceRef = ref(db, `/details/users/${username}/balance`);
+  const balanceRef = ref(db, `/balance/teams/${username}/balance`);
   onValue(balanceRef, (snapshot) => {
     const balance = snapshot.val() || 0;
     document.getElementById("balanceDisplay").textContent = `₦${balance}`;
   });
 
-  const transactionRef = ref(db, `/details/users/${username}/transactions`);
+  const transactionRef = ref(db, `/balance/teams/${username}/transactions`);
   onValue(transactionRef, (snapshot) => {
     const list = document.getElementById("transactionList");
     list.innerHTML = "";

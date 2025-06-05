@@ -316,13 +316,14 @@
 
   loadTransactions();
 
-  function showModal(id) {
-    document.getElementById(id).style.display = "flex";
-    goBackBtn.style.display = "inline-flex";
-  }
-  function hideModal(id) {
-    document.getElementById(id).style.display = "none";
-    goBackBtn.style.display = "none";
+  window.showModal = function(id) {
+  document.getElementById(id).style.display = "flex";
+  goBackBtn.style.display = "inline-flex";
+}
+
+window.hideModal = function(id) {
+  document.getElementById(id).style.display = "none";
+  goBackBtn.style.display = "none";
   }
 
   goBackBtn.onclick = () => {

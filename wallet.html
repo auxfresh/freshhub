@@ -395,7 +395,7 @@ window.hideModal = function(id) {
 
     // Notify both sender and recipient
     if (senderEmail) notifySender(senderEmail, toUser, amount);
-    if (recipientEmail) notifyRecipient(recipientEmail, username, amount);
+    if (recipientEmail) notifyRecipient(recipientEmail, toUser, amount);
 
   } catch (error) {
     console.error("Transaction failed:", error);

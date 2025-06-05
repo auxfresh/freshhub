@@ -209,6 +209,27 @@ font-weight: bold;
   <i class="fas fa-arrow-left"></i> Go Back
     </button>
   </div> 
+  <!-- Send Modal -->
+<div id="sendModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="hideModal('sendModal')">&times;</span>
+    <h3>Send Money</h3>
+    <input id="sendToUser" type="text" placeholder="Recipient Username" />
+    <input id="sendAmount" type="number" placeholder="Amount" />
+    <button onclick="sendMoney()">Send</button>
+  </div>
+</div>
+
+<!-- Receive Modal -->
+<div id="receiveModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="hideModal('receiveModal')">&times;</span>
+    <h3>Receive Money</h3>
+    <p>Share your username to receive money:</p>
+    <p><strong id="displayUsername"></strong></p>
+    <button onclick="hideModal('receiveModal')">Close</button>
+  </div>
+</div>
   <script>
     const username = localStorage.getItem("username");
 if (username) {

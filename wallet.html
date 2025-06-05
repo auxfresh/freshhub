@@ -75,18 +75,18 @@
 <script>
   // Firebase config
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MSG_ID",
-    appId: "YOUR_APP_ID"
-  };
+    apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
-  emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
+  emailjs.init("017c9GlwpBSK92Tuv"); // Replace with your EmailJS public key
 
   <!-- Only changed parts shown below (rest is same) -->
 
@@ -164,14 +164,14 @@
     loadWallet();
 
     // Send Email to Sender
-    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+    emailjs.send("service_cvgwdjb", "template_9yx9srx", {
       to_name: username,
       message: `You have successfully sent ₦${amount} to ${toUser}.`,
       to_email: senderSnap.val().email
     });
 
     // Send Email to Receiver
-    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+    emailjs.send("service_cvgwdjb", "template_9yx9srx", {
       to_name: toUser,
       message: `You have received ₦${amount} from ${username}.`,
       to_email: receiverSnap.val().email

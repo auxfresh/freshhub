@@ -405,7 +405,8 @@ window.hideModal = function(id) {
 
 function notifySender(email, toUser, amount) {
   emailjs.send("service_cvgwdjb", "template_9yx9srx", {
-    to_user: username,
+    to_email: email,
+    to_user: toUser,
     from_user: username,
     other_user: toUser,
     amount: amount.toLocaleString(),
@@ -416,6 +417,7 @@ function notifySender(email, toUser, amount) {
 
 function notifyRecipient(email, fromUser, amount) {
   emailjs.send("service_cvgwdjb", "template_9yx9srx", {
+    to_email: email,
     to_user: toUser,
     from_user: fromUser,
     other_user: fromUser,

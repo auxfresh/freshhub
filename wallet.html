@@ -128,7 +128,15 @@
   <div class="buttons">
     <button onclick="showModal('sendModal')">Send</button>
     <button onclick="showModal('receiveModal')">Receive</button>
-  </div>
+    <button id="goBackBtn" class="go-back-btn">
+  <i class="fas fa-arrow-left"></i> Go Back
+    </button>
+  </div> 
+  <script>
+  document.getElementById("goBackBtn").addEventListener("click", () => {
+    window.location.href = "more.html";
+  });
+</script>
 
   <div class="transactions">
     <h3>Transaction History</h3>
@@ -158,11 +166,7 @@
 <button id="goBackBtn" class="go-back-btn">
   <i class="fas fa-arrow-left"></i> Go Back
 </button>
-  <script>
-  document.getElementById("goBackBtn").addEventListener("click", () => {
-    window.location.href = "more.html";
-  });
-  </script>
+  
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";

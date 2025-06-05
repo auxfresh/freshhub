@@ -208,7 +208,7 @@
     <div class="buttons">
       <button onclick="showModal('sendModal')">Send Funds</button>
       <button onclick="showModal('receiveModal')">Receive Funds</button>
-      <button class="go-back-btn" onclick="window.location.href='profile.html'">
+      <button class="buttons" onclick="window.location.href='profile.html'">
         <i class="fas fa-arrow-left"></i><span>My Profile</span>
       </button>
     </div>
@@ -338,8 +338,6 @@
       goBackBtn.style.display = "none";
     }
 
-    goBackBtn.onclick = () => {
-      ['sendModal','receiveModal'].forEach(id => hideModal(id));
     };
 
     // Help Modal functions

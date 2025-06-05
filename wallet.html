@@ -164,19 +164,28 @@
     loadWallet();
 
     // Send Email to Sender
+    const direction = type === "Received" ? "from" : "to";
     emailjs.send("service_cvgwdjb", "template_9yx9srx", {
       to_name: username,
       message: `You have successfully sent ₦${amount} to ${toUser}.`,
       to_email: senderSnap.val().email
+      from_email: senderEmail,
+      
     });
 
     // Send Email to Receiver
-    emailjs.send("service_cvgwdjb", "template_9yx9srx", {
-      to_name: toUser,
-      message: `You have received ₦${amount} from ${username}.`,
-      to_email: receiverSnap.val().email
-    });
-  };
+    const direction = type === "Received" ? "from" : "to";
+
+emailjs.send("service_cvgwdjb", "template_9yx9srx", {
+  to_name: toUser,
+  from_name: username,
+  type: "Received",
+  amount,
+  from_email: senderEmail,
+  to_email: receiverEmail,
+  timestamp: new Date().toLocaleString(),
+  direction
+});
 </script>
   window.onload = loadWallet;
 </script>

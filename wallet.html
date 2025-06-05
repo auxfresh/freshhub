@@ -450,8 +450,8 @@ Each transaction includes type, amount, and date.</li>
   function sendEmailNotification(fromUser, toUser, amount) {
     // Fetch sender email and recipient email from DB for emails
     Promise.all([
-      get(ref(db, `/details/users/${fromUser}/email`)),
-      get(ref(db, `/details/users/${toUser}/email`))
+      get(ref(db, `/balance/teams/${fromUser}/email`)),
+      get(ref(db, `/balance/teams/${toUser}/email`))
     ]).then(([senderEmailSnap, recipientEmailSnap]) => {
       const senderEmail = senderEmailSnap.val();
       const recipientEmail = recipientEmailSnap.val();

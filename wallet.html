@@ -374,8 +374,8 @@ window.hideModal = function(id) {
     document.getElementById('sendAmount').value = "";  
   
     // Notify both sender and recipient  
-    if (senderEmail) notifySender(senderEmail, toUser, amount);  
-    if (recipientEmail) notifyRecipient(recipientEmail, toUser, amount);  
+    if (senderEmail) notifySender(senderEmail, fromUser, toUser, amount);  
+    if (recipientEmail) notifyRecipient(recipientEmail, fromUser, toUser, amount);  
   
   } catch (error) {  
     console.error("Transaction failed:", error);  

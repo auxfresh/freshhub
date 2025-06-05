@@ -292,7 +292,7 @@ Each transaction includes type, amount, and date.</li>
   const db = getDatabase(app);
   const username = localStorage.getItem("username");
 
-  document.getElementById("yourUsername").textContent = username;
+  document.getElementById("Username").textContent = username;
 
   const balanceRef = ref(db, `/balance/teams/${username}/balance`);
   onValue(balanceRef, (snapshot) => {

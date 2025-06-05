@@ -1,374 +1,410 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wallet</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <style>
-    /* Keep your existing styles unchanged */
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  
+  <title>Wallet</title>  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>  
+  <style>  
+    /* [Styles unchanged from your code] */  /* ... keep your existing styles here (as you posted above) ... */
+body {
+font-family: 'Segoe UI', sans-serif;
+margin: 0;
+background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+color: white;
+padding: 20px;
+}
+.wallet-box {
+background: #102F49;
+border-radius: 20px;
+padding: 30px;
+max-width: 600px;
+margin: auto;
+text-align: center;
+box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+}
+h1 {
+margin-bottom: 10px;
+}
+.balance {
+font-size: 2.2rem;
+font-weight: bold;
+margin-bottom: 20px;
+}
+.buttons button {
+margin: 10px;
+padding: 12px 20px;
+border: none;
+border-radius: 12px;
+background: #00bcd4;
+color: white;
+font-size: 16px;
+cursor: pointer;
+transition: background 0.3s ease;
+}
+.buttons button:hover {
+background: #0097a7;
+}
+.modal {
+display: none;
+position: fixed;
+z-index: 100;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background: rgba(0, 0, 0, 0.7);
+justify-content: center;
+align-items: center;
+}
+.modal-content {
+background: #102f49;
+padding: 30px;
+border-radius: 15px;
+text-align: left;
+width: 300px;
+color: white;
+}
+.modal-content input {
+width: 100%;
+margin-top: 10px;
+margin-bottom: 20px;
+padding: 10px;
+border-radius: 8px;
+border: none;
+background: #2c5364;
+color: white;
+}
+.modal-content button {
+padding: 10px;
+width: 100%;
+border-radius: 8px;
+border: none;
+background: #00bcd4;
+color: white;
+font-weight: bold;
+}
+.close {
+float: right;
+cursor: pointer;
+font-size: 18px;
+}
+.transactions {
+margin-top: 40px;
+text-align: left;
+}
+.transaction {
+background: rgba(255, 255, 255, 0.05);
+padding: 12px 20px;
+border-radius: 10px;
+margin-bottom: 10px;
+}
+.transaction span {
+display: block;
+}
+.go-back-btn {
+margin-top: 20px;
+padding: 10px 20px;
+background-color: #102F49;
+color: #fff;
+border: none;
+border-radius: 30px;
+font-weight: bold;
+font-size: 14px;
+cursor: pointer;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.go-back-btn:hover {
+background-color: #0d2538;
+transform: translateX(-3px);
+}
+.welcome-message {
+font-size: 30px;
+font-family: fantasy;
+font-weight: bold;
+color: #00ffff;
+text-align: center;
+margin-bottom: 10px;
+animation: fadeIn 1s ease-in-out;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.floating-help-btn {
+position: fixed;
+bottom: 20px;
+right: 20px;
+background: #102F49;
+color: white;
+border: none;
+padding: 12px 16px;
+border-radius: 50px;
+font-size: 14px;
+box-shadow: 0 0 10px rgba(0,0,0,0.3);
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 8px;
+z-index: 999;
+transition: background 0.3s ease;
+}
+.floating-help-btn:hover {
+background: #0a1c30;
+}
+.help-modal {
+display: none;
+position: fixed;
+z-index: 1000;
+left: 0; top: 0;
+width: 100%; height: 100%;
+background: rgba(0, 0, 0, 0.6);
+justify-content: center;
+align-items: center;
+}
+.help-modal-content {
+background-color: #fff;
+margin: 10% auto;
+padding: 30px;
+border-radius: 12px;
+width: 90%;
+max-width: 500px;
+font-size: 14px;
+color: #333;
+line-height: 1.6;
+position: relative;
+}
+.help-modal-content h2 {
+margin-top: 0;
+color: #102F49;
+}
+.help-modal-content ul {
+padding-left: 20px;
+}
+.close-btn {
+position: absolute;
+top: 10px; right: 15px;
+font-size: 22px;
+color: #333;
+cursor: pointer;
+}
+</style>
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
-      color: white;
-      padding: 20px;
-    }
-    .wallet-box {
-      background: #102F49;
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 600px;
-      margin: auto;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
-    }
-    h1 {
-      margin-bottom: 10px;
-    }
-    .balance {
-      font-size: 2.2rem;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-    .buttons button {
-      margin: 10px;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 12px;
-      background: #00bcd4;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    .buttons button:hover:not(:disabled) {
-      background: #0097a7;
-    }
-    .buttons button:disabled {
-      background: #555;
-      cursor: not-allowed;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #102f49;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: left;
-      width: 300px;
-      color: white;
-    }
-    .modal-content input {
-      width: 100%;
-      margin-top: 10px;
-      margin-bottom: 20px;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: #2c5364;
-      color: white;
-    }
-    .modal-content button {
-      padding: 10px;
-      width: 100%;
-      border-radius: 8px;
-      border: none;
-      background: #00bcd4;
-      color: white;
-      font-weight: bold;
-    }
-    .close {
-      float: right;
-      cursor: pointer;
-      font-size: 18px;
-    }
-    .transactions {
-      margin-top: 40px;
-      text-align: left;
-    }
-    .transaction {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 12px 20px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-    .transaction span {
-      display: block;
-    }
-    .go-back-btn {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #102F49;
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-    .go-back-btn:hover {
-      background-color: #0d2538;
-      transform: translateX(-3px);
-    }
-    .welcome-message {
-      font-size: 30px;
-      font-family: fantasy;  
-      font-weight: bold;
-      color: #00ffff;
-      text-align: center;
-      margin-bottom: 10px;
-      animation: fadeIn 1s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-
-  <!-- EmailJS SDK -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <script type="text/javascript">
-    (function(){
-      emailjs.init({
-        publicKey: "017c9GlwpBSK92Tuv",
-      });
-    })();
-  </script>
-</head>
-<body>
-
-<div class="wallet-box">
-  <div id="welcomeMessage" class="welcome-message"></div>
-  <h1>My Wallet</h1>
-  <div class="balance" id="balanceDisplay">₦0</div>
-  <div class="buttons">
-    <button onclick="showModal('sendModal')" id="sendBtn">Send Funds</button>
-    <button onclick="showModal('receiveModal')">Receive Funds</button>
-    <button id="goBackBtn" class="go-back-btn" style="display:none;">
-      <i class="fas fa-arrow-left"></i> Go Back
-    </button>
-  </div> 
-  <div class="transactions">
-    <h3>Transaction History</h3>
-    <div id="transactionList"></div>
-  </div>
-</div>
-
-<!-- Send Modal -->
-<div class="modal" id="sendModal">
-  <div class="modal-content">
-    <span class="close" onclick="hideModal('sendModal')">&times;</span>
-    <h3>Send Money</h3>
-    <input type="text" id="sendToUser" placeholder="Recipient Username" />
-    <input type="number" id="sendAmount" placeholder="Amount" />
-    <button onclick="sendMoney()" id="sendConfirmBtn">Send</button>
-  </div>
-</div>
-
-<!-- Receive Modal -->
-<div class="modal" id="receiveModal">
-  <div class="modal-content">
-    <span class="close" onclick="hideModal('receiveModal')">&times;</span>
-    <h3>Your Username</h3>
-    <p id="yourUsername" style="font-size: 18px; font-weight: bold;"></p>
-  </div>
-</div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-  import { getDatabase, ref, get, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
-    authDomain: "fresh-hub-d509f.firebaseapp.com",
-    databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
-    projectId: "fresh-hub-d509f",
-    storageBucket: "fresh-hub-d509f.appspot.com",
-    messagingSenderId: "101887757266",
-    appId: "1:101887757266:web:80c054959f6588771fd60b"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  const username = localStorage.getItem('username');
-  const welcomeMessageEl = document.getElementById('welcomeMessage');
-  const balanceDisplay = document.getElementById('balanceDisplay');
-  const transactionList = document.getElementById('transactionList');
-  const yourUsernameEl = document.getElementById('yourUsername');
-  const goBackBtn = document.getElementById('goBackBtn');
-  const sendConfirmBtn = document.getElementById('sendConfirmBtn');
-
-  if (!username) {
-    alert('No username found. Please login first.');
-  } else {
-    yourUsernameEl.textContent = username;
-    welcomeMessageEl.textContent = `Welcome back, ${username}!`;
-  }
-
-  const userRef = ref(db, `/balance/teams/${username}`);
-  const balanceRef = ref(db, `/balance/teams/${username}/balance`);
-  const transactionsRef = ref(db, `/balance/teams/${username}/transactions`);
-
-  function updateBalanceDisplay(value) {
-    balanceDisplay.textContent = `₦${value.toLocaleString()}`;
-  }
-
-  onValue(balanceRef, (snapshot) => {
-    const balance = snapshot.val() ?? 0;
-    updateBalanceDisplay(balance);
-  });
-
-  function loadTransactions() {
-    get(transactionsRef).then(snapshot => {
-      const data = snapshot.val();
-      transactionList.innerHTML = "";
-      if (!data) {
-        transactionList.textContent = "No transactions yet.";
-        return;
-      }
-      const transactions = Object.values(data).sort((a,b) => b.timestamp - a.timestamp);
-      transactions.forEach(tx => {
-        const div = document.createElement('div');
-        div.className = 'transaction';
-        div.innerHTML = `
-          <span><strong>Type:</strong> ${tx.type}</span>
-          <span><strong>Amount:</strong> ₦${tx.amount.toLocaleString()}</span>
-          <span><strong>Date:</strong> ${new Date(tx.timestamp).toLocaleString()}</span>
-          ${tx.toUser ? `<span><strong>${tx.toUser ? `<span><strong>To:</strong> ${tx.toUser}</span>` : ""}
-          ${tx.fromUser ? `<span><strong>From:</strong> ${tx.fromUser}</span>` : ""}
-        `;
-        transactionList.appendChild(div);
-      });
-    });
-  }
-
-  loadTransactions();
-
-  window.showModal = function(modalId) {
-    document.getElementById(modalId).style.display = "flex";
-    goBackBtn.style.display = "block";
-  };
-
-  window.hideModal = function(modalId) {
-    document.getElementById(modalId).style.display = "none";
-    goBackBtn.style.display = "none";
-  };
-
-  goBackBtn.addEventListener("click", () => {
-    document.querySelectorAll(".modal").forEach(modal => modal.style.display = "none");
-    goBackBtn.style.display = "none";
-  });
-
-  async function sendMoney() {
-    const toUser = document.getElementById("sendToUser").value.trim();
-    const amount = parseInt(document.getElementById("sendAmount").value.trim());
-
-    if (!toUser || isNaN(amount) || amount <= 0) {
-      alert("Please enter a valid username and amount.");
-      return;
-    }
-
-    if (toUser === username) {
-      alert("You cannot send money to yourself.");
-      return;
-    }
-
-    sendConfirmBtn.disabled = true;
-
-    try {
-      const [fromSnap, toSnap] = await Promise.all([
-        get(ref(db, `/balance/teams/${username}`)),
-        get(ref(db, `/balance/teams/${toUser}`))
-      ]);
-
-      if (!toSnap.exists()) {
-        alert("Recipient not found.");
-        return;
-      }
-
-      const fromData = fromSnap.val();
-      const toData = toSnap.val();
-
-      if ((fromData.balance ?? 0) < amount) {
-        alert("Insufficient balance.");
-        return;
-      }
-
-      const updates = {};
-      updates[`/balance/teams/${username}/balance`] = fromData.balance - amount;
-      updates[`/balance/teams/${toUser}/balance`] = (toData.balance ?? 0) + amount;
-
-      const timestamp = Date.now();
-      const senderTxRef = push(ref(db, `/balance/teams/${username}/transactions`));
-      const recipientTxRef = push(ref(db, `/balance/teams/${toUser}/transactions`));
-
-      updates[`/balance/teams/${username}/transactions/${senderTxRef.key}`] = {
-        type: "Sent",
-        amount,
-        toUser,
-        timestamp
-      };
-
-      updates[`/balance/teams/${toUser}/transactions/${recipientTxRef.key}`] = {
-        type: "Received",
-        amount,
-        fromUser: username,
-        timestamp
-      };
-
-      await update(ref(db), updates);
-
-      // Send email notifications
-      if (fromData.email) {
-        emailjs.send("service_cvgwdjb", "template_9yx9srx", {
-          notifySender: username,
-          notifyReceiver: toUser,
-          transactionAmount: amount,
-          recipientEmail: fromData.email
-        }).then(() => {
-          console.log("Sender email sent.");
-        }).catch(console.error);
-      }
-
-      if (toData.email) {
-        emailjs.send("service_cvgwdjb", "template_9yx9srx", {
-          notifySender: username,
-          notifyReceiver: toUser,
-          transactionAmount: amount,
-          recipientEmail: toData.email
-        }).then(() => {
-          console.log("Recipient email sent.");
-        }).catch(console.error);
-      }
-
-      alert(`Successfully sent ₦${amount} to ${toUser}`);
-      document.getElementById("sendToUser").value = "";
-      document.getElementById("sendAmount").value = "";
-      hideModal("sendModal");
-      loadTransactions();
-
-    } catch (err) {
-      console.error(err);
-      alert("Transaction failed. Please try again.");
-    } finally {
-      sendConfirmBtn.disabled = false;
-    }
-  }
-</script>
-</body>
+  <!-- EmailJS SDK -->    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>    <script type="text/javascript">  
+    (function(){  
+      emailjs.init({  
+        publicKey: "017c9GlwpBSK92Tuv",  
+      });  
+    })();  
+  </script>  </head>  
+<body>  <div class="wallet-box">  
+  <div id="welcomeMessage" class="welcome-message"></div>  
+  <h1>My Wallet</h1>  
+  <div class="balance" id="balanceDisplay">₦0</div>  
+  <div class="buttons">  
+    <button onclick="showModal('sendModal')">Send Funds</button>  
+    <button onclick="showModal('receiveModal')">Receive Funds</button>  
+    <button id="goBackBtn" class="go-back-btn" style="display:none;">  
+      <i class="fas fa-arrow-left"></i> Go Back  
+    </button>  
+  </div>   
+  <div class="transactions">  
+    <h3>Transaction History</h3>  
+    <div id="transactionList"></div>  
+  </div>  
+</div>  <!-- Floating Help Button & Modal [Unchanged HTML] -->  <!-- ...keep as you had it... -->  <!-- Send Modal -->  <div class="modal" id="sendModal">  
+  <div class="modal-content">  
+    <span class="close" onclick="hideModal('sendModal')">&times;</span>  
+    <h3>Send Money</h3>  
+    <input type="text" id="sendToUser" placeholder="Recipient Username" />  
+    <input type="number" id="sendAmount" placeholder="Amount" />  
+    <button onclick="sendMoney()">Send</button>  
+  </div>  
+</div>  <!-- Receive Modal -->  <div class="modal" id="receiveModal">  
+  <div class="modal-content">  
+    <span class="close" onclick="hideModal('receiveModal')">&times;</span>  
+    <h3>Your Username</h3>  
+    <p id="yourUsername" style="font-size: 18px; font-weight: bold;"></p>  
+  </div>  
+</div>  <!-- Firebase + EmailJS Integration Script -->  <script type="module">  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";  
+  import { getDatabase, ref, get, set, update, onValue, push } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";  
+  
+  const firebaseConfig = {  
+    apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",  
+    authDomain: "fresh-hub-d509f.firebaseapp.com",  
+    databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",  
+    projectId: "fresh-hub-d509f",  
+    storageBucket: "fresh-hub-d509f.appspot.com",  
+    messagingSenderId: "101887757266",  
+    appId: "1:101887757266:web:80c054959f6588771fd60b"  
+  };  
+  
+  const app = initializeApp(firebaseConfig);  
+  const db = getDatabase(app);  
+  
+  const username = localStorage.getItem('username');  
+  const welcomeMessageEl = document.getElementById('welcomeMessage');  
+  const balanceDisplay = document.getElementById('balanceDisplay');  
+  const transactionList = document.getElementById('transactionList');  
+  const yourUsernameEl = document.getElementById('yourUsername');  
+  const goBackBtn = document.getElementById('goBackBtn');  
+  
+  if (!username) {  
+    alert('No username found. Please login first.');  
+  } else {  
+    yourUsernameEl.textContent = username;  
+    welcomeMessageEl.textContent = `Welcome back, ${username}!`;  
+  }  
+  
+  const userRef = ref(db, `/balance/teams/${username}`);  
+  const balanceRef = ref(db, `/balance/teams/${username}/balance`);  
+  const transactionsRef = ref(db, `/balance/teams/${username}/transactions`);  
+  
+  function updateBalanceDisplay(value) {  
+    balanceDisplay.textContent = `₦${value.toLocaleString()}`;  
+  }  
+  
+  onValue(balanceRef, (snapshot) => {  
+    const balance = snapshot.val() ?? 0;  
+    updateBalanceDisplay(balance);  
+  });  
+  
+  function loadTransactions() {  
+    get(transactionsRef).then(snapshot => {  
+      const data = snapshot.val();  
+      transactionList.innerHTML = "";  
+      if (!data) {  
+        transactionList.textContent = "No transactions yet.";  
+        return;  
+      }  
+      const transactions = Object.values(data).sort((a,b) => b.timestamp - a.timestamp);  
+      transactions.forEach(tx => {  
+        const div = document.createElement('div');  
+        div.className = 'transaction';  
+        div.innerHTML = `  
+          <span><strong>Type:</strong> ${tx.type}</span>  
+          <span><strong>Amount:</strong> ₦${tx.amount.toLocaleString()}</span>  
+          <span><strong>Date:</strong> ${new Date(tx.timestamp).toLocaleString()}</span>  
+          ${tx.toUser ? `<span><strong>To:</strong> ${tx.toUser}</span>` : ''}  
+          ${tx.fromUser ? `<span><strong>From:</strong> ${tx.fromUser}</span>` : ''}  
+        `;  
+        transactionList.appendChild(div);  
+      });  
+    });  
+  }  
+  
+  loadTransactions();  
+  
+  window.showModal = function(id) {  
+  document.getElementById(id).style.display = "flex";  
+  goBackBtn.style.display = "inline-flex";  
+}  
+  
+window.hideModal = function(id) {  
+  document.getElementById(id).style.display = "none";  
+  goBackBtn.style.display = "none";  
+  }  
+  
+  goBackBtn.onclick = () => {  
+    ['sendModal','receiveModal'].forEach(id => hideModal(id));  
+  };  
+  
+  window.sendMoney = async () => {  
+  const toUser = document.getElementById('sendToUser').value.trim();  
+  const amount = Number(document.getElementById('sendAmount').value);  
+  
+  if (!toUser || amount <= 0) {  
+    alert('Please enter a valid username and amount.');  
+    return;  
+  }  
+  if (toUser === username) {  
+    alert("You can't send money to yourself.");  
+    return;  
+  }  
+  
+  const senderSnapshot = await get(userRef);  
+  if (!senderSnapshot.exists()) {  
+    alert("Sender data not found.");  
+    return;  
+  }  
+  const senderData = senderSnapshot.val();  
+  if (!senderData.balance || senderData.balance < amount) {  
+    alert("Insufficient balance.");  
+    return;  
+  }  
+  
+  const recipientRef = ref(db, `/balance/teams/${toUser}`);  
+  const recipientSnapshot = await get(recipientRef);  
+  if (!recipientSnapshot.exists()) {  
+    alert("Recipient username does not exist.");  
+    return;  
+  }  
+  const recipientData = recipientSnapshot.val();  
+  const senderEmail = senderData.email ?? "";  
+  const recipientEmail = recipientData.email ?? "";  
+  
+  const updates = {};  
+  updates[`/balance/teams/${username}/balance`] = senderData.balance - amount;  
+  updates[`/balance/teams/${toUser}/balance`] = (recipientData.balance ?? 0) + amount;  
+  
+  const timestamp = Date.now();  
+  const senderTxKey = push(ref(db, `/balance/teams/${username}/transactions`)).key;  
+  updates[`/balance/teams/${username}/transactions/${senderTxKey}`] = {  
+    type: "Send",  
+    amount,  
+    toUser,  
+    timestamp,  
+  };  
+  
+  const recipientTxKey = push(ref(db, `/balance/teams/${toUser}/transactions`)).key;  
+  updates[`/balance/teams/${toUser}/transactions/${recipientTxKey}`] = {  
+    type: "Receive",  
+    amount,  
+    fromUser: username,  
+    timestamp,  
+  };  
+  
+  try {  
+    await update(ref(db), updates);  
+    alert(`Successfully sent ₦${amount.toLocaleString()} to ${toUser}.`);  
+    loadTransactions();  
+    hideModal('sendModal');  
+    document.getElementById('sendToUser').value = "";  
+    document.getElementById('sendAmount').value = "";  
+  
+    // Notify both sender and recipient  
+    if (senderEmail) notifySender(senderEmail, toUser, amount);  
+    if (recipientEmail) notifyRecipient(recipientEmail, toUser, amount);  
+  
+  } catch (error) {  
+    console.error("Transaction failed:", error);  
+    alert("Transaction failed. Please try again.");  
+  }  
+}  
+  
+function notifySender(email,fromUser,toUser, amount) {  
+  emailjs.send("service_cvgwdjb", "template_9yx9srx", {  
+    to_email: email,  
+    to_user: toUser,  
+    from_user: username,  
+    other_user: toUser,  
+    amount: amount.toLocaleString(),  
+    type: "Send",  
+    timestamp: new Date().toLocaleString()  
+  });  
+}  
+  
+function notifyRecipient(email, fromUser,toUser , amount) {  
+  emailjs.send("service_cvgwdjb", "template_9yx9srx", {  
+    to_email: email,  
+    to_user: toUser,  
+    from_user: fromUser,  
+    other_user: fromUser,  
+    amount: amount.toLocaleString(),  
+    type: "Receive",  
+    timestamp: new Date().toLocaleString()  
+  });  
+}  
+</script>  </body>  
 </html>

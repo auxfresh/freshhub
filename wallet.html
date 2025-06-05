@@ -110,9 +110,9 @@
       font-weight: bold;
       font-size: 14px;
       cursor: pointer;
-      display: inline-flex; /* Ensures it's inline with icon and text */
+      display: inline-flex;
       align-items: center;
-      gap: 8px; /* Space between icon and text */
+      gap: 8px;
       transition: background-color 0.3s ease, transform 0.2s ease;
     }
     .go-back-btn:hover {
@@ -208,10 +208,9 @@
     <div class="buttons">
       <button onclick="showModal('sendModal')">Send Funds</button>
       <button onclick="showModal('receiveModal')">Receive Funds</button>
-            <button class="go-back-btn" onclick="window.location.href='more.html'">
+      <button class="go-back-btn" onclick="window.location.href='profile.html'">
         <i class="fas fa-arrow-left"></i><span>My Profile</span>
-            </button>
-
+      </button>
     </div>
     <div class="transactions">
       <h3>Transaction History</h3>
@@ -278,14 +277,13 @@
     const balanceDisplay = document.getElementById('balanceDisplay');
     const transactionList = document.getElementById('transactionList');
     const yourUsernameEl = document.getElementById('yourUsername');
-    const goBackBtn = document.getElementById('goBackBtn'); // Get reference to the button
+    const goBackBtn = document.getElementById('goBackBtn');
     const helpModal = document.getElementById('helpModal');
-
 
     if (!username) {
       alert('No username found. Please login first.');
       // Redirect or show login option if no username
-      window.location.href = "index.html"; // Example redirect
+      window.location.href = "/login.html"; // Example redirect
     } else {
       yourUsernameEl.textContent = username;
       welcomeMessageEl.textContent = `Welcome back, ${username}!`;
@@ -330,39 +328,27 @@
 
     loadTransactions();
 
-    // MODIFIED showModal function
     window.showModal = function(id) {
       document.getElementById(id).style.display = "flex";
-      // Show the goBackBtn when a modal is opened
       goBackBtn.style.display = "inline-flex";
     }
 
-    // MODIFIED hideModal function
     window.hideModal = function(id) {
       document.getElementById(id).style.display = "none";
-      // Hide the goBackBtn when a modal is closed
       goBackBtn.style.display = "none";
     }
 
-    // This click handler for goBackBtn remains the same and works fine
     goBackBtn.onclick = () => {
-      // Hide all modals that could be open
       ['sendModal','receiveModal'].forEach(id => hideModal(id));
-      // The hideModal function itself will take care of hiding the goBackBtn
     };
 
     // Help Modal functions
     window.showHelpModal = function() {
       helpModal.style.display = 'flex';
-      // You might also want to hide the goBackBtn if the help modal is a separate context
-      goBackBtn.style.display = "none";
     };
 
     window.hideHelpModal = function() {
       helpModal.style.display = 'none';
-      // If no other modals are open, you might want to hide it, but the current logic for send/receive modals covers it.
-      // If you want it to reappear after closing help IF a send/receive modal was previously open,
-      // you'd need more complex state management. For now, it stays hidden.
     };
 
     window.sendMoney = async () => {
@@ -396,7 +382,7 @@
         return;
       }
       const recipientData = recipientSnapshot.val();
-
+      
       // Get sender and recipient emails for notifications
       const senderEmail = senderData.email ?? "";
       const recipientEmail = recipientData.email ?? "";
@@ -426,8 +412,7 @@
         await update(ref(db), updates);
         alert(`Successfully sent ₦${amount.toLocaleString()} to ${toUser}.`);
         loadTransactions();
-        hideModal('sendModal'); // This will also hide the goBackBtn
-
+        hideModal('sendModal');
         document.getElementById('sendToUser').value = "";
         document.getElementById('sendAmount').value = "";
 
@@ -437,7 +422,7 @@
         } else {
             console.warn(`Sender ${username} has no email configured for notifications.`);
         }
-
+        
         if (recipientEmail) {
             notifyRecipient(recipientEmail, username, toUser, amount);
         } else {
@@ -453,7 +438,7 @@
     // Function to notify the sender of a successful transfer
     async function notifySender(email, senderUsername, recipientUsername, amount) {
         try {
-            await emailjs.send("service_cvgwdjb", "YOUR_SEND_TEMPLATE_ID", { // Use your specific SEND template ID
+            await emailjs.send("service_cvgwdjb", "template_9yx9srx", { // Use your specific SEND template ID
                 to_email: email,
                 sender_username: senderUsername,
                 recipient_username: recipientUsername,
@@ -469,7 +454,7 @@
     // Function to notify the recipient of a new transfer
     async function notifyRecipient(email, senderUsername, recipientUsername, amount) {
         try {
-            await emailjs.send("service_cvgwdjb", "YOUR_RECEIVE_TEMPLATE_ID", { // Use your specific RECEIVE template ID
+            await emailjs.send("service_cvgwdjb", "template_1wxuu6w", { // Use your specific RECEIVE template ID
                 to_email: email,
                 sender_username: senderUsername,
                 recipient_username: recipientUsername,
@@ -483,5 +468,8 @@
     }
 
   </script>
-</body>
+
+
+
+
   </html>

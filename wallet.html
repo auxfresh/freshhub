@@ -497,6 +497,8 @@ Each transaction includes type, amount, and date.</li>
   window.onclick = (e) => {
     if (e.target === helpModal) helpModal.style.display = 'none';
   };
+  window.showModal = id => document.getElementById(id).style.display = "flex";
+  window.hideModal = id => document.getElementById(id).style.display = "none";
 </script>
 </body>
 </html>

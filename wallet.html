@@ -174,7 +174,7 @@
       transition: background 0.3s ease;
     }
     .floating-left-btn:hover {
-      background: #0056b3; /* Darker blue on hover */
+      background: #102F49; /* Darker blue on hover */
     }
   </style>
 
@@ -228,7 +228,7 @@
   </button>
 
   <button class="floating-left-btn" onclick="redirectToSettings()">
-    <i class="fas fa-cog"></i> Settings
+    <i class="fas fa-arrow-left"></i> Go Back
   </button>
 
 
@@ -275,7 +275,7 @@
 
     if (!username) {
       alert('No username found. Please login first.');
-      window.location.href = "/login.html";
+      window.location.href = "index.html";
     } else {
       yourUsernameEl.textContent = username;
       welcomeMessageEl.textContent = `Welcome back, ${username}!`;

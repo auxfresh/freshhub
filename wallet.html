@@ -342,7 +342,24 @@ Each transaction includes type, amount, and date.</li>
       list.innerHTML = "<p>No transactions yet.</p>";
     }
   });
+// Initialize EmailJS
+  emailjs.init("017c9GlwpBSK92Tuv");
 
+  function sendEmailNotification({ to_name, to_email, from_name, from_email, amount, type }) {
+    const templateParams = {
+      to_name,
+      to_email,
+      from_name,
+      from_email,
+      amount,
+      timestamp: new Date().toLocaleString(),
+      type: type === 'receive' ? 'Received' : 'Sent'
+    };
+
+    emailjs.send("service_cvgwdjb", "template_9yx9srx", templateParams)
+      .then(res => console.log("Email sent", res))
+      .catch(err => console.error("Email error", err));
+    }
   window.sendMoney = async () => {
     const toUser = document.getElementById("sendToUser").value.trim();
     const amount = parseFloat(document.getElementById("sendAmount").value);
@@ -351,7 +368,8 @@ Each transaction includes type, amount, and date.</li>
 
     const senderRef = ref(db, `/balance/teams/${username}`);
     const receiverRef = ref(db, `/balance/teams/${toUser}`);
-
+    const senderBal = senderData?.balance || 0;
+    const receiverBal = receiverData?.balance || 0;
     const [senderSnap, receiverSnap] = await Promise.all([get(senderRef), get(receiverRef)]);
 
     if (!receiverSnap.exists()) return alert("Recipient does not exist");
@@ -378,10 +396,28 @@ Each transaction includes type, amount, and date.</li>
 
     await update(senderTxRef, { [txKey]: transaction });
     await update(receiverTxRef, { [txKey]: { ...transaction, type: "receive" } });
+// Send email to sender and receiver
+    sendEmailNotification({
+      to_name: username,
+      to_email: senderData.email,
+      from_name: username,
+      from_email: senderData.email,
+      amount,
+      type: 'send'
+    });
+    sendEmailNotification({
+      to_name: toUser,
+      to_email: receiverData.email,
+      from_name: username,
+      from_email: senderData.email,
+      amount,
+      type: 'receive'
+    });
 
     alert("Transaction successful");
     hideModal("sendModal");
   };
+    
 
   window.showModal = id => document.getElementById(id).style.display = "flex";
   window.hideModal = id => document.getElementById(id).style.display = "none";

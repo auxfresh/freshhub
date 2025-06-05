@@ -132,6 +132,66 @@ font-weight: bold;
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+    .floating-help-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #102F49;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 50px;
+  font-size: 14px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 999;
+  transition: background 0.3s ease;
+}
+.floating-help-btn:hover {
+  background: #0a1c30;
+}
+
+.help-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.help-modal-content {
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+  position: relative;
+}
+
+.help-modal-content h2 {
+  margin-top: 0;
+  color: #102F49;
+}
+
+.help-modal-content ul {
+  padding-left: 20px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 22px;
+  color: #333;
+  cursor: pointer;
+}
   </style>
 </head>
 <body>
@@ -163,7 +223,44 @@ if (username) {
     <div id="transactionList"></div>
   </div>
 </div>
+<!-- Floating Help Button -->
+<button id="helpBtn" class="floating-help-btn">
+  <i class="fas fa-info-circle"></i> How to Use
+</button>
 
+<!-- Modal -->
+<div id="helpModal" class="help-modal">
+  <div class="help-modal-content">
+    <span class="close-btn">&times;</span>
+    <h2>How to Use Your Wallet</h2>
+    <ul>
+      <li><strong>Login Daily:</strong> Earn ₦50 once per day.</li>
+      <li><strong>View Balance:</strong> See your live balance on top.</li>
+      <li><strong>Send Money:</strong> Enter username + amount.</li>
+      <li><strong>Receive Money:</strong> Share your username with others.</li>
+      <li><strong>Withdraw:</strong> Enter amount to remove from wallet.</li>
+      <li><strong>Transaction History:</strong> View all your wallet activity.</li>
+      <li><strong>Go Back:</strong> Tap the arrow button to return to dashboard.</li>
+    </ul>
+  </div>
+</div>
+  <script>
+  const helpBtn = document.getElementById("helpBtn");
+  const helpModal = document.getElementById("helpModal");
+  const closeBtn = document.querySelector(".close-btn");
+
+  helpBtn.onclick = () => {
+    helpModal.style.display = "block";
+  };
+  closeBtn.onclick = () => {
+    helpModal.style.display = "none";
+  };
+  window.onclick = (e) => {
+    if (e.target == helpModal) {
+      helpModal.style.display = "none";
+    }
+  };
+    </script>
 <!-- Send Modal -->
 <div class="modal" id="sendModal">
   <div class="modal-content">

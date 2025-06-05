@@ -210,9 +210,9 @@ font-weight: bold;
   </div> 
   <script>
     const username = localStorage.getItem("username");
-    document.getElementById("displayUsername").textContent = username || "";
 if (username) {
   document.getElementById("welcomeMessage").textContent = `Welcome ${username}`;
+  document.getElementById("displayUsername").textContent = username || "";
 }
   document.getElementById("goBackBtn").addEventListener("click", () => {
     window.location.href = "more.html";

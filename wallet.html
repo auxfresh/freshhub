@@ -99,6 +99,25 @@
     .transaction span {
       display: block;
     }
+    .go-back-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #102F49;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.go-back-btn:hover {
+  background-color: #0d2538;
+  transform: translateX(-3px);
+}
   </style>
 </head>
 <body>
@@ -136,7 +155,14 @@
     <p id="yourUsername" style="font-size: 18px; font-weight: bold;"></p>
   </div>
 </div>
-
+<button id="goBackBtn" class="go-back-btn">
+  <i class="fas fa-arrow-left"></i> Go Back
+</button>
+  <script>
+  document.getElementById("goBackBtn").addEventListener("click", () => {
+    window.location.href = "more.html";
+  });
+  </script>
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";

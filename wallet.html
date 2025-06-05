@@ -403,7 +403,7 @@ window.hideModal = function(id) {
   }
 }
 
-function notifySender(email, toUser, amount) {
+function notifySender(email,fromUser,toUser, amount) {
   emailjs.send("service_cvgwdjb", "template_9yx9srx", {
     to_email: email,
     to_user: toUser,
@@ -415,7 +415,7 @@ function notifySender(email, toUser, amount) {
   });
 }
 
-function notifyRecipient(email, fromUser, amount) {
+function notifyRecipient(email, fromUser,toUser , amount) {
   emailjs.send("service_cvgwdjb", "template_9yx9srx", {
     to_email: email,
     to_user: toUser,

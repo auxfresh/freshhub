@@ -211,20 +211,14 @@
             <button class="go-back-btn" onclick="window.location.href='more.html'">
         <i class="fas fa-arrow-left"></i><span>My Profile</span>
             </button>
-  <button id="goBackBtn" class="go-back-btn">
-    <i class="fas fa-arrow-left"></i> Go Back
-  </button>
+
     </div>
     <div class="transactions">
       <h3>Transaction History</h3>
       <div id="transactionList"></div>
     </div>
   </div>
-<script>
-  document.getElementById("goBackBtn").addEventListener("click", () => {
-    window.location.href = "more.html";
-  });
-</script>
+
   <div class="modal" id="sendModal">
     <div class="modal-content">
       <span class="close" onclick="hideModal('sendModal')">&times;</span>

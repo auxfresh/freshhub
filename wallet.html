@@ -118,11 +118,26 @@
   background-color: #0d2538;
   transform: translateX(-3px);
 }
+    .welcome-message {
+  font-size: 20px;
+  font-weight: bold;
+  color: #00ffff;
+  text-align: center;
+  margin-bottom: 10px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
   </style>
 </head>
 <body>
 
 <div class="wallet-box">
+  <div id="welcomeMessage" class="welcome-message"></div>
+<h2 class="wallet-title">My Wallet</h2>
   <h1>My Wallet</h1>
   <div class="balance" id="balanceDisplay">₦0</div>
   <div class="buttons">
@@ -133,6 +148,10 @@
     </button>
   </div> 
   <script>
+    const username = localStorage.getItem("username");
+if (username) {
+  document.getElementById("welcomeMessage").textContent = `Welcome ${username}`;
+}
   document.getElementById("goBackBtn").addEventListener("click", () => {
     window.location.href = "more.html";
   });

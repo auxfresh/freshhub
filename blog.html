@@ -45,22 +45,7 @@
       <strong id="balanceDisplay">₦0.00</strong>
     </div>
     <script>
-  const username = localStorage.getItem('username');
-  if (username) {
-    const userDisplay = document.getElementById('userDisplay');
-    const badge = document.getElementById('verifiedBadge');
-    userDisplay.textContent = username;
 
-    if (username.toLowerCase() === 'cryptoaux2') {
-      badge.style.display = 'inline';
-    }
-  } else {
-    window.location.href = 'index.html';
-  }
-  const balanceKey = `balance_${username}`;
-const balance = localStorage.getItem(balanceKey) || "0.00";
-document.getElementById("balanceDisplay").textContent = `₦${balance}`;
-</script>
 
   </header>
     <div class="post-card">
@@ -68,10 +53,11 @@ document.getElementById("balanceDisplay").textContent = `₦${balance}`;
       <img src="logo4.png" alt="User Profile" class="profile-pic">
       <div>
         <p class="author">Dapo Wahab AYATULLAHI</p>
-        <p class="meta">Few hours ago • Posted in League</p>
+        <p class="meta">Few hours ago • Posted in League 1
+  </p>
       </div>
     </div>
-    <h2 class="post-title">Deekay Fc VS ManchesterCity</h2>
+    <h2 class="post-title">FRESH FC VS FOSH FC </h2>
     <p class="post-subtitle">Full Time Result</p>
     <div class="post-image">
       <img src="blog1.jpg" alt="Match Result">
@@ -79,7 +65,7 @@ document.getElementById("balanceDisplay").textContent = `₦${balance}`;
     <div class="post-footer">
       <button class="icon-button">&#10084;</button>
       <button class="icon-button">&#128172;</button>
-      <span class="likes">2 likes</span>
+      <span class="likes">8 likes</span>
     </div>
   </div>
     <div class="post-card">
@@ -87,10 +73,10 @@ document.getElementById("balanceDisplay").textContent = `₦${balance}`;
       <img src="logo4.png" alt="User Profile" class="profile-pic">
       <div>
         <p class="author">Dapo Wahab AYATULLAHI</p>
-        <p class="meta">Few Hours ago • Posted in League</p>
+        <p class="meta">Few Hours ago • Posted in League 1 </p>
       </div>
     </div>
-    <h2 class="post-title">Manchester City VS Liverpool Fc</h2>
+    <h2 class="post-title">NOVA FC VS LIVERPOOL FC</h2>
     <p class="post-subtitle">Full Time Result</p>
     <div class="post-image">
       <img src="blog2.jpg" alt="Match Result">
@@ -98,7 +84,7 @@ document.getElementById("balanceDisplay").textContent = `₦${balance}`;
     <div class="post-footer">
       <button class="icon-button">&#10084;</button>
       <button class="icon-button">&#128172;</button>
-      <span class="likes">2 likes</span>
+      <span class="likes">6 likes</span>
     </div>
   </div>
     <div class="post-card">
@@ -186,6 +172,53 @@ document.getElementById("balanceDisplay").textContent = `₦${balance}`;
     <a href="more.html"><i class="fa fa-bars"></i><span>More</span></a>
   </nav>
 
+      <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+  <script>
+    window.addEventListener("load", function () {
+      document.getElementById("loader").style.display = "none";
+    });
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const username = localStorage.getItem('username');
+    if (username) {
+      const userDisplay = document.getElementById('userDisplay');
+      const badge = document.getElementById('verifiedBadge');
+      userDisplay.textContent = username;
+
+      if (username.toLowerCase() === 'cryptoaux2') {
+        badge.style.display = 'inline';
+      }
+
+      // Fetch balance from Firebase
+      const balanceRef = db.ref(`balance/teams/${username}/balance`);
+      balanceRef.once('value')
+        .then(snapshot => {
+          const balance = snapshot.val();
+          document.getElementById("balanceDisplay").textContent = `₦${(balance || 0).toFixed(2)}`;
+        })
+        .catch(error => {
+          console.error("Error fetching balance:", error);
+          document.getElementById("balanceDisplay").textContent = "₦0.00";
+        });
+    } else {
+      window.location.href = 'index.html';
+    }
+  </script>
 </body>
 </html>
 

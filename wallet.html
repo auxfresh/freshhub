@@ -154,12 +154,12 @@
       background: #0a1c30;
     }
 
-    /* NEW Floating Button on the Left CSS */
+    /* Floating Button on the Left CSS */
     .floating-left-btn {
       position: fixed;
-      bottom: 20px; /* Same distance from the bottom as the help button */
-      left: 20px; /* Position it 20px from the left edge */
-      background: #102F49; /* Example: A different color for distinction */
+      bottom: 20px;
+      left: 20px;
+      background: #007bff;
       color: white;
       border: none;
       padding: 12px 16px;
@@ -174,7 +174,57 @@
       transition: background 0.3s ease;
     }
     .floating-left-btn:hover {
-      background: #007bff; /* Darker blue on hover */
+      background: #0056b3;
+    }
+
+    /* MODIFIED CSS for help-modal */
+    .help-modal {
+      display: flex; /* Ensure it's always a flex container */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      visibility: hidden; /* Hidden by default */
+      opacity: 0;        /* Fully transparent by default */
+      transition: opacity 0.3s ease, visibility 0.3s ease; /* Transition when showing/hiding */
+    }
+
+    /* New class to apply when the modal is active */
+    .help-modal.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .help-modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+      position: relative;
+    }
+    .help-modal-content h2 {
+      margin-top: 0;
+      color: #102F49;
+    }
+    .help-modal-content ul {
+      padding-left: 20px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px; right: 15px;
+      font-size: 22px;
+      color: #333;
+      cursor: pointer;
     }
   </style>
 
@@ -228,7 +278,7 @@
   </button>
 
   <button class="floating-left-btn" onclick="redirectToSettings()">
-    <i class="fas fa-arrow-left"></i> Go Back
+    <i class="fas fa-cog"></i> Settings
   </button>
 
 
@@ -270,12 +320,12 @@
     const transactionList = document.getElementById('transactionList');
     const yourUsernameEl = document.getElementById('yourUsername');
     const goBackBtn = document.getElementById('goBackBtn');
-    const helpModal = document.getElementById('helpModal');
+    const helpModal = document.getElementById('helpModal'); // Get reference to the help modal
 
 
     if (!username) {
       alert('No username found. Please login first.');
-      window.location.href = "index.html";
+      window.location.href = "/login.html";
     } else {
       yourUsernameEl.textContent = username;
       welcomeMessageEl.textContent = `Welcome back, ${username}!`;
@@ -335,21 +385,21 @@
       hideModal('receiveModal');
     };
 
+    // MODIFIED showHelpModal function
     window.showHelpModal = function() {
-      helpModal.style.display = 'flex';
-      goBackBtn.style.display = "none";
+      helpModal.classList.add('show'); // Add the 'show' class to make it visible
+      goBackBtn.style.display = "none"; // Hide go back button when help modal is open
     };
 
+    // MODIFIED hideHelpModal function
     window.hideHelpModal = function() {
-      helpModal.style.display = 'none';
+      helpModal.classList.remove('show'); // Remove the 'show' class to hide it
+      // No re-showing of goBackBtn here, as it's typically tied to send/receive modals
     };
 
-    // NEW FUNCTION TO REDIRECT
+    // New Function to Redirect
     window.redirectToSettings = function() {
-      // Replace 'settings.html' with the actual path to your settings page
-      window.location.href = 'more.html';
-      // If you want to open in a new tab, use:
-      // window.open('settings.html', '_blank');
+      window.location.href = 'settings.html'; // Replace with your actual path
     };
 
     window.sendMoney = async () => {
@@ -467,4 +517,4 @@
 
   </script>
 </body>
-  </html>
+        </html>

@@ -231,7 +231,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const teamsRef = db.ref('/details/teams');
+    const teamsRef = db.ref('/balance/teams');
     const container = document.getElementById('teams');
 
     teamsRef.on('value', (snapshot) => {

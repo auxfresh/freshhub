@@ -249,21 +249,22 @@
         card.className = 'team-card';
         card.style.animationDelay = `${index * 0.1}s`;
 
-        const playersHTML = team.players ? Object.values(team.players).map(player => `
-          <div style="margin-top: 4px;">
-            <span>
-              ${player.verified ? `<img src="verified.png" alt="Verified" style="width:16px; height:16px; vertical-align:middle; margin-right:4px;">` : ''}
-              ${player.name}
-            </span>
-          </div>
-        `).join('') : '';
+        // Check if the team itself is verified and construct the badge HTML
+        const teamVerifiedBadge = team.verified ?
+          `<img src="verified.png" alt="Verified Team" style="width:18px; height:18px; vertical-align:middle; margin-left:8px;">` : '';
+
+        // Remove the playersHTML logic as your current structure doesn't have individual players
+        // If you still want to display generic player placeholders, you would need to add that logic
+        // independently, without relying on a 'players' node in Firebase.
+        // For now, I'm removing the player-specific badge and names, as your structure doesn't support it directly.
+        const playersHTML = ''; // Since there are no 'players' objects in your current structure
 
         card.innerHTML = `
           <img src="${team.logo}" alt="${team.name}">
           <div class="team-details">
-            <div class="team-name">${team.name}</div>
-            ${playersHTML}
-            <div class="team-league">${team.league}</div>
+            <div class="team-name">
+              ${team.name} ${teamVerifiedBadge}  </div>
+            ${playersHTML} <div class="team-league">${team.league}</div>
             <div class="stats">
               <div class="stat"><div class="number wins">${team.wins}</div><div>Wins</div></div>
               <div class="stat"><div class="number draws">${team.draws}</div><div>Draws</div></div>

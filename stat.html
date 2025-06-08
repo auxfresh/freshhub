@@ -11,8 +11,7 @@
   <style>
     body {
       margin: 0;
-      
-      padding-top: 120px; /* ✅ Fix for header overlap */
+      padding-top: 120px;
       background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
       color: #fff;
       font-family: 'Segoe UI', fantasy;
@@ -25,8 +24,7 @@
       width: 100%;
       background:  #102F49;
       box-shadow: 0 0 20px #00AEEF;
-      
-    display: flex;
+      display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       z-index: 1000;
@@ -201,27 +199,19 @@
       <strong id="balanceDisplay">₦0.00</strong>
     </div>
     <script>
-    window.addEventListener("load", function () {
-      document.getElementById("loader").style.display = "none";
-    });
+      const username = localStorage.getItem('username');
+      if (username) {
+        document.getElementById('userDisplay').textContent = username;
+        if (username.toLowerCase() === 'cryptoaux2') {
+          document.getElementById('verifiedBadge').style.display = 'inline';
+        }
+      } else {
+        window.location.href = 'index.html';
+      }
 
-  const username = localStorage.getItem('username');
-  if (username) {
-    const userDisplay = document.getElementById('userDisplay');
-    const badge = document.getElementById('verifiedBadge');
-    userDisplay.textContent = username;
-
-    if (username.toLowerCase() === 'cryptoaux2') {
-      badge.style.display = 'inline';
-    }
-  } else {
-    window.location.href = 'index.html';
- 
-    }
-    
-    const balanceKey = `balance_${username}`;
-    const balance = localStorage.getItem(balanceKey) || "0.00";
-    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
+      const balanceKey = `balance_${username}`;
+      const balance = localStorage.getItem(balanceKey) || "0.00";
+      document.getElementById("balanceDisplay").textContent = `₦${balance}`;
     </script>
   </header>
 
@@ -259,10 +249,20 @@
         card.className = 'team-card';
         card.style.animationDelay = `${index * 0.1}s`;
 
+        const playersHTML = team.players ? Object.values(team.players).map(player => `
+          <div style="margin-top: 4px;">
+            <span>
+              ${player.verified ? `<img src="verified.png" alt="Verified" style="width:16px; height:16px; vertical-align:middle; margin-right:4px;">` : ''}
+              ${player.name}
+            </span>
+          </div>
+        `).join('') : '';
+
         card.innerHTML = `
           <img src="${team.logo}" alt="${team.name}">
           <div class="team-details">
             <div class="team-name">${team.name}</div>
+            ${playersHTML}
             <div class="team-league">${team.league}</div>
             <div class="stats">
               <div class="stat"><div class="number wins">${team.wins}</div><div>Wins</div></div>
@@ -285,28 +285,5 @@
     <a href="blog.html"><i class="fa fa-comment"></i><span>Community</span></a>
     <a href="more.html" class="active"><i class="fa fa-bars"></i><span>More</span></a>
   </nav>
-
-  <script>
-    window.addEventListener("load", function () {
-      document.getElementById("loader")?.style?.display = "none";
-    });
-
-    const username = localStorage.getItem('username');
-    if (username) {
-      const userDisplay = document.getElementById('userDisplay');
-      const badge = document.getElementById('verifiedBadge');
-      userDisplay.textContent = username;
-
-      if (username.toLowerCase() === 'cryptoaux2') {
-        badge.style.display = 'inline';
-      }
-    } else {
-      window.location.href = 'index.html';
-    }
-
-    const balanceKey = `balance_${username}`;
-    const balance = localStorage.getItem(balanceKey) || "0.00";
-    document.getElementById("balanceDisplay").textContent = `₦${balance}`;
-  </script>
 </body>
 </html>

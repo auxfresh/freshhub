@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fresh Hub - Register</title>
   <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
   <style>
     * {
       margin: 0;
@@ -179,11 +175,6 @@
         <div class="error" id="usernameError">Username must be alphanumeric</div>
       </div>
       <div class="form-group">
-        <label for="teamname">Team Name</label>
-        <input type="text" id="teamname" required>
-        <div class="error" id="teamnameError">Team name is required</div>
-      </div>
-      <div class="form-group">
         <label for="email">Email</label>
         <input type="email" id="email" required>
         <div class="error" id="emailError">Valid email is required</div>
@@ -192,11 +183,6 @@
         <label for="password">Password</label>
         <input type="password" id="password" required>
         <div class="error" id="passwordError">Password must be at least 6 characters</div>
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" required>
-        <div class="error" id="confirmPasswordError">Passwords do not match</div>
       </div>
       <div class="error" id="generalError"></div>
       <button type="submit">Register</button>
@@ -209,7 +195,20 @@
     </div>
   </div>
 
+  <!-- Firebase SDK Scripts -->
+  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
   <script>
+    // Check if Firebase is loaded
+    if (typeof firebase === 'undefined') {
+      console.error('Firebase SDK failed to load. Check network or script paths.');
+      document.getElementById('generalError').textContent = 'Failed to load Firebase. Please try again later.';
+      document.getElementById('generalError').style.display = 'block';
+      document.getElementById('loader').style.display = 'none';
+      return;
+    }
+
     // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
@@ -220,16 +219,25 @@
       messagingSenderId: "101887757266",
       appId: "1:101887757266:web:80c054959f6588771fd60b"
     };
-    firebase.initializeApp(firebaseConfig);
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+    } catch (error) {
+      console.error('Firebase initialization failed:', error);
+      document.getElementById('generalError').textContent = 'Failed to initialize Firebase. Please try again.';
+      document.getElementById('generalError').style.display = 'block';
+      document.getElementById('loader').style.display = 'none';
+      return;
+    }
+
     const auth = firebase.auth();
     const database = firebase.database();
-
     const loader = document.getElementById('loader');
     const registerForm = document.getElementById('registerForm');
     const generalError = document.getElementById('generalError');
 
     // Validate form fields
-    function validateForm(fullname, username, teamname, email, password, confirmPassword) {
+    function validateForm(fullname, username, email, password) {
       let isValid = true;
       document.querySelectorAll('.error').forEach(err => err.style.display = 'none');
 
@@ -241,10 +249,6 @@
         document.getElementById('usernameError').style.display = 'block';
         isValid = false;
       }
-      if (!teamname) {
-        document.getElementById('teamnameError').style.display = 'block';
-        isValid = false;
-      }
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         document.getElementById('emailError').style.display = 'block';
         isValid = false;
@@ -253,17 +257,18 @@
         document.getElementById('passwordError').style.display = 'block';
         isValid = false;
       }
-      if (password !== confirmPassword) {
-        document.getElementById('confirmPasswordError').style.display = 'block';
-        isValid = false;
-      }
       return isValid;
     }
 
     // Check username uniqueness
     async function isUsernameUnique(username) {
-      const snapshot = await database.ref('users').orderByChild('username').equalTo(username).once('value');
-      return !snapshot.exists();
+      try {
+        const snapshot = await database.ref('users').orderByChild('username').equalTo(username).once('value');
+        return !snapshot.exists();
+      } catch (error) {
+        console.error('Username uniqueness check failed:', error);
+        throw error;
+      }
     }
 
     // Email/password registration
@@ -273,12 +278,10 @@
 
       const fullname = document.getElementById('fullname').value.trim();
       const username = document.getElementById('username').value.trim();
-      const teamname = document.getElementById('teamname').value.trim();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
 
-      if (!validateForm(fullname, username, teamname, email, password, confirmPassword)) {
+      if (!validateForm(fullname, username, email, password)) {
         loader.style.display = 'none';
         return;
       }
@@ -294,13 +297,15 @@
 
         // Create user
         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        if (!userCredential || !userCredential.user) {
+          throw new Error('User creation failed: userCredential is null');
+        }
         const user = userCredential.user;
 
         // Save user details to Realtime Database
         await database.ref(`users/${user.uid}`).set({
           fullname,
           username,
-          teamname,
           email,
           balance: '0.00',
           createdAt: firebase.database.ServerValue.TIMESTAMP
@@ -309,8 +314,8 @@
         // Save username to localStorage
         localStorage.setItem('username', username);
 
-        // Redirect to main page
-        window.location.href = 'index2.html';
+        // Redirect to login page
+        window.location.href = 'login.html';
       } catch (error) {
         loader.style.display = 'none';
         if (error.code === 'auth/email-already-in-use') {
@@ -319,7 +324,7 @@
           generalError.textContent = 'Registration unsuccessful';
         }
         generalError.style.display = 'block';
-        console.error('Registration error:', error);
+        console.error('Registration error:', error.message, error.code);
       }
     });
 
@@ -329,6 +334,9 @@
       try {
         const provider = new firebase.auth.GoogleAuthProvider();
         const result = await auth.signInWithPopup(provider);
+        if (!result || !result.user) {
+          throw new Error('Google Sign-In failed: result is null');
+        }
         const user = result.user;
 
         // Check if user exists
@@ -344,37 +352,26 @@
             loader.style.display = 'none';
             return;
           }
-          const teamname = prompt('Enter your team name:');
-          if (!teamname) {
-            generalError.textContent = 'Team name is required';
-            generalError.style.display = 'block';
-            await auth.signOut();
-            loader.style.display = 'none';
-            return;
-          }
 
           // Save user details
           await userRef.set({
             fullname: user.displayName || 'Google User',
             username,
-            teamname,
             email: user.email,
             balance: '0.00',
             createdAt: firebase.database.ServerValue.TIMESTAMP
           });
 
           localStorage.setItem('username', username);
-        } else {
-          const userData = snapshot.val();
-          localStorage.setItem('username', userData.username);
         }
 
-        window.location.href = 'index.html';
+        // Redirect to login page
+        window.location.href = 'login.html';
       } catch (error) {
         loader.style.display = 'none';
         generalError.textContent = 'Registration unsuccessful';
         generalError.style.display = 'block';
-        console.error('Google Sign-In error:', error);
+        console.error('Google Sign-In error:', error.message, error.code);
       }
     });
 

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>eFootball Player Card</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Body and Container Styles */
+        body {
+            margin: 0;
+            padding: 30px;
+            background: linear-gradient(to bottom right, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative; /* For positioning the go-back button */
+        }
+
+        h1 {
+            font-family: 'Orbitron', fantasy;
+            font-size: 3em;
+            color: #00AEEF;
+            text-shadow: 0 0 20px rgba(0, 174, 239, 0.8);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        #cards-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+            min-height: 500px;
+        }
+
+        /* eFootball Player Card Styles */
+        .efootball-player-card {
+            width: 330px;
+            height: 480px;
+            background-image: url('4.jpeg'); /* Replace with your image URL */
+            background-size: cover;
+            background-position: center;
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            transform: scale(0.95);
+            opacity: 0;
+            animation: fadeInScale 0.6s ease forwards;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .efootball-player-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+        }
+
+        @keyframes fadeInScale {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Overall Rating */
+        .overall-rating {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 5.5em;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 5px #00aeff;
+            z-index: 5;
+            line-height: 1;
+        }
+
+        /* Player Position */
+        .player-position {
+            position: absolute;
+            top: 100px;
+            left: 25px;
+            font-size: 2.2em;
+            color: #ccc;
+            text-shadow: 1px 1px 3px #000;
+            z-index: 5;
+            letter-spacing: 1px;
+        }
+
+        /* Country Flag */
+        .country-flag {
+            position: absolute;
+            top: 160px;
+            left: 25px;
+            width: 45px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            z-index: 5;
+        }
+
+        /* Player Photo */
+        .player-photo {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: auto;
+            object-fit: cover;
+            object-position: top center;
+            z-index: 3;
+            filter: brightness(1.1) saturate(1.1);
+        }
+
+        /* Card Background Effects (Light Rays) */
+        .card-background-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-linear-gradient(
+                    -45deg,
+                    rgba(255, 255, 255, 0.05),
+                    rgba(255, 255, 255, 0.05) 5px,
+                    transparent 5px,
+                    transparent 10px
+                ),
+                repeating-linear-gradient(
+                    45deg,
+                    rgba(255, 255, 255, 0.05),
+                    rgba(255, 255, 255, 0.05) 5px,
+                    transparent 5px,
+                    transparent 10px
+                );
+            opacity: 0.7;
+            z-index: 1;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            from { background-position: 0 0; }
+            to { background-position: 100% 100%; }
+        }
+
+        /* Player Name */
+        .player-name {
+            position: absolute;
+            bottom: 90px; /* Adjusted to account for removed footer */
+            left: 0;
+            right: 0;
+            font-size: 2.8em;
+            color: #fff;
+            letter-spacing: 2px;
+            z-index: 4;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* Floating Go Back Button */
+        .go-back-button {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #102F49;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1em;
+            font-weight: bold;
+            padding: 30px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .go-back-button:hover {
+            background-color: #0088c2;
+            transform: translateY(-2px);
+        }
+
+        .go-back-button:active {
+            transform: translateY(0);
+        }
+
+        /* Player Stats and Skills */
+        .player-stats, .player-skills {
+            position: absolute;
+            top: 200px;
+            left: 20px;
+            right: 20px;
+            z-index: 4;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: left;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .efootball-player-card:hover .player-stats,
+        .efootball-player-card:hover .player-skills {
+            opacity: 1;
+        }
+
+        .player-stats div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+        .player-stats span:first-child { color: #a0e6ff; font-weight: bold; }
+        .player-stats span:last-child { color: #fff; }
+
+        .player-skills {
+            top: 300px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+        .player-skills span {
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.75em;
+            white-space: nowrap;
+            color: #ccc;
+        }
+
+        /* Specific Card Type Styles */
+        .efootball-player-card.show-time {
+            background-image: url('4.jpeg');
+            background-size: cover;
+            background-position: center;
+            border-color: #00eaff;
+            box-shadow: 0 10px 40px rgba(0, 234, 255, 0.5);
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2em;
+                margin-bottom: 25px;
+            }
+            .efootball-player-card {
+                width: 300px;
+                height: 450px;
+            }
+            .overall-rating {
+                font-size: 4.5em;
+            }
+            .player-position {
+                font-size: 1.8em;
+            }
+            .player-name {
+                font-size: 2.5em;
+                bottom: 45px; /* Adjusted for smaller screens */
+            }
+            .go-back-button {
+                font-size: 0.9em;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Efootball<br>Player Of The Week [POTW]</h1>
+
+    <div id="cards-container">
+        Loading player card...
+    </div>
+
+    <!-- Floating Go Back Button -->
+    <button class="go-back-button" onclick="window.location.href='more.html'".>⬅Go Back</button>
+
+    <script>
+        const featuredPlayer = {
+            name: "Barcelona Fc",
+            overall: 100,
+            position: "CF",
+            cardType: "Show Time",
+            image: "barcelona.png",
+            countryFlag: "nigeria.png",
+            stats: {
+                finishing: 95,
+                dribbling: 90,
+                speed: 92,
+                acceleration: 90,
+                kickingPower: 88,
+                offensiveAwareness: 93
+            },
+            skills: ["Long Range Shooting", "Through Passing", "Outside Shot", "First-time Shot"]
+        };
+
+        const cardsContainer = document.getElementById('cards-container');
+
+        function createPlayerCard(player) {
+            const cardElement = document.createElement('div');
+            cardElement.className = `efootball-player-card ${player.cardType.toLowerCase().replace(/\s/g, '-')}`;
+
+            const statsHtml = Object.entries(player.stats).map(([statName, value]) => `
+                <div class="stat-item">
+                    <span>${statName.replace(/([A-Z])/g, ' $1').toUpperCase().substring(0, 3)}:</span> <span>${value}</span>
+                </div>
+            `).join('');
+
+            const skillsHtml = player.skills.map(skill => `
+                <span><i class="fas fa-star"></i> ${skill}</span>
+            `).join('');
+
+            cardElement.innerHTML = `
+                <div class="overall-rating">${player.overall}</div>
+                <span class="player-position">${player.position}</span>
+                <img src="${player.countryFlag}" alt="${player.name}'s flag" class="country-flag">
+                <img src="${player.image}" alt="${player.name}" class="player-photo">
+                <div class="card-background-effect"></div>
+                <h2 class="player-name">${player.name}</h2>
+                <div class="player-stats">
+                    ${statsHtml}
+                </div>
+                <div class="player-skills">
+                    ${skillsHtml}
+                </div>
+                <!-- Removed card-footer-details -->
+            `;
+            return cardElement;
+        }
+
+        function renderFeaturedPlayerCard() {
+            cardsContainer.innerHTML = '';
+            const card = createPlayerCard(featuredPlayer);
+            cardsContainer.appendChild(card);
+        }
+
+        document.addEventListener('DOMContentLoaded', renderFeaturedPlayerCard);
+    </script>
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Fresh Hub</title>
+
+    <style>
+        /* General Body and Container Styles (shared) */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a0f24; /* Dark theme background */
+            color: #ad8dce; /* Accent color for text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .register-container,
+        .login-container,
+        .dashboard-container { /* Apply common styles to all main containers */
+            background-color: #2a1f34; /* Slightly lighter dark background for container */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px; /* Add some margin for better spacing */
+        }
+
+        .logo-section {
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
+
+        /* Form Headings (shared) */
+        .register-form h2,
+        .login-form h2,
+        .dashboard-container h2 {
+            color: #ad8dce;
+            margin-bottom: 25px;
+        }
+
+        /* Form Group Styles (shared) */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input[type="email"],
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 12px;
+            border: 1px solid #5a4f64; /* Border color matching theme */
+            border-radius: 5px;
+            background-color: #3a2f44; /* Input background */
+            color: #ad8dce; /* Input text color */
+            font-size: 16px;
+        }
+
+        .form-group input[type="email"]::placeholder,
+        .form-group input[type="text"]::placeholder,
+        .form-group input[type="password"]::placeholder {
+            color: #8a7f94;
+        }
+
+        /* Submit Button Styles (shared) */
+        button[type="submit"], #logoutBtn { /* Also style logout button */
+            background-color: #ad8dce; /* Accent button color */
+            color: #1a0f24; /* Text color for button */
+            border: none;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover, #logoutBtn:hover {
+            background-color: #9c7bbf; /* Slightly darker accent on hover */
+        }
+
+        /* Error Message (shared) */
+        .error-message {
+            color: #ff6b6b; /* Error message color */
+            margin-top: 15px;
+            font-size: 14px;
+            display: none; /* Hidden by default */
+        }
+
+        /* Divider (shared) */
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 25px 0;
+            color: #8a7f94;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #5a4f64;
+        }
+
+        .divider:not(:empty)::before {
+            margin-right: .25em;
+        }
+
+        .divider:not(:empty)::after {
+            margin-left: .25em;
+        }
+
+        /* Google Button (shared) */
+        .google-btn {
+            background-color: #fff; /* White background for Google button */
+            color: #000; /* Black text for Google button */
+            border: 1px solid #ccc;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Space between icon and text */
+            margin-bottom: 20px; /* Added margin for consistency */
+        }
+
+        .google-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #999;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Link Styles (shared) */
+        .login-link, .register-link {
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .login-link a, .register-link a {
+            color: #ad8dce;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover, .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Dashboard Specific Styles */
+        .dashboard-container p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        #logoutBtn {
+            margin-top: 30px;
+            background-color: #cb4335; /* Red color for logout */
+        }
+
+        #logoutBtn:hover {
+            background-color: #a93226;
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <div class="logo-section">
+            <img src="images/logo.png" alt="Fresh Hub Logo" class="logo">
+        </div>
+        <form id="loginForm" class="login-form">
+            <h2>Login to Your Account</h2>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">Login</button>
+            <p class="error-message" id="errorMessage"></p>
+
+            <div class="divider">
+                <span>Or</span>
+            </div>
+
+            <button type="button" id="googleLoginBtn" class="google-btn">
+                <img src="images/google.png" alt="Google logo" class="google-icon"> Login with Google
+            </button>
+
+            <p class="register-link">Don't have an account? <a href="register.html">Register here</a></p>
+        </form>
+    </div>
+
+    <div class="dashboard-container" id="dashboardContainer" style="display: none;">
+        <div class="logo-section">
+            <img src="images/logo.png" alt="Fresh Hub Logo" class="logo">
+        </div>
+        <h2>Welcome, <span id="displayUsername"></span>!</h2>
+        <p>Your Current Balance: <span id="displayBalance"></span></p>
+        <button id="logoutBtn">Logout</button>
+    </div>
+
+    <script defer>
+        // Firebase configuration (use the exact same config as your register page)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+            authDomain: "fresh-hub-d509f.firebaseapp.com",
+            databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+            projectId: "fresh-hub-d509f",
+            storageBucket: "fresh-hub-d509f.appspot.com",
+            messagingSenderId: "101887757266",
+            appId: "1:101887757266:web:80c054959f6588771fd60b"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+        // DOM Elements
+        const loginContainer = document.getElementById('loginContainer');
+        const dashboardContainer = document.getElementById('dashboardContainer');
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const errorMessageElement = document.getElementById('errorMessage');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const displayUsername = document.getElementById('displayUsername');
+        const displayBalance = document.getElementById('displayBalance');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Function to get today's date in YYYY-MM-DD format
+        function getTodayDateString() {
+            const today = new Date();
+            return today.toISOString().slice(0, 10); // "YYYY-MM-DD"
+        }
+
+        // Function to handle user data after successful login (email/password or Google)
+        async function handleUserLogin(user) {
+            const uid = user.uid;
+            const userRef = database.ref('users/' + uid);
+
+            try {
+                const snapshot = await userRef.once('value');
+                let userData = snapshot.val();
+
+                if (!userData) {
+                    // This case should ideally not happen if registration is successful,
+                    // but good for robustness if a Google user logs in without prior RTDB entry.
+                    console.warn("User data not found in RTDB. Creating new entry.");
+                    userData = {
+                        email: user.email,
+                        fullName: user.displayName || 'N/A',
+                        username: user.email ? user.email.split('@')[0] : 'user', // Default username
+                        balance: 0,
+                        createdAt: new Date().toISOString()
+                    };
+                    await userRef.set(userData); // Create the entry
+                }
+
+                let currentBalance = userData.balance || 0;
+                const lastLoginDate = userData.lastLoginDate || '';
+                const todayDate = getTodayDateString();
+
+                if (lastLoginDate !== todayDate) {
+                    // First login of the day, add bonus
+                    currentBalance += 200;
+                    await userRef.update({
+                        balance: currentBalance,
+                        lastLoginDate: todayDate
+                    });
+                    console.log("Bonus of +200 added for first login of the day!");
+                }
+
+                // Display user details
+                displayUsername.textContent = userData.username || userData.email;
+                displayBalance.textContent = currentBalance;
+
+                // Hide login form and show dashboard
+                loginContainer.style.display = 'none';
+                dashboardContainer.style.display = 'block';
+
+            } catch (error) {
+                console.error("Error processing user login or database update:", error);
+                errorMessageElement.textContent = "Failed to load user data or update balance. Please try again.";
+                errorMessageElement.style.display = 'block';
+                auth.signOut(); // Sign out if there's a database issue
+            }
+        }
+
+
+        // Check authentication state on page load
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in, display dashboard
+                handleUserLogin(user);
+            } else {
+                // No user is signed in, show login form
+                loginContainer.style.display = 'block';
+                dashboardContainer.style.display = 'none';
+            }
+        });
+
+
+        // Email/Password Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent default form submission
+
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            errorMessageElement.textContent = ''; // Clear previous errors
+            errorMessageElement.style.display = 'none';
+
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                await handleUserLogin(user);
+
+            } catch (error) {
+                console.error("Email/Password Login error:", error);
+                let message = "An unknown error occurred.";
+
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        message = 'Invalid email address.';
+                        break;
+                    case 'auth/user-disabled':
+                        message = 'This account has been disabled.';
+                        break;
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                        message = 'Invalid email or password.';
+                        break;
+                    default:
+                        message = error.message;
+                }
+                errorMessageElement.textContent = message;
+                errorMessageElement.style.display = 'block';
+            }
+        });
+
+        // Google Login
+        googleLoginBtn.addEventListener('click', async () => {
+            errorMessageElement.textContent = ''; // Clear previous errors
+            errorMessageElement.style.display = 'none';
+
+            try {
+                const userCredential = await auth.signInWithPopup(googleProvider);
+                const user = userCredential.user;
+                await handleUserLogin(user);
+
+            } catch (error) {
+                console.error("Google Login error:", error);
+                let message = "An error occurred during Google login.";
+
+                switch (error.code) {
+                    case 'auth/popup-closed-by-user':
+                        message = 'Google sign-in window closed. Please try again.';
+                        break;
+                    case 'auth/cancelled-popup-request':
+                        message = 'Google sign-in already in progress. Please wait or try again.';
+                        break;
+                    case 'auth/account-exists-with-different-credential':
+                        message = 'An account with this email already exists using different credentials. Please sign in with your original method.';
+                        break;
+                    default:
+                        message = error.message;
+                }
+                errorMessageElement.textContent = message;
+                errorMessageElement.style.display = 'block';
+            }
+        });
+
+        // Logout Button
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                // Firebase onAuthStateChanged listener will handle redirecting to login form
+                console.log("User logged out.");
+            } catch (error) {
+                console.error("Error logging out:", error);
+                errorMessageElement.textContent = "Failed to log out. Please try again.";
+                errorMessageElement.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+  </html>

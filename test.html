@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fresh Hub</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900&display=swap">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <style>
+    /* Custom color variables */
+    :root {
+      --dark-purple: #1a0f24;
+      --light-purple: #ad8dce;
+      --nav-bg: #261736;
+      --tab-border: #4d2e6b;
+      --nav-border: #36204b;
+    }
+
+    /* Font family */
+    .font-lexend {
+      font-family: 'Lexend', 'Noto Sans', sans-serif;
+    }
+
+    /* Banner */
+    .banner {
+      background-color: var(--dark-purple);
+    }
+
+    /* Tabs */
+    .tab {
+      @apply flex flex-col items-center justify-center py-4 pb-[13px] text-sm font-bold border-b-3;
+    }
+
+    .tab-active {
+      @apply border-b-[#110022] text-white;
+    }
+
+    .tab:not(.tab-active) {
+      @apply border-b-transparent text-light-purple;
+    }
+
+    /* Match Card */
+    .match-card {
+      @apply flex items-stretch justify-between gap-4 rounded-xl;
+    }
+
+    .match-card .flex-2 {
+      @apply flex flex-col gap-1 flex-[2_2_0px];
+    }
+
+    .match-image {
+      @apply w-full bg-center bg-no-repeat bg-cover rounded-xl flex-1;
+      aspect-ratio: 16 / 9;
+    }
+
+    /* Footer Navigation */
+    .nav-item {
+      @apply flex flex-1 flex-col items-center justify-end gap-1 text-light-purple rounded-full;
+    }
+
+    .nav-item-active {
+      @apply text-white;
+    }
+  </style>
+</head>
+<body class="bg-dark-purple font-lexend text-white min-h-screen flex flex-col">
+  <div class="flex-1">
+    <!-- Header -->
+    <header class="flex items-center bg-dark-purple p-4 pb-2 justify-between">
+      <div class="flex items-center">
+        <img src="assets/images/profile.jpg" alt="Profile" class="w-8 h-8 rounded-full">
+      </div>
+      <h1 class="text-lg font-bold text-center flex-1">Fresh Hub</h1>
+      <div class="flex items-center justify-end w-12">
+        <p class="text-light-purple font-bold">$120</p>
+      </div>
+    </header>
+
+    <!-- Welcome Message -->
+    <h2 class="text-lg font-bold px-4 py-4">Welcome back, Ethan</h2>
+
+    <!-- Banner -->
+    <section class="container mx-auto px-4 py-3">
+      <div class="banner bg-cover bg-center flex flex-col justify-end min-h-80 rounded-xl" style="background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 25%), url('assets/images/banner.jpg');">
+        <p class="text-3xl font-bold p-4">Watch live games</p>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <nav class="border-b border-tab-border px-4">
+      <ul class="flex gap-8">
+        <li><a href="#" class="tab tab-active">Today</a></li>
+        <li><a href="#" class="tab">Upcoming</a></li>
+        <li><a href="#" class="tab">Past</a></li>
+      </ul>
+    </nav>
+
+    <!-- Matches -->
+    <section class="px-4 py-4">
+      <h3 class="text-lg font-bold pb-2">Matchday 1</h3>
+      <div class="space-y-4">
+        <!-- Match 1 -->
+        <article class="match-card">
+          <div class="flex-2">
+            <p class="text-light-purple text-sm">Matchday 1</p>
+            <p class="text-base font-bold">Team A vs Team B</p>
+            <p class="text-light-purple text-sm">Oct 26, 10:00 AM</p>
+          </div>
+          <div class="match-image" style="background-image: url('assets/images/match1.jpg');"></div>
+        </article>
+        <!-- Match 2 -->
+        <article class="match-card">
+          <div class="flex-2">
+            <p class="text-light-purple text-sm">Matchday 1</p>
+            <p class="text-base font-bold">Team C vs Team D</p>
+            <p class="text-light-purple text-sm">Oct 26, 12:00 PM</p>
+          </div>
+          <div class="match-image" style="background-image: url('assets/images/match2.jpg');"></div>
+        </article>
+        <!-- Match 3 -->
+        <article class="match-card">
+          <div class="flex-2">
+            <p class="text-light-purple text-sm">Matchday 1</p>
+            <p class="text-base font-bold">Team E vs Team F</p>
+            <p class="text-light-purple text-sm">Oct 26, 2:00 PM</p>
+          </div>
+          <div class="match-image" style="background-image: url('assets/images/match3.jpg');"></div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer Navigation -->
+  <footer class="bg-nav-bg border-t border-nav-border">
+    <nav class="flex gap-2 px-4 py-6">
+      <a href="#" class="nav-item nav-item-active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+          <path
+            d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.06l80,75.53A16,16,0,0,1,224,115.55Z"
+          ></path>
+        </svg>
+        <span class="text-xs font-medium">Home</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+          <path
+            d="M229.06,53.19a32.64,32.64,0,0,0-26.95-14c-30.88-15.66-84.31-14-138.61-14S-15.43,37.49,14.45,53.12a32.78,32.78,0,0,0-14,27.24c0,5.47,3.44,12.55,6.23,14.88a6,6,0,0,1,0,10.54c-2.79,4.19-6.23,9.28-6.23,14.75a32.58,32.58,0,0,0,14.06,27.22c15.62,10.68,14.08,14,14.12,14.14h15.24v-28a16,16,0,0,1,16-16h16v48h1.24v-48h16a16,16,0,0,1,16,16v28h48v-28a16,16,0,0,1,16-16h16a16,16,0,0,1,16,16v11.94h15.25c6,0-.57-3.48,14.12-14.14a32.58,32.58,0,0,0,14.06-27.22c0-5.47-3.45-6.58-6.24-14.75a6,6,0,0,1,0-10.54c2.8-2.34,6.24-9.39,6.24-14.86A32.54,32.54,0,0,0,229.06,53.19ZM63.5,23.44C108.21,10,161.85,14,196.79,16.94a16.89,16.59,0,0,1,13.88,16.59c4.54,45.06,2.62,5.94,7.12,16.41L47.38,16.62A48.08,48.08,0,0,1,63.5,23.44ZM32.5,200.56a48.07,48.07,0,0,1-15.94-32.88c-4.54-1-2.62-6.93-7.12-6.41v16.78A16.59,16.59,0,0,1,32.5,200.56.38,208.59c10.62,4.54-34,0-48,0-30.56-13.44-27.25-16.62-27.31-16.62V32.38L200.56,208.59Z"
+            ></path>
+        </svg>
+        <span class="text-xs font-medium">Games</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+          <path
+            d="M227.19,104.48A16,16,0,0,0,240,88.81V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V88.81a16,16,0,0,0,12.81,15.67,24,24,0,0,1,0,47A16,16,0,0,0,16,167.19V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V167.19a16,16,0,0,0-12.81-15.67,24,24,0,0,1,0-47ZM32,167.2a40,40,0,0,0,0-78.39V64H88V192H32Zm192,0V192H104V64H224V88.8a40,40,0,0,0,0,78.39Z"
+          ></path>
+        </svg>
+        <span class="text-xs font-medium">My Bets</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+          <path
+            d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"
+          ></path>
+        </svg>
+        <span class="text-xs font-medium">Account</span>
+      </a>
+    </nav>
+    <div class="h-5 bg-nav-bg"></div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('.tab');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          
+          // Remove active state from all tabs
+          tabs.forEach(t => t.classList.remove('tab-active'));
+          // Add active state to clicked tab
+          tab.classList.add('tab-active');
+          
+          // Add logic to update content based on tab (e.g., fetch data for Today, Upcoming, Past)
+          console.log(`Switched to ${tab.textContent} tab`);
+        });
+      });
+    });
+  </script>
+</body>
+  </html>

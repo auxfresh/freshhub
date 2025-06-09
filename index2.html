@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fresh Hub</title>
   <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
   <style>
+    /* Reset and base styles */
     * {
       margin: 0;
       padding: 0;
@@ -21,6 +25,35 @@
       flex-direction: column;
     }
 
+    /* Loader */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1a0f24;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .spinner {
+      border: 4px solid #ad8dce;
+      border-top: 4px solid #ffffff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Fixed Header */
     header {
       position: fixed;
       top: 0;
@@ -39,6 +72,8 @@
       width: 2rem;
       height: 2rem;
       border-radius: 50%;
+      /* Style for the default profile image, ensure it's round */
+      object-fit: cover;
     }
 
     header h1 {
@@ -46,35 +81,40 @@
       font-weight: 700;
       text-align: center;
       flex: 1;
+      display: flex; /* Make it a flex container to align username and badge */
+      align-items: center;
+      justify-content: center; /* Center the username and badge */
     }
 
     header .balance {
       color: #ad8dce;
       font-weight: 700;
-      width: 3rem;
+      width: 3rem; /* Adjusted for larger balance display if needed */
       text-align: right;
     }
 
-    .verified-badge {
-      display: none;
-      width: 1rem;
-      height: 1rem;
-      margin-left: 0.5rem;
-      vertical-align: middle;
+    #verifiedBadge {
+      display: none; /* Hidden by default */
+      color: #ad8dce;
+      font-size: 0.75rem;
+      margin-left: 0.25rem;
     }
 
+    /* Main content */
     main {
       padding-top: 4.5rem;
       padding-bottom: 6rem;
       flex: 1;
     }
 
+    /* Welcome Message */
     h2.welcome {
       font-size: 1.125rem;
       font-weight: 700;
       padding: 1rem;
     }
 
+    /* Banner */
     .banner {
       background-color: #1a0f24;
       background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 25%), url('assets/images/bg.png');
@@ -94,6 +134,7 @@
       padding: 1rem;
     }
 
+    /* Tabs */
     nav.tabs {
       border-bottom: 1px solid #4d2e6b;
       padding: 0 1rem;
@@ -121,10 +162,11 @@
     }
 
     .tab-active {
-      border-bottom-color: #110022;
+      border-bottom-color: #110022; /* A dark line to show active tab */
       color: #ffffff;
     }
 
+    /* Matches */
     .matches {
       padding: 1rem;
     }
@@ -172,8 +214,10 @@
       background-position: center;
       border-radius: 0.5rem;
       aspect-ratio: 16 / 9;
+      background-color: #36204b; /* Placeholder color if image fails */
     }
 
+    /* Fixed Footer */
     footer {
       position: fixed;
       bottom: 0;
@@ -220,6 +264,7 @@
       background-color: #261736;
     }
 
+    /* Responsive adjustments */
     @media (min-width: 480px) {
       .banner {
         margin: 0 auto;
@@ -228,6 +273,7 @@
       }
     }
 
+    /* Hide content sections */
     .content-section {
       display: none;
     }
@@ -235,60 +281,28 @@
     .content-section.active {
       display: block;
     }
-
-    #loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #1a0f24;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
-
-    #loader::after {
-      content: '';
-      width: 40px;
-      height: 40px;
-      border: 4px solid #ad8dce;
-      border-top: 4px solid #ffffff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
-  <!-- Loader -->
-  <div id="loader"></div>
+  <div id="loader">
+    <div class="spinner"></div>
+  </div>
 
-  <!-- Fixed Header -->
   <header>
     <div>
-      <img src="assets/images/profile.jpg" alt="Profile">
+      <img id="profileImage" src="assets/images/profile.jpg" alt="Profile">
     </div>
-    <h1>Fresh Hub</h1>
-    <div class="balance" id="balanceDisplay">₦0.00</div>
+    <h1><span id="headerUsername">Loading...</span><span id="verifiedBadge">✔</span></h1>
+    <div id="headerBalance" class="balance">₦0.00</div>
   </header>
 
-  <!-- Main Content -->
   <main>
-    <!-- Welcome Message -->
-    <h2 class="welcome">Welcome back, <span id="userDisplay">User</span><img id="verifiedBadge" class="verified-badge" src="assets/images/verified.png" alt="Verified"></h2>
+    <h2 class="welcome">Welcome back, <span id="welcomeUsername">Loading...</span></h2>
 
-    <!-- Banner -->
     <section class="banner">
       <p>Watch live games</p>
     </section>
 
-    <!-- Tabs -->
     <nav class="tabs">
       <ul>
         <li><a href="#" class="tab tab-active" data-tab="today">Today</a></li>
@@ -297,7 +311,6 @@
       </ul>
     </nav>
 
-    <!-- Matches Sections -->
     <section id="today" class="matches content-section active">
       <h3>Today's Matches</h3>
       <div class="match-list"></div>
@@ -314,45 +327,50 @@
     </section>
   </main>
 
-  <!-- Fixed Footer -->
   <footer>
     <nav>
       <a href="#" class="nav-item nav-item-active">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-          <path d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.06l80,75.53A16,16,0,0,1,224,115.55Z"></path>
+          <path
+            d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.06l80,75.53A16,16,0,0,1,224,115.55Z"
+          ></path>
         </svg>
         <span>Home</span>
       </a>
       <a href="#" class="nav-item">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-          <path d="M229.06,53.19a32.64,32.64,0,0,0-26.95-14c-30.88-15.66-84.31-14-138.61-14S-15.43,37.49,14.45,53.12a32.78,32.78,0,0,0-14,27.24c0,5.47,3.44,12.55,6.23,14.88a6,6,0,0,1,0,10.54c-2.79,4.19-6.23,9.28-6.23,14.75a32.58,32.58,0,0,0,14.06,27.22c15.62,10.68,14.08,14,14.12,14.14h15.24v-28a16,16,0,0,1,16-16h16v48h1.24v-48h16a16,16,0,0,1,16,16v28h48v-28a16,16,0,0,1,16-16h16a16,16,0,0,1,16,16v11.94h15.25c6,0-.57-3.48,14.12-14.14a32.58,32.58,0,0,0,14.06-27.22c0-5.47-3.45-6.58-6.24-14.75a6,6,0,0,1,0-10.54c2.8-2.34,6.24-9.39,6.24-14.86A32.54,32.54,0,0,0,229.06,53.19ZM63.5,23.44C108.21,10,161.85,14,196.79,16.94a16.89,16.59,0,0,1,13.88,16.59c4.54,45.06,2.62,5.94,7.12,16.41L47.38,16.62A48.08,48.08,0,0,1,63.5,23.44ZM32.5,200.56a48.07,48.07,0,0,1-15.94-32.88c-4.54-1-2.62-6.93-7.12-6.41v16.78A16.59,16.59,0,0,1,32.5,200.56.38,208.59c10.62,4.54-34,0-48,0-30.56-13.44-27.25-16.62-27.31-16.62V32.38L200.56,208.59Z"></path>
+          <path
+            d="M229.06,53.19a32.64,32.64,0,0,0-26.95-14c-30.88-15.66-84.31-14-138.61-14S-15.43,37.49,14.45,53.12a32.78,32.78,0,0,0-14,27.24c0,5.47,3.44,12.55,6.23,14.88a6,6,0,0,1,0,10.54c-2.79,4.19-6.23,9.28-6.23,14.75a32.58,32.58,0,0,0,14.06,27.22c15.62,10.68,14.08,14,14.12,14.14h15.24v-28a16,16,0,0,1,16-16h16v48h1.24v-48h16a16,16,0,0,1,16,16v28h48v-28a16,16,0,0,1,16-16h16a16,16,0,0,1,16,16v11.94h15.25c6,0-.57-3.48,14.12-14.14a32.58,32.58,0,0,0,14.06-27.22c0-5.47-3.45-6.58-6.24-14.75a6,6,0,0,1,0-10.54c2.8-2.34,6.24-9.39,6.24-14.86A32.54,32.54,0,0,0,229.06,53.19ZM63.5,23.44C108.21,10,161.85,14,196.79,16.94a16.89,16.59,0,0,1,13.88,16.59c4.54,45.06,2.62,5.94,7.12,16.41L47.38,16.62A48.08,48.08,0,0,1,63.5,23.44ZM32.5,200.56a48.07,48.07,0,0,1-15.94-32.88c-4.54-1-2.62-6.93-7.12-6.41v16.78A16.59,16.59,0,0,1,32.5,200.56.38,208.59c10.62,4.54-34,0-48,0-30.56-13.44-27.25-16.62-27.31-16.62V32.38L200.56,208.59Z"
+          ></path>
         </svg>
         <span>Games</span>
       </a>
       <a href="#" class="nav-item">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-          <path d="M227.19,104.48A16,16,0,0,0,240,88.81V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V88.81a16,16,0,0,0,12.81,15.67,24,24,0,0,1,0,47A16,16,0,0,0,16,167.19V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V167.19a16,16,0,0,0-12.81-15.67,24,24,0,0,1,0-47ZM32,167.2a40,40,0,0,0,0-62.4V64H224V88.8a40,40,0,0,0,0,62.4V192H32Z"></path>
+          <path
+            d="M227.19,104.48A16,16,0,0,0,240,88.81V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V88.81a16,16,0,0,0,12.81,15.67,24,24,0,0,1,0,47A16,16,0,0,0,16,167.19V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V167.19a16,16,0,0,0-12.81-15.67,24,24,0,0,1,0-47ZM32,167.2a40,40,0,0,0,0-78.39V64H88V192H32Zm192,0V192H104V64H224V88.8a40,40,0,0,0,0,78.39Z"
+          ></path>
         </svg>
-        <span>Wallet</span>
+        <span>My Bets</span>
+      </a>
+      <a href="#" class="nav-item" id="accountNavItem"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+          <path
+            d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"
+          ></path>
+        </svg>
+        <span>Account</span>
       </a>
     </nav>
     <div class="spacer"></div>
   </footer>
 
-  <!-- Firebase SDK Scripts -->
-  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
-  <script>
-    // Check if Firebase is loaded
-    if (typeof firebase === 'undefined') {
-      console.error('Firebase SDK failed to load. Check network or script paths.');
-      document.getElementById('loader').style.display = 'none';
-      alert('Failed to load Firebase. Please try again later.');
-      return;
-    }
+  <script type="module">
+    // Firebase v9 modular SDK imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"; // Import Auth
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-    // Firebase config
+    // Firebase config (should match your project's config)
     const firebaseConfig = {
       apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
       authDomain: "fresh-hub-d509f.firebaseapp.com",
@@ -363,105 +381,160 @@
       appId: "1:101887757266:web:80c054959f6588771fd60b"
     };
 
-    try {
-      firebase.initializeApp(firebaseConfig);
-    } catch (error) {
-      console.error('Firebase initialization failed:', error);
-      document.getElementById('loader').style.display = 'none';
-      alert('Failed to initialize Firebase. Please try again.');
-      return;
-    }
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app); // Get Auth instance
+    const database = getDatabase(app);
 
-    const auth = firebase.auth();
-    const database = firebase.database();
+    // DOM Elements
+    const loader = document.getElementById('loader');
+    const headerUsername = document.getElementById('headerUsername');
+    const welcomeUsername = document.getElementById('welcomeUsername');
+    const headerBalance = document.getElementById('headerBalance');
+    const verifiedBadge = document.getElementById('verifiedBadge');
+    const profileImage = document.getElementById('profileImage');
+    const accountNavItem = document.getElementById('accountNavItem'); // Get the Account link
 
-    // Image mapping for fixtures
+    // Map Firebase match keys to local images
     const imageMap = {
-      1: 'assets/images/match1.jpg',
-      2: 'assets/images/match2.jpg',
-      3: 'assets/images/match3.jpg',
-      'default': 'assets/images/match1.jpg'
+      'match1': 'assets/images/match1.jpg',
+      'match2': 'assets/images/match2.jpg',
+      'match3': 'assets/images/match3.jpg',
+      'default': 'assets/images/match1.jpg' // Fallback
     };
 
-    // Load user data
-    window.addEventListener('load', () => {
-      const username = localStorage.getItem('username');
-      if (!username) {
-        window.location.href = 'test.html';
-        return;
-      }
+    /**
+     * Fetches and displays user data (username and balance) from Firebase Realtime Database.
+     * @param {Object} user - The Firebase User object.
+     */
+    async function fetchAndDisplayUserData(user) {
+        const userRef = ref(database, `users/${user.uid}`);
+        onValue(userRef, (snapshot) => {
+            const userData = snapshot.val();
+            if (userData) {
+                const username = userData.username || user.email.split('@')[0];
+                const balance = userData.balance !== undefined ? userData.balance : 0; // Default to 0 if not set
 
-      document.getElementById('userDisplay').textContent = username;
-      if (username.toLowerCase() === 'cryptoaux2') {
-        document.getElementById('verifiedBadge').style.display = 'inline';
-      }
+                headerUsername.textContent = username;
+                welcomeUsername.textContent = username;
+                headerBalance.textContent = `₦${balance.toFixed(2)}`; // Format balance to 2 decimal places
 
-      auth.onAuthStateChanged(user => {
-        if (user) {
-          database.ref(`users/${user.uid}/balance`).once('value')
-            .then(snapshot => {
-              const balance = snapshot.val() || '0.00';
-              document.getElementById('balanceDisplay').textContent = `₦${balance}`;
-              document.getElementById('loader').style.display = 'none';
-            })
-            .catch(error => {
-              console.error('Error fetching balance:', error);
-              document.getElementById('balanceDisplay').textContent = '₦0.00';
-              document.getElementById('loader').style.display = 'none';
-            });
-        } else {
-          localStorage.removeItem('username');
-          window.location.href = 'register.html';
-        }
-      });
-    });
+                // Show verified badge for specific username
+                if (username.toLowerCase() === 'cryptoaux2') {
+                    verifiedBadge.style.display = 'inline';
+                } else {
+                    verifiedBadge.style.display = 'none';
+                }
 
-    // Load matches from Firebase
-    async function loadMatches(tab) {
-      const section = document.getElementById(tab);
-      const matchList = section.querySelector('.match-list');
-      try {
-        const snapshot = await database.ref(`fixtures/${tab}`).once('value');
-        const data = snapshot.val();
-        matchList.innerHTML = !data ? '<p>No matches available.</p>' : Object.values(data).map(fixture => {
-          const imagePath = imageMap[fixture.imageId] || imageMap['default'];
-          return `
-            <article class="match-card">
-              <div class="info">
-                <p>${fixture.matchDay || 'Unknown Matchday'}</p>
-                <p>${fixture.match || 'Unknown Teams'}</p>
-                <p>${fixture.date || ''} ${fixture.timeResults || 'Unknown Time'}</p>
-              </div>
-              <div class="match-image" style="background-image: url('${imagePath}');"></div>
-            </article>
-          `;
-        }).join('');
-      } catch (error) {
-        console.error('Error fetching matches:', error);
-        matchList.innerHTML = '<p>Error loading matches.</p>';
-      }
+                // Set profile image based on user's photoURL or default
+                if (user.photoURL) {
+                    profileImage.src = user.photoURL;
+                } else {
+                    profileImage.src = 'assets/images/profile.jpg'; // Default local image
+                }
+            } else {
+                console.warn("User data not found in Realtime Database for UID:", user.uid);
+                // Fallback to display email if no custom username in DB
+                headerUsername.textContent = user.email.split('@')[0];
+                welcomeUsername.textContent = user.email.split('@')[0];
+                headerBalance.textContent = '₦0.00';
+            }
+        }, (error) => {
+            console.error("Error fetching user data:", error);
+            headerUsername.textContent = 'Error';
+            welcomeUsername.textContent = 'Error';
+            headerBalance.textContent = 'Error';
+        });
     }
 
-    // Tab switching
-    document.addEventListener('DOMContentLoaded', () => {
-      const tabs = document.querySelectorAll('.tab');
-      const sections = document.querySelectorAll('.content-section');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', (e) => {
-          e.preventDefault();
-          tabs.forEach(t => t.classList.remove('tab-active'));
-          sections.forEach(s => s.classList.remove('active'));
-          tab.classList.add('tab-active');
-          const sectionId = tab.getAttribute('data-tab');
-          document.getElementById(sectionId).classList.add('active');
-          loadMatches(sectionId);
-        });
-      });
+    /**
+     * Loads fixtures from Firebase for the specified tab.
+     * @param {string} tab - The tab name ('today', 'upcoming', 'past').
+     */
+    function loadFixtures(tab) {
+      const section = document.getElementById(tab);
+      const matchList = section.querySelector('.match-list');
+      // Clear previous matches and show a loading message
+      matchList.innerHTML = '<p>Loading matches...</p>';
 
-      // Load today's matches on page load
-      loadMatches('today');
+      const fixturesRef = ref(database, `fixtures/${tab}`);
+      
+      onValue(fixturesRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          matchList.innerHTML = Object.entries(data).map(([key, fixture]) => {
+            // Map match key (e.g., 'match1') to local image
+            const imagePath = imageMap[key] || imageMap['default'];
+            return `
+              <article class="match-card">
+                <div class="info">
+                  <p>${fixture.matchDay || 'Unknown Matchday'}</p>
+                  <p>${fixture.match || 'Unknown Teams'}</p>
+                  <p>${fixture.date || 'Unknown Date'} - ${fixture.timeResults || 'Unknown Time'}</p>
+                </div>
+                <div class="match-image" style="background-image: url('${imagePath}');"></div>
+              </article>
+            `;
+          }).join('');
+        } else {
+          matchList.innerHTML = '<p>No matches available.</p>';
+        }
+      }, (error) => {
+        matchList.innerHTML = '<p>Error loading matches.</p>';
+        console.error('Error fetching fixtures:', error);
+      });
+    }
+
+    // --- Event Listeners and Initial Load ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Authenticate user on page load
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, fetch and display their data
+                fetchAndDisplayUserData(user);
+
+                // Hide loader
+                loader.style.display = 'none';
+
+                // Tab switching logic
+                const tabs = document.querySelectorAll('.tab');
+                const sections = document.querySelectorAll('.content-section');
+                
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        tabs.forEach(t => t.classList.remove('tab-active'));
+                        sections.forEach(s => s.classList.remove('active'));
+                        tab.classList.add('tab-active');
+                        const sectionId = tab.getAttribute('data-tab');
+                        document.getElementById(sectionId).classList.add('active');
+                        loadFixtures(sectionId); // Load fixtures for the selected tab
+                    });
+                });
+
+                // Load today's fixtures on initial page load
+                loadFixtures('today');
+
+                // Add logout functionality to the "Account" nav item (or a dedicated logout button)
+                accountNavItem.addEventListener('click', async (e) => {
+                    e.preventDefault(); // Prevent default link behavior
+                    try {
+                        await signOut(auth);
+                        // Redirect to login page after logout
+                        window.location.href = 'login.html';
+                    } catch (error) {
+                        console.error("Error signing out:", error);
+                        alert("Failed to log out. Please try again.");
+                    }
+                });
+
+
+            } else {
+                // No user is signed in, redirect to login page
+                window.location.href = 'login.html';
+            }
+        });
     });
   </script>
 </body>
-    </html>
+      </html>

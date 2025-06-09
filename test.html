@@ -1,384 +1,362 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fresh Hub - Register</title>
-  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Fresh Hub</title>
 
-    body {
-      background-color: #1a0f24;
-      color: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 1rem;
-    }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a0f24; /* Dark theme background */
+            color: #ad8dce; /* Accent color for text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
 
-    .register-container {
-      background-color: #261736;
-      border: 2px solid #4d2e6b;
-      border-radius: 0.75rem;
-      padding: 2rem;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      text-align: center;
-    }
+        .register-container {
+            background-color: #2a1f34; /* Slightly lighter dark background for container */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
 
-    .logo {
-      width: 100px;
-      margin-bottom: 1rem;
-    }
+        .logo-section {
+            margin-bottom: 20px;
+        }
 
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
+        .logo {
+            max-width: 150px;
+            height: auto;
+        }
 
-    .form-group {
-      margin-bottom: 1rem;
-      text-align: left;
-    }
+        .register-form h2 {
+            color: #ad8dce;
+            margin-bottom: 25px;
+        }
 
-    label {
-      display: block;
-      font-size: 0.875rem;
-      color: #ad8dce;
-      margin-bottom: 0.25rem;
-    }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
 
-    input {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #4d2e6b;
-      border-radius: 0.5rem;
-      background-color: #1a0f24;
-      color: #ffffff;
-      font-size: 1rem;
-    }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
 
-    input:focus {
-      outline: none;
-      border-color: #ad8dce;
-    }
+        .form-group input[type="email"],
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 12px;
+            border: 1px solid #5a4f64; /* Border color matching theme */
+            border-radius: 5px;
+            background-color: #3a2f44; /* Input background */
+            color: #ad8dce; /* Input text color */
+            font-size: 16px;
+        }
 
-    .error {
-      color: #ff6b6b;
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
-      display: none;
-    }
+        .form-group input[type="email"]::placeholder,
+        .form-group input[type="text"]::placeholder,
+        .form-group input[type="password"]::placeholder {
+            color: #8a7f94;
+        }
 
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      background-color: #ad8dce;
-      border: none;
-      border-radius: 0.5rem;
-      color: #1a0f24;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 1rem;
-      transition: transform 0.2s;
-    }
+        button[type="submit"] {
+            background-color: #ad8dce; /* Accent button color */
+            color: #1a0f24; /* Text color for button */
+            border: none;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
 
-    button:hover {
-      background-color: #c7a8e0;
-      transform: scale(1.05);
-    }
+        button[type="submit"]:hover {
+            background-color: #9c7bbf; /* Slightly darker accent on hover */
+        }
 
-    .google-signin {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      background-color: #ffffff;
-      color: #1a0f24;
-      margin-top: 1rem;
-    }
+        .error-message {
+            color: #ff6b6b; /* Error message color */
+            margin-top: 15px;
+            font-size: 14px;
+            display: none; /* Hidden by default */
+        }
 
-    .google-signin img {
-      width: 20px;
-    }
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 25px 0;
+            color: #8a7f94;
+        }
 
-    .login-link {
-      margin-top: 1rem;
-      font-size: 0.875rem;
-      color: #ad8dce;
-    }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #5a4f64;
+        }
 
-    .login-link a {
-      color: #ffffff;
-      text-decoration: none;
-    }
+        .divider:not(:empty)::before {
+            margin-right: .25em;
+        }
 
-    .login-link a:hover {
-      text-decoration: underline;
-    }
+        .divider:not(:empty)::after {
+            margin-left: .25em;
+        }
 
-    #loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #1a0f24;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-    }
+        .google-btn {
+            background-color: #fff; /* White background for Google button */
+            color: #000; /* Black text for Google button */
+            border: 1px solid #ccc;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Space between icon and text */
+        }
 
-    #loader::after {
-      content: '';
-      width: 40px;
-      height: 40px;
-      border: 4px solid #ad8dce;
-      border-top: 4px solid #ffffff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
+        .google-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #999;
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .login-link {
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #ad8dce;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body>
-  <!-- Loader -->
-  <div id="loader"></div>
+    <div class="register-container">
+        <div class="logo-section">
+            <img src="images/logo.png" alt="Fresh Hub Logo" class="logo">
+        </div>
+        <form id="registerForm" class="register-form">
+            <h2>Create Your Account</h2>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" required>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">Register</button>
+            <p class="error-message" id="errorMessage"></p>
 
-  <div class="register-container">
-    <img src="assets/images/logo.png" alt="Fresh Hub Logo" class="logo">
-    <h1>Create Account</h1>
-    <form id="registerForm">
-      <div class="form-group">
-        <label for="fullname">Full Name</label>
-        <input type="text" id="fullname" required>
-        <div class="error" id="fullnameError">Full name is required</div>
-      </div>
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" required pattern="[a-zA-Z0-9]+">
-        <div class="error" id="usernameError">Username must be alphanumeric</div>
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" required>
-        <div class="error" id="emailError">Valid email is required</div>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" required>
-        <div class="error" id="passwordError">Password must be at least 6 characters</div>
-      </div>
-      <div class="error" id="generalError"></div>
-      <button type="submit">Register</button>
-    </form>
-    <button class="google-signin" id="googleSignIn">
-      <img src="assets/images/google.png" alt="Google"> Sign up with Google
-    </button>
-    <div class="login-link">
-      Already have an account? <a href="login.html">Log in</a>
+            <div class="divider">
+                <span>Or</span>
+            </div>
+
+            <button type="button" id="googleRegisterBtn" class="google-btn">
+                <img src="images/google.png" alt="Google logo" class="google-icon"> Register with Google
+            </button>
+
+            <p class="login-link">Already have an account? <a href="login.html">Login here</a></p>
+        </form>
     </div>
-  </div>
 
-  <!-- Firebase SDK Scripts -->
-  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
-  <script>
-    // Check if Firebase is loaded
-    if (typeof firebase === 'undefined') {
-      console.error('Firebase SDK failed to load. Check network or script paths.');
-      document.getElementById('generalError').textContent = 'Failed to load Firebase. Please try again later.';
-      document.getElementById('generalError').style.display = 'block';
-      document.getElementById('loader').style.display = 'none';
-      return;
-    }
+    <script defer>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+            authDomain: "fresh-hub-d509f.firebaseapp.com",
+            databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+            projectId: "fresh-hub-d509f",
+            storageBucket: "fresh-hub-d509f.appspot.com",
+            messagingSenderId: "101887757266",
+            appId: "1:101887757266:web:80c054959f6588771fd60b"
+        };
 
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
-      authDomain: "fresh-hub-d509f.firebaseapp.com",
-      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
-      projectId: "fresh-hub-d509f",
-      storageBucket: "fresh-hub-d509f.appspot.com",
-      messagingSenderId: "101887757266",
-      appId: "1:101887757266:web:80c054959f6588771fd60b"
-    };
-
-    try {
-      firebase.initializeApp(firebaseConfig);
-    } catch (error) {
-      console.error('Firebase initialization failed:', error);
-      document.getElementById('generalError').textContent = 'Failed to initialize Firebase. Please try again.';
-      document.getElementById('generalError').style.display = 'block';
-      document.getElementById('loader').style.display = 'none';
-      return;
-    }
-
-    const auth = firebase.auth();
-    const database = firebase.database();
-    const loader = document.getElementById('loader');
-    const registerForm = document.getElementById('registerForm');
-    const generalError = document.getElementById('generalError');
-
-    // Validate form fields
-    function validateForm(fullname, username, email, password) {
-      let isValid = true;
-      document.querySelectorAll('.error').forEach(err => err.style.display = 'none');
-
-      if (!fullname) {
-        document.getElementById('fullnameError').style.display = 'block';
-        isValid = false;
-      }
-      if (!username || !/^[a-zA-Z0-9]+$/.test(username)) {
-        document.getElementById('usernameError').style.display = 'block';
-        isValid = false;
-      }
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        document.getElementById('emailError').style.display = 'block';
-        isValid = false;
-      }
-      if (!password || password.length < 6) {
-        document.getElementById('passwordError').style.display = 'block';
-        isValid = false;
-      }
-      return isValid;
-    }
-
-    // Check username uniqueness
-    async function isUsernameUnique(username) {
-      try {
-        const snapshot = await database.ref('users').orderByChild('username').equalTo(username).once('value');
-        return !snapshot.exists();
-      } catch (error) {
-        console.error('Username uniqueness check failed:', error);
-        throw error;
-      }
-    }
-
-    // Email/password registration
-    registerForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      loader.style.display = 'flex';
-
-      const fullname = document.getElementById('fullname').value.trim();
-      const username = document.getElementById('username').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-
-      if (!validateForm(fullname, username, email, password)) {
-        loader.style.display = 'none';
-        return;
-      }
-
-      try {
-        // Check username uniqueness
-        if (!(await isUsernameUnique(username))) {
-          generalError.textContent = 'Username is already taken';
-          generalError.style.display = 'block';
-          loader.style.display = 'none';
-          return;
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
 
-        // Create user
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        if (!userCredential || !userCredential.user) {
-          throw new Error('User creation failed: userCredential is null');
-        }
-        const user = userCredential.user;
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const googleProvider = new firebase.auth.GoogleAuthProvider(); // Initialize Google Auth Provider
 
-        // Save user details to Realtime Database
-        await database.ref(`users/${user.uid}`).set({
-          fullname,
-          username,
-          email,
-          balance: '0.00',
-          createdAt: firebase.database.ServerValue.TIMESTAMP
+        const registerForm = document.getElementById('registerForm');
+        const emailInput = document.getElementById('email');
+        const fullNameInput = document.getElementById('fullName');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const errorMessageElement = document.getElementById('errorMessage');
+        const googleRegisterBtn = document.getElementById('googleRegisterBtn'); // Get the Google button
+
+        // Function to handle user data storage and redirection
+        async function handleSuccessfulRegistration(user, defaultUsername = null) {
+            const uid = user.uid;
+            const email = user.email;
+            const fullName = user.displayName || 'N/A'; // Google can provide displayName
+            const username = defaultUsername || (user.email ? user.email.split('@')[0] : 'user'); // Use provided username or derive from email
+            const initialBalance = 0;
+            const createdAt = new Date().toISOString();
+
+            try {
+                // Store user details in Realtime Database
+                await database.ref('users/' + uid).set({
+                    email: email,
+                    fullName: fullName,
+                    username: username,
+                    balance: initialBalance,
+                    createdAt: createdAt
+                });
+
+                // Store username in local storage
+                localStorage.setItem('registeredUsername', username);
+
+                // Redirect to login.html
+                window.location.href = 'login.html';
+
+            } catch (dbError) {
+                console.error("Database storage error:", dbError);
+                errorMessageElement.textContent = "Failed to store user data. Please try again.";
+                errorMessageElement.style.display = 'block';
+                // Optionally, sign out the user if database storage fails
+                auth.signOut();
+            }
+        }
+
+
+        // Email/Password Registration
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent default form submission
+
+            const email = emailInput.value;
+            const fullName = fullNameInput.value;
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            errorMessageElement.textContent = ''; // Clear previous errors
+            errorMessageElement.style.display = 'none';
+
+            try {
+                // 1. Create user with email and password
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+
+                // 2. Handle successful registration (store data, redirect)
+                await handleSuccessfulRegistration(user, username);
+
+            } catch (error) {
+                console.error("Email/Password Registration error:", error);
+                let message = "An unknown error occurred.";
+
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        message = 'The email address is already in use by another account.';
+                        break;
+                    case 'auth/invalid-email':
+                        message = 'The email address is not valid.';
+                        break;
+                    case 'auth/operation-not-allowed':
+                        message = 'Email/password registration is not enabled. Please enable it in Firebase console.';
+                        break;
+                    case 'auth/weak-password':
+                        message = 'The password is too weak. Please choose a stronger password.';
+                        break;
+                    default:
+                        message = error.message; // Fallback to Firebase error message
+                }
+                errorMessageElement.textContent = message;
+                errorMessageElement.style.display = 'block';
+            }
         });
 
-        // Save username to localStorage
-        localStorage.setItem('username', username);
+        // Google Registration
+        googleRegisterBtn.addEventListener('click', async () => {
+            errorMessageElement.textContent = ''; // Clear previous errors
+            errorMessageElement.style.display = 'none';
 
-        // Redirect to login page
-        window.location.href = 'login.html';
-      } catch (error) {
-        loader.style.display = 'none';
-        if (error.code === 'auth/email-already-in-use') {
-          generalError.textContent = 'Email already in use';
-        } else {
-          generalError.textContent = 'Registration unsuccessful';
-        }
-        generalError.style.display = 'block';
-        console.error('Registration error:', error.message, error.code);
-      }
-    });
+            try {
+                // Sign in with Google Pop-up
+                const userCredential = await auth.signInWithPopup(googleProvider);
+                const user = userCredential.user;
 
-    // Google Sign-In
-    document.getElementById('googleSignIn').addEventListener('click', async () => {
-      loader.style.display = 'flex';
-      try {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const result = await auth.signInWithPopup(provider);
-        if (!result || !result.user) {
-          throw new Error('Google Sign-In failed: result is null');
-        }
-        const user = result.user;
+                // Check if the user already exists in your 'users' database
+                const userRef = database.ref('users/' + user.uid);
+                const snapshot = await userRef.once('value');
 
-        // Check if user exists
-        const userRef = database.ref(`users/${user.uid}`);
-        const snapshot = await userRef.once('value');
-        if (!snapshot.exists()) {
-          // Prompt for additional details
-          let username = prompt('Enter a username:');
-          if (!username || !/^[a-zA-Z0-9]+$/.test(username) || !(await isUsernameUnique(username))) {
-            generalError.textContent = 'Username is taken or invalid';
-            generalError.style.display = 'block';
-            await auth.signOut();
-            loader.style.display = 'none';
-            return;
-          }
+                if (snapshot.exists()) {
+                    // User already exists in your database (they signed up with Google before)
+                    console.log("User already registered with Google. Logging in.");
+                    // Update local storage in case username changed or wasn't there
+                    localStorage.setItem('registeredUsername', snapshot.val().username || (user.email ? user.email.split('@')[0] : 'user'));
+                    window.location.href = 'login.html';
+                } else {
+                    // New Google user, store their details
+                    // For Google, you might want to prompt for a custom username or derive it.
+                    // For simplicity, we'll derive it from email for now.
+                    await handleSuccessfulRegistration(user, (user.email ? user.email.split('@')[0] : 'user'));
+                }
 
-          // Save user details
-          await userRef.set({
-            fullname: user.displayName || 'Google User',
-            username,
-            email: user.email,
-            balance: '0.00',
-            createdAt: firebase.database.ServerValue.TIMESTAMP
-          });
+            } catch (error) {
+                console.error("Google Registration error:", error);
+                let message = "An error occurred during Google registration.";
 
-          localStorage.setItem('username', username);
-        }
-
-        // Redirect to login page
-        window.location.href = 'login.html';
-      } catch (error) {
-        loader.style.display = 'none';
-        generalError.textContent = 'Registration unsuccessful';
-        generalError.style.display = 'block';
-        console.error('Google Sign-In error:', error.message, error.code);
-      }
-    });
-
-    // Hide loader on page load
-    window.addEventListener('load', () => {
-      document.getElementById('loader').style.display = 'none';
-    });
-  </script>
+                switch (error.code) {
+                    case 'auth/popup-closed-by-user':
+                        message = 'Google sign-in window closed. Please try again.';
+                        break;
+                    case 'auth/cancelled-popup-request':
+                        message = 'Google sign-in already in progress. Please wait or try again.';
+                        break;
+                    case 'auth/account-exists-with-different-credential':
+                        message = 'An account with this email already exists using different credentials. Please sign in with your original method.';
+                        break;
+                    default:
+                        message = error.message;
+                }
+                errorMessageElement.textContent = message;
+                errorMessageElement.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>

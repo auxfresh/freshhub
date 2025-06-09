@@ -18,9 +18,7 @@
             margin: 0;
         }
 
-        .register-container,
-        .login-container,
-        .dashboard-container { /* Apply common styles to all main containers */
+        .login-container { /* Apply common styles to main container */
             background-color: #2a1f34; /* Slightly lighter dark background for container */
             padding: 40px;
             border-radius: 10px;
@@ -41,9 +39,7 @@
         }
 
         /* Form Headings (shared) */
-        .register-form h2,
-        .login-form h2,
-        .dashboard-container h2 {
+        .login-form h2 {
             color: #ad8dce;
             margin-bottom: 25px;
         }
@@ -61,7 +57,6 @@
         }
 
         .form-group input[type="email"],
-        .form-group input[type="text"],
         .form-group input[type="password"] {
             width: calc(100% - 20px);
             padding: 12px;
@@ -73,13 +68,12 @@
         }
 
         .form-group input[type="email"]::placeholder,
-        .form-group input[type="text"]::placeholder,
         .form-group input[type="password"]::placeholder {
             color: #8a7f94;
         }
 
         /* Submit Button Styles (shared) */
-        button[type="submit"], #logoutBtn { /* Also style logout button */
+        button[type="submit"] {
             background-color: #ad8dce; /* Accent button color */
             color: #1a0f24; /* Text color for button */
             border: none;
@@ -91,7 +85,7 @@
             width: 100%;
         }
 
-        button[type="submit"]:hover, #logoutBtn:hover {
+        button[type="submit"]:hover {
             background-color: #9c7bbf; /* Slightly darker accent on hover */
         }
 
@@ -156,34 +150,19 @@
         }
 
         /* Link Styles (shared) */
-        .login-link, .register-link {
+        .register-link {
             margin-top: 25px;
             font-size: 14px;
         }
 
-        .login-link a, .register-link a {
+        .register-link a {
             color: #ad8dce;
             text-decoration: none;
             font-weight: bold;
         }
 
-        .login-link a:hover, .register-link a:hover {
+        .register-link a:hover {
             text-decoration: underline;
-        }
-
-        /* Dashboard Specific Styles */
-        .dashboard-container p {
-            margin-bottom: 20px;
-            font-size: 1.1em;
-        }
-
-        #logoutBtn {
-            margin-top: 30px;
-            background-color: #cb4335; /* Red color for logout */
-        }
-
-        #logoutBtn:hover {
-            background-color: #a93226;
         }
     </style>
 
@@ -221,15 +200,6 @@
         </form>
     </div>
 
-    <div class="dashboard-container" id="dashboardContainer" style="display: none;">
-        <div class="logo-section">
-            <img src="images/logo.png" alt="Fresh Hub Logo" class="logo">
-        </div>
-        <h2>Welcome, <span id="displayUsername"></span>!</h2>
-        <p>Your Current Balance: <span id="displayBalance"></span></p>
-        <button id="logoutBtn">Logout</button>
-    </div>
-
     <script defer>
         // Firebase configuration (use the exact same config as your register page)
         const firebaseConfig = {
@@ -253,15 +223,14 @@
 
         // DOM Elements
         const loginContainer = document.getElementById('loginContainer');
-        const dashboardContainer = document.getElementById('dashboardContainer');
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const errorMessageElement = document.getElementById('errorMessage');
         const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const displayUsername = document.getElementById('displayUsername');
-        const displayBalance = document.getElementById('displayBalance');
-        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Define your dashboard page URL
+        const DASHBOARD_URL = 'dashboard.html'; // <--- Make sure this matches your dashboard file name
 
         // Function to get today's date in YYYY-MM-DD format
         function getTodayDateString() {
@@ -306,13 +275,12 @@
                     console.log("Bonus of +200 added for first login of the day!");
                 }
 
-                // Display user details
-                displayUsername.textContent = userData.username || userData.email;
-                displayBalance.textContent = currentBalance;
+                // Store current user's username in local storage for dashboard to use
+                localStorage.setItem('currentUsername', userData.username || userData.email);
+                localStorage.setItem('currentBalance', currentBalance); // Store balance too, if dashboard needs it
 
-                // Hide login form and show dashboard
-                loginContainer.style.display = 'none';
-                dashboardContainer.style.display = 'block';
+                // Redirect to the dashboard page
+                window.location.href = DASHBOARD_URL;
 
             } catch (error) {
                 console.error("Error processing user login or database update:", error);
@@ -324,14 +292,14 @@
 
 
         // Check authentication state on page load
+        // If a user is already logged in, redirect them directly to the dashboard
         auth.onAuthStateChanged(user => {
             if (user) {
-                // User is signed in, display dashboard
-                handleUserLogin(user);
+                // User is signed in, redirect to dashboard (or process login if it's first visit)
+                handleUserLogin(user); // This will handle the bonus and redirect
             } else {
                 // No user is signed in, show login form
                 loginContainer.style.display = 'block';
-                dashboardContainer.style.display = 'none';
             }
         });
 
@@ -405,19 +373,6 @@
                 errorMessageElement.style.display = 'block';
             }
         });
-
-        // Logout Button
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                await auth.signOut();
-                // Firebase onAuthStateChanged listener will handle redirecting to login form
-                console.log("User logged out.");
-            } catch (error) {
-                console.error("Error logging out:", error);
-                errorMessageElement.textContent = "Failed to log out. Please try again.";
-                errorMessageElement.style.display = 'block';
-            }
-        });
     </script>
 </body>
-  </html>
+</html>

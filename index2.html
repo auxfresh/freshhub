@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fresh Hub</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #1a0f24;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      background-color: #1a0f24;
+      padding: 1rem;
+      padding-bottom: 0.5rem;
+      justify-content: space-between;
+      z-index: 1000;
+      border-bottom: 1px solid #4d2e6b;
+    }
+
+    header img {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+    }
+
+    header h1 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      text-align: center;
+      flex: 1;
+    }
+
+    header .balance {
+      color: #ad8dce;
+      font-weight: 700;
+      width: 3rem;
+      text-align: right;
+    }
+
+    .verified-badge {
+      display: none;
+      width: 1rem;
+      height: 1rem;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    main {
+      padding-top: 4.5rem;
+      padding-bottom: 6rem;
+      flex: 1;
+    }
+
+    h2.welcome {
+      font-size: 1.125rem;
+      font-weight: 700;
+      padding: 1rem;
+    }
+
+    .banner {
+      background-color: #1a0f24;
+      background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 25%), url('assets/images/bg.png');
+      background-size: cover;
+      background-position: center;
+      min-height: 20rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 0.75rem;
+      margin: 0 1rem 0.75rem;
+    }
+
+    .banner p {
+      font-size: 1.75rem;
+      font-weight: 700;
+      padding: 1rem;
+    }
+
+    nav.tabs {
+      border-bottom: 1px solid #4d2e6b;
+      padding: 0 1rem;
+      background-color: #1a0f24;
+    }
+
+    nav.tabs ul {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 0 0.8125rem;
+      font-size: 0.875rem;
+      font-weight: 700;
+      border-bottom: 3px solid transparent;
+      color: #ad8dce;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .tab-active {
+      border-bottom-color: #110022;
+      color: #ffffff;
+    }
+
+    .matches {
+      padding: 1rem;
+    }
+
+    .matches h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      padding-bottom: 0.5rem;
+    }
+
+    .match-card {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background-color: #261736;
+      border: 2px solid #4d2e6b;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .match-card .info {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .match-card .info p:first-child,
+    .match-card .info p:last-child {
+      color: #ad8dce;
+      font-size: 0.875rem;
+    }
+
+    .match-card .info p:nth-child(2) {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .match-image {
+      flex: 1;
+      background-size: cover;
+      background-position: center;
+      border-radius: 0.5rem;
+      aspect-ratio: 16 / 9;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: #261736;
+      border-top: 1px solid #36204b;
+      padding: 0.5rem 1rem;
+      z-index: 1000;
+    }
+
+    footer nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.25rem;
+      color: #ad8dce;
+      text-decoration: none;
+      border-radius: 9999px;
+    }
+
+    .nav-item-active {
+      color: #ffffff;
+    }
+
+    .nav-item svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .nav-item span {
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    footer .spacer {
+      height: 1.25rem;
+      background-color: #261736;
+    }
+
+    @media (min-width: 480px) {
+      .banner {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 1200px;
+      }
+    }
+
+    .content-section {
+      display: none;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1a0f24;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    #loader::after {
+      content: '';
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ad8dce;
+      border-top: 4px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader"></div>
+
+  <!-- Fixed Header -->
+  <header>
+    <div>
+      <img src="assets/images/profile.jpg" alt="Profile">
+    </div>
+    <h1>Fresh Hub</h1>
+    <div class="balance" id="balanceDisplay">₦0.00</div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Welcome Message -->
+    <h2 class="welcome">Welcome back, <span id="userDisplay">User</span><img id="verifiedBadge" class="verified-badge" src="assets/images/verified.png" alt="Verified"></h2>
+
+    <!-- Banner -->
+    <section class="banner">
+      <p>Watch live games</p>
+    </section>
+
+    <!-- Tabs -->
+    <nav class="tabs">
+      <ul>
+        <li><a href="#" class="tab tab-active" data-tab="today">Today</a></li>
+        <li><a href="#" class="tab" data-tab="upcoming">Upcoming</a></li>
+        <li><a href="#" class="tab" data-tab="past">Past</a></li>
+      </ul>
+    </nav>
+
+    <!-- Matches Sections -->
+    <section id="today" class="matches content-section active">
+      <h3>Today's Matches</h3>
+      <div class="match-list"></div>
+    </section>
+
+    <section id="upcoming" class="matches content-section">
+      <h3>Upcoming Matches</h3>
+      <div class="match-list"></div>
+    </section>
+
+    <section id="past" class="matches content-section">
+      <h3>Past Matches</h3>
+      <div class="match-list"></div>
+    </section>
+  </main>
+
+  <!-- Fixed Footer -->
+  <footer>
+    <nav>
+      <a href="#" class="nav-item nav-item-active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.06l80,75.53A16,16,0,0,1,224,115.55Z"></path>
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M229.06,53.19a32.64,32.64,0,0,0-26.95-14c-30.88-15.66-84.31-14-138.61-14S-15.43,37.49,14.45,53.12a32.78,32.78,0,0,0-14,27.24c0,5.47,3.44,12.55,6.23,14.88a6,6,0,0,1,0,10.54c-2.79,4.19-6.23,9.28-6.23,14.75a32.58,32.58,0,0,0,14.06,27.22c15.62,10.68,14.08,14,14.12,14.14h15.24v-28a16,16,0,0,1,16-16h16v48h1.24v-48h16a16,16,0,0,1,16,16v28h48v-28a16,16,0,0,1,16-16h16a16,16,0,0,1,16,16v11.94h15.25c6,0-.57-3.48,14.12-14.14a32.58,32.58,0,0,0,14.06-27.22c0-5.47-3.45-6.58-6.24-14.75a6,6,0,0,1,0-10.54c2.8-2.34,6.24-9.39,6.24-14.86A32.54,32.54,0,0,0,229.06,53.19ZM63.5,23.44C108.21,10,161.85,14,196.79,16.94a16.89,16.59,0,0,1,13.88,16.59c4.54,45.06,2.62,5.94,7.12,16.41L47.38,16.62A48.08,48.08,0,0,1,63.5,23.44ZM32.5,200.56a48.07,48.07,0,0,1-15.94-32.88c-4.54-1-2.62-6.93-7.12-6.41v16.78A16.59,16.59,0,0,1,32.5,200.56.38,208.59c10.62,4.54-34,0-48,0-30.56-13.44-27.25-16.62-27.31-16.62V32.38L200.56,208.59Z"></path>
+        </svg>
+        <span>Games</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
+          <path d="M227.19,104.48A16,16,0,0,0,240,88.81V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V88.81a16,16,0,0,0,12.81,15.67,24,24,0,0,1,0,47A16,16,0,0,0,16,167.19V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V167.19a16,16,0,0,0-12.81-15.67,24,24,0,0,1,0-47ZM32,167.2a40,40,0,0,0,0-62.4V64H224V88.8a40,40,0,0,0,0,62.4V192H32Z"></path>
+        </svg>
+        <span>Wallet</span>
+      </a>
+    </nav>
+    <div class="spacer"></div>
+  </footer>
+
+  <!-- Firebase SDK Scripts -->
+  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+  <script>
+    // Check if Firebase is loaded
+    if (typeof firebase === 'undefined') {
+      console.error('Firebase SDK failed to load. Check network or script paths.');
+      document.getElementById('loader').style.display = 'none';
+      alert('Failed to load Firebase. Please try again later.');
+      return;
+    }
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+    try {
+      firebase.initializeApp(firebaseConfig);
+    } catch (error) {
+      console.error('Firebase initialization failed:', error);
+      document.getElementById('loader').style.display = 'none';
+      alert('Failed to initialize Firebase. Please try again.');
+      return;
+    }
+
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    // Image mapping for fixtures
+    const imageMap = {
+      1: 'assets/images/match1.jpg',
+      2: 'assets/images/match2.jpg',
+      3: 'assets/images/match3.jpg',
+      'default': 'assets/images/match1.jpg'
+    };
+
+    // Load user data
+    window.addEventListener('load', () => {
+      const username = localStorage.getItem('username');
+      if (!username) {
+        window.location.href = 'test.html';
+        return;
+      }
+
+      document.getElementById('userDisplay').textContent = username;
+      if (username.toLowerCase() === 'cryptoaux2') {
+        document.getElementById('verifiedBadge').style.display = 'inline';
+      }
+
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          database.ref(`users/${user.uid}/balance`).once('value')
+            .then(snapshot => {
+              const balance = snapshot.val() || '0.00';
+              document.getElementById('balanceDisplay').textContent = `₦${balance}`;
+              document.getElementById('loader').style.display = 'none';
+            })
+            .catch(error => {
+              console.error('Error fetching balance:', error);
+              document.getElementById('balanceDisplay').textContent = '₦0.00';
+              document.getElementById('loader').style.display = 'none';
+            });
+        } else {
+          localStorage.removeItem('username');
+          window.location.href = 'register.html';
+        }
+      });
+    });
+
+    // Load matches from Firebase
+    async function loadMatches(tab) {
+      const section = document.getElementById(tab);
+      const matchList = section.querySelector('.match-list');
+      try {
+        const snapshot = await database.ref(`fixtures/${tab}`).once('value');
+        const data = snapshot.val();
+        matchList.innerHTML = !data ? '<p>No matches available.</p>' : Object.values(data).map(fixture => {
+          const imagePath = imageMap[fixture.imageId] || imageMap['default'];
+          return `
+            <article class="match-card">
+              <div class="info">
+                <p>${fixture.matchDay || 'Unknown Matchday'}</p>
+                <p>${fixture.match || 'Unknown Teams'}</p>
+                <p>${fixture.date || ''} ${fixture.timeResults || 'Unknown Time'}</p>
+              </div>
+              <div class="match-image" style="background-image: url('${imagePath}');"></div>
+            </article>
+          `;
+        }).join('');
+      } catch (error) {
+        console.error('Error fetching matches:', error);
+        matchList.innerHTML = '<p>Error loading matches.</p>';
+      }
+    }
+
+    // Tab switching
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('.tab');
+      const sections = document.querySelectorAll('.content-section');
+      
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          tabs.forEach(t => t.classList.remove('tab-active'));
+          sections.forEach(s => s.classList.remove('active'));
+          tab.classList.add('tab-active');
+          const sectionId = tab.getAttribute('data-tab');
+          document.getElementById(sectionId).classList.add('active');
+          loadMatches(sectionId);
+        });
+      });
+
+      // Load today's matches on page load
+      loadMatches('today');
+    });
+  </script>
+</body>
+    </html>

@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fresh Hub</title>
+  <title>Fresh Hub - Register</title>
   <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
-  <!-- Google Fonts (optional, can be removed if you want no external dependencies) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900&display=swap">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
   <style>
-    /* Reset and base styles */
     * {
       margin: 0;
       padding: 0;
@@ -19,317 +19,368 @@
     body {
       background-color: #1a0f24;
       color: #ffffff;
-      font-family: 'Lexend', 'Noto Sans', sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-    }
-
-    /* Header */
-    header {
-      display: flex;
-      align-items: center;
-      background-color: #1a0f24;
-      padding: 1rem;
-      padding-bottom: 0.5rem;
-      justify-content: space-between;
-    }
-
-    header img {
-      width: 2rem;
-      height: 2rem;
-      border-radius: 50%;
-    }
-
-    header h1 {
-      font-size: 1.125rem;
-      font-weight: 700;
-      text-align: center;
-      flex: 1;
-    }
-
-    header .balance {
-      color: #ad8dce;
-      font-weight: 700;
-      width: 3rem;
-      text-align: right;
-    }
-
-    /* Welcome Message */
-    h2.welcome {
-      font-size: 1.125rem;
-      font-weight: 700;
-      padding: 1rem;
-    }
-
-    /* Banner */
-    .banner {
-      background-color: #1a0f24;
-      background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 25%), url('assets/images/banner.jpg');
-      background-size: cover;
-      background-position: center;
-      min-height: 20rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      border-radius: 0.75rem;
-      margin: 0 1rem 0.75rem;
-    }
-
-    .banner p {
-      font-size: 1.75rem;
-      font-weight: 700;
-      padding: 1rem;
-    }
-
-    /* Tabs */
-    nav.tabs {
-      border-bottom: 1px solid #4d2e6b;
-      padding: 0 1rem;
-    }
-
-    nav.tabs ul {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .tab {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-      padding: 1rem 0 0.8125rem;
-      font-size: 0.875rem;
-      font-weight: 700;
-      border-bottom: 3px solid transparent;
-      color: #ad8dce;
-      text-decoration: none;
-    }
-
-    .tab-active {
-      border-bottom-color: #110022;
-      color: #ffffff;
-    }
-
-    /* Matches */
-    .matches {
+      align-items: center;
       padding: 1rem;
     }
 
-    .matches h3 {
-      font-size: 1.125rem;
-      font-weight: 700;
-      padding-bottom: 0.5rem;
+    .register-container {
+      background-color: #261736;
+      border: 2px solid #4d2e6b;
+      border-radius: 0.75rem;
+      padding: 2rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      text-align: center;
     }
 
-    .match-card {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      border-radius: 0.75rem;
+    .logo {
+      width: 100px;
       margin-bottom: 1rem;
     }
 
-    .match-card .info {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
     }
 
-    .match-card .info p:first-child,
-    .match-card .info p:last-child {
-      color: #ad8dce;
+    .form-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    label {
+      display: block;
       font-size: 0.875rem;
+      color: #ad8dce;
+      margin-bottom: 0.25rem;
     }
 
-    .match-card .info p:nth-child(2) {
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #4d2e6b;
+      border-radius: 0.5rem;
+      background-color: #1a0f24;
+      color: #ffffff;
+      font-size: 1rem;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ad8dce;
+    }
+
+    .error {
+      color: #ff6b6b;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #ad8dce;
+      border: none;
+      border-radius: 0.5rem;
+      color: #1a0f24;
       font-size: 1rem;
       font-weight: 700;
-      color: #ffffff;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: transform 0.2s;
     }
 
-    .match-image {
-      flex: 1;
-      background-size: cover;
-      background-position: center;
-      border-radius: 0.75rem;
-      aspect-ratio: 16 / 9;
+    button:hover {
+      background-color: #c7a8e0;
+      transform: scale(1.05);
     }
 
-    /* Footer Navigation */
-    footer {
-      background-color: #261736;
-      border-top: 1px solid #36204b;
-      padding: 0.5rem 1rem;
-    }
-
-    footer nav {
+    .google-signin {
       display: flex;
-      gap: 0.5rem;
-    }
-
-    .nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
-      gap: 0.25rem;
+      justify-content: center;
+      gap: 0.5rem;
+      background-color: #ffffff;
+      color: #1a0f24;
+      margin-top: 1rem;
+    }
+
+    .google-signin img {
+      width: 20px;
+    }
+
+    .login-link {
+      margin-top: 1rem;
+      font-size: 0.875rem;
       color: #ad8dce;
-      text-decoration: none;
-      border-radius: 9999px;
     }
 
-    .nav-item-active {
+    .login-link a {
       color: #ffffff;
+      text-decoration: none;
     }
 
-    .nav-item svg {
-      width: 1.5rem;
-      height: 1.5rem;
+    .login-link a:hover {
+      text-decoration: underline;
     }
 
-    .nav-item span {
-      font-size: 0.75rem;
-      font-weight: 500;
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1a0f24;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
     }
 
-    footer .spacer {
-      height: 1.25rem;
-      background-color: #261736;
+    #loader::after {
+      content: '';
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ad8dce;
+      border-top: 4px solid #ffffff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
     }
 
-    /* Responsive adjustments */
-    @media (min-width: 480px) {
-      .banner {
-        margin: 0 auto;
-        width: 100%;
-        max-width: 1200px;
-      }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div class="flex-1">
-    <!-- Header -->
-    <header>
-      <div>
-        <img src="logo4.png" alt="Profile">
+  <!-- Loader -->
+  <div id="loader"></div>
+
+  <div class="register-container">
+    <img src="assets/images/logo.png" alt="Fresh Hub Logo" class="logo">
+    <h1>Create Account</h1>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" required>
+        <div class="error" id="fullnameError">Full name is required</div>
       </div>
-      <h1>Fresh Hub</h1>
-      <div class="balance">$120</div>
-    </header>
-
-    <!-- Welcome Message -->
-    <h2 class="welcome">Welcome back, Ethan</h2>
-
-    <!-- Banner -->
-    <section class="banner">
-      <p>Watch live games</p>
-    </section>
-
-    <!-- Tabs -->
-    <nav class="tabs">
-      <ul>
-        <li><a href="#" class="tab tab-active">Today</a></li>
-        <li><a href="#" class="tab">Upcoming</a></li>
-        <li><a href="#" class="tab">Past</a></li>
-      </ul>
-    </nav>
-
-    <!-- Matches -->
-    <section class="matches">
-      <h3>Matchday 1</h3>
-      <div>
-        <!-- Match 1 -->
-        <article class="match-card">
-          <div class="info">
-            <p>Matchday 1</p>
-            <p>Team A vs Team B</p>
-            <p>Oct 26, 10:00 AM</p>
-          </div>
-          <div class="match-image" style="background-image: url('logo4.png');"></div>
-        </article>
-        <!-- Match 2 -->
-        <article class="match-card">
-          <div class="info">
-            <p>Matchday 1</p>
-            <p>Team C vs Team D</p>
-            <p>Oct 26, 12:00 PM</p>
-          </div>
-          <div class="match-image" style="background-image: url('4.jpeg');"></div>
-        </article>
-        <!-- Match 3 -->
-        <article class="match-card">
-          <div class="info">
-            <p>Matchday 1</p>
-            <p>Team E vs Team F</p>
-            <p>Oct 26, 2:00 PM</p>
-          </div>
-          <div class="match-image" style="background-image: url('assets/images/match3.jpg');"></div>
-        </article>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" required pattern="[a-zA-Z0-9]+">
+        <div class="error" id="usernameError">Username must be alphanumeric</div>
       </div>
-    </section>
+      <div class="form-group">
+        <label for="teamname">Team Name</label>
+        <input type="text" id="teamname" required>
+        <div class="error" id="teamnameError">Team name is required</div>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required>
+        <div class="error" id="emailError">Valid email is required</div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+        <div class="error" id="passwordError">Password must be at least 6 characters</div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" required>
+        <div class="error" id="confirmPasswordError">Passwords do not match</div>
+      </div>
+      <div class="error" id="generalError"></div>
+      <button type="submit">Register</button>
+    </form>
+    <button class="google-signin" id="googleSignIn">
+      <img src="assets/images/google.png" alt="Google"> Sign up with Google
+    </button>
+    <div class="login-link">
+      Already have an account? <a href="login.html">Log in</a>
+    </div>
   </div>
 
-  <!-- Footer Navigation -->
-  <footer>
-    <nav>
-      <a href="#" class="nav-item nav-item-active">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-          <path
-            d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.06l80,75.53A16,16,0,0,1,224,115.55Z"
-          ></path>
-        </svg>
-        <span>Home</span>
-      </a>
-      <a href="#" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-          <path
-            d="M229.06,53.19a32.64,32.64,0,0,0-26.95-14c-30.88-15.66-84.31-14-138.61-14S-15.43,37.49,14.45,53.12a32.78,32.78,0,0,0-14,27.24c0,5.47,3.44,12.55,6.23,14.88a6,6,0,0,1,0,10.54c-2.79,4.19-6.23,9.28-6.23,14.75a32.58,32.58,0,0,0,14.06,27.22c15.62,10.68,14.08,14,14.12,14.14h15.24v-28a16,16,0,0,1,16-16h16v48h1.24v-48h16a16,16,0,0,1,16,16v28h48v-28a16,16,0,0,1,16-16h16a16,16,0,0,1,16,16v11.94h15.25c6,0-.57-3.48,14.12-14.14a32.58,32.58,0,0,0,14.06-27.22c0-5.47-3.45-6.58-6.24-14.75a6,6,0,0,1,0-10.54c2.8-2.34,6.24-9.39,6.24-14.86A32.54,32.54,0,0,0,229.06,53.19ZM63.5,23.44C108.21,10,161.85,14,196.79,16.94a16.89,16.59,0,0,1,13.88,16.59c4.54,45.06,2.62,5.94,7.12,16.41L47.38,16.62A48.08,48.08,0,0,1,63.5,23.44ZM32.5,200.56a48.07,48.07,0,0,1-15.94-32.88c-4.54-1-2.62-6.93-7.12-6.41v16.78A16.59,16.59,0,0,1,32.5,200.56.38,208.59c10.62,4.54-34,0-48,0-30.56-13.44-27.25-16.62-27.31-16.62V32.38L200.56,208.59Z"
-          ></path>
-        </svg>
-        <span>Games</span>
-      </a>
-      <a href="#" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-          <path
-            d="M227.19,104.48A16,16,0,0,0,240,88.81V64a16,16,0,0,0-16-16H32A16,16,0,0,0,16,64V88.81a16,16,0,0,0,12.81,15.67,24,24,0,0,1,0,47A16,16,0,0,0,16,167.19V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V167.19a16,16,0,0,0-12.81-15.67,24,24,0,0,1,0-47ZM32,167.2a40,40,0,0,0,0-78.39V64H88V192H32Zm192,0V192H104V64H224V88.8a40,40,0,0,0,0,78.39Z"
-          ></path>
-        </svg>
-        <span>My Bets</span>
-      </a>
-      <a href="#" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256">
-          <path
-            d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"
-          ></path>
-        </svg>
-        <span>Account</span>
-      </a>
-    </nav>
-    <div class="spacer"></div>
-  </footer>
-
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const tabs = document.querySelectorAll('.tab');
-      
-      tabs.forEach(tab => {
-        tab.addEventListener('click', (e) => {
-          e.preventDefault();
-          
-          // Remove active state from all tabs
-          tabs.forEach(t => t.classList.remove('tab-active'));
-          // Add active state to clicked tab
-          tab.classList.add('tab-active');
-          
-          // Placeholder for content update (e.g., fetch data for Today, Upcoming, Past)
-          console.log(`Switched to ${tab.textContent} tab`);
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+
+    const loader = document.getElementById('loader');
+    const registerForm = document.getElementById('registerForm');
+    const generalError = document.getElementById('generalError');
+
+    // Validate form fields
+    function validateForm(fullname, username, teamname, email, password, confirmPassword) {
+      let isValid = true;
+      document.querySelectorAll('.error').forEach(err => err.style.display = 'none');
+
+      if (!fullname) {
+        document.getElementById('fullnameError').style.display = 'block';
+        isValid = false;
+      }
+      if (!username || !/^[a-zA-Z0-9]+$/.test(username)) {
+        document.getElementById('usernameError').style.display = 'block';
+        isValid = false;
+      }
+      if (!teamname) {
+        document.getElementById('teamnameError').style.display = 'block';
+        isValid = false;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('emailError').style.display = 'block';
+        isValid = false;
+      }
+      if (!password || password.length < 6) {
+        document.getElementById('passwordError').style.display = 'block';
+        isValid = false;
+      }
+      if (password !== confirmPassword) {
+        document.getElementById('confirmPasswordError').style.display = 'block';
+        isValid = false;
+      }
+      return isValid;
+    }
+
+    // Check username uniqueness
+    async function isUsernameUnique(username) {
+      const snapshot = await database.ref('users').orderByChild('username').equalTo(username).once('value');
+      return !snapshot.exists();
+    }
+
+    // Email/password registration
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loader.style.display = 'flex';
+
+      const fullname = document.getElementById('fullname').value.trim();
+      const username = document.getElementById('username').value.trim();
+      const teamname = document.getElementById('teamname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!validateForm(fullname, username, teamname, email, password, confirmPassword)) {
+        loader.style.display = 'none';
+        return;
+      }
+
+      try {
+        // Check username uniqueness
+        if (!(await isUsernameUnique(username))) {
+          generalError.textContent = 'Username is already taken';
+          generalError.style.display = 'block';
+          loader.style.display = 'none';
+          return;
+        }
+
+        // Create user
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // Save user details to Realtime Database
+        await database.ref(`users/${user.uid}`).set({
+          fullname,
+          username,
+          teamname,
+          email,
+          balance: '0.00',
+          createdAt: firebase.database.ServerValue.TIMESTAMP
         });
-      });
+
+        // Save username to localStorage
+        localStorage.setItem('username', username);
+
+        // Redirect to main page
+        window.location.href = 'index.html';
+      } catch (error) {
+        loader.style.display = 'none';
+        if (error.code === 'auth/email-already-in-use') {
+          generalError.textContent = 'Email already in use';
+        } else {
+          generalError.textContent = 'Registration unsuccessful';
+        }
+        generalError.style.display = 'block';
+        console.error('Registration error:', error);
+      }
+    });
+
+    // Google Sign-In
+    document.getElementById('googleSignIn').addEventListener('click', async () => {
+      loader.style.display = 'flex';
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+
+        // Check if user exists
+        const userRef = database.ref(`users/${user.uid}`);
+        const snapshot = await userRef.once('value');
+        if (!snapshot.exists()) {
+          // Prompt for additional details
+          let username = prompt('Enter a username:');
+          if (!username || !/^[a-zA-Z0-9]+$/.test(username) || !(await isUsernameUnique(username))) {
+            generalError.textContent = 'Username is taken or invalid';
+            generalError.style.display = 'block';
+            await auth.signOut();
+            loader.style.display = 'none';
+            return;
+          }
+          const teamname = prompt('Enter your team name:');
+          if (!teamname) {
+            generalError.textContent = 'Team name is required';
+            generalError.style.display = 'block';
+            await auth.signOut();
+            loader.style.display = 'none';
+            return;
+          }
+
+          // Save user details
+          await userRef.set({
+            fullname: user.displayName || 'Google User',
+            username,
+            teamname,
+            email: user.email,
+            balance: '0.00',
+            createdAt: firebase.database.ServerValue.TIMESTAMP
+          });
+
+          localStorage.setItem('username', username);
+        } else {
+          const userData = snapshot.val();
+          localStorage.setItem('username', userData.username);
+        }
+
+        window.location.href = 'index.html';
+      } catch (error) {
+        loader.style.display = 'none';
+        generalError.textContent = 'Registration unsuccessful';
+        generalError.style.display = 'block';
+        console.error('Google Sign-In error:', error);
+      }
+    });
+
+    // Hide loader on page load
+    window.addEventListener('load', () => {
+      document.getElementById('loader').style.display = 'none';
     });
   </script>
 </body>

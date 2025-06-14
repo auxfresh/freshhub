@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtute Finem - Finalist of the Day</title>
+    <link rel="stylesheet" href="style01.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="logo.jpg" alt="Virtute Finem Logo" class="virtute-logo">
+                <span>Earnest College</span>
+            </div>
+            <div class="header-right">
+                <span class="finalist-title">Finalist Of The</span>
+                <span class="day-text">Day</span>
+                
+            </div>
+        </header>
+
+        <main>
+            <div class="loading-indicator" id="loadingIndicator">Loading details...</div>
+            <div class="error-message" id="errorMessage" style="display:none;"></div>
+
+            <div class="profile-card" id="profileCard" style="display:none;">
+                <div class="profile-image-container">
+                    <img src="avater2.jpg" alt="Profile Picture" class="profile-image">
+                </div>
+                <div class="profile-details">
+                    <p class="name" id="fullName"></p>
+                    <p class="nickname"><span class="label">Nickname:</span> <span id="nickname"></span></p>
+                    <p class="dob"><span class="label">Date of Birth:</span> <span id="dob"></span></p>
+                </div>
+            </div>
+
+            <div class="info-grid" id="infoGrid" style="display:none;">
+                <div class="info-item">
+                    <span class="category">Hobbies:</span>
+                    <span class="value" id="hobbies"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Favorite food:</span>
+                    <span class="value" id="favoriteFood"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">If not Anatomy?:</span>
+                    <span class="value" id="notScienceReason"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Favourite course:</span>
+                    <span class="value" id="favoriteSubjects"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Relationship status:</span>
+                    <span class="value" id="relationshipStatus"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Departmental crush:</span>
+                    <span class="value" id="crush"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Favourite slang:</span>
+                    <span class="value" id="favoriteSlang"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Favourite Lecturer:</span>
+                    <span class="value" id="favoriteTeacher"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Best moment in school:</span>
+                    <span class="value" id="bestMoment"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Worst moment in school:</span>
+                    <span class="value" id="worstMoment"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">Most challenging level:</span>
+                    <span class="value" id="challengingClass"></span>
+                </div>
+                <div class="info-item">
+                    <span class="category">What next after school?:</span>
+                    <span class="value" id="whatNextAfterSchool"></span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Your Firebase configuration goes here
+        const firebaseConfig = {
+             apiKey: "AIzaSyBWUjKRUpiLmwRi7UjQ5l_zCJ1YOGsaIg0",
+      authDomain: "fresh-hub-d509f.firebaseapp.com",
+      databaseURL: "https://fresh-hub-d509f-default-rtdb.firebaseio.com",
+      projectId: "fresh-hub-d509f",
+      storageBucket: "fresh-hub-d509f.appspot.com",
+      messagingSenderId: "101887757266",
+      appId: "1:101887757266:web:80c054959f6588771fd60b"
+    };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Get a reference to the Firestore database
+        const db = firebase.firestore();
+
+        const documentId = "xggYClCZLGOP4vLBhvFW"; // The specific document ID you want to fetch
+        const collectionName = "memories"; // The name of your Firestore collection
+
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
+        const profileCard = document.getElementById('profileCard');
+        const infoGrid = document.getElementById('infoGrid');
+
+        // Function to fetch and display data
+        async function fetchProfileData() {
+            loadingIndicator.style.display = 'block'; // Show loading indicator
+            errorMessage.style.display = 'none'; // Hide any previous error
+
+            try {
+                const docRef = db.collection(collectionName).doc(documentId);
+                const doc = await docRef.get();
+
+                if (doc.exists) {
+                    const data = doc.data();
+
+                    // Update profile card details
+                    document.getElementById('fullName').textContent = data.fullName || 'N/A';
+                    document.getElementById('nickname').textContent = data.nickname || 'N/A';
+                    document.getElementById('dob').textContent = data.dob || 'N/A';
+
+                    // Update info grid details
+                    document.getElementById('hobbies').textContent = data.hobbies || 'N/A';
+                    document.getElementById('favoriteFood').textContent = data.favoriteFood || 'N/A';
+                    document.getElementById('notScienceReason').textContent = data.notScienceReason || 'N/A';
+                    document.getElementById('favoriteSubjects').textContent = data.favoriteSubjects || 'N/A';
+                    document.getElementById('relationshipStatus').textContent = data.relationshipStatus || 'N/A';
+                    document.getElementById('crush').textContent = data.crush || 'N/A';
+                    document.getElementById('favoriteSlang').textContent = data.favoriteSlang || 'N/A';
+                    document.getElementById('favoriteTeacher').textContent = data.favoriteTeacher || 'N/A';
+                    document.getElementById('bestMoment').textContent = data.bestMoment || 'N/A';
+                    document.getElementById('worstMoment').textContent = data.worstMoment || 'N/A';
+                    document.getElementById('challengingClass').textContent = data.challengingClass || 'N/A';
+                    document.getElementById('whatNextAfterSchool').textContent = data.whatNextAfterSchool || 'N/A'; // Assuming a field for this
+
+                    profileCard.style.display = 'flex'; // Show profile card
+                    infoGrid.style.display = 'grid'; // Show info grid
+
+                } else {
+                    errorMessage.textContent = `No such document found with ID: ${documentId}`;
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Error fetching document:", error);
+                errorMessage.textContent = `Error loading data: ${error.message}. Please check your console for more details.`;
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingIndicator.style.display = 'none'; // Hide loading indicator
+            }
+        }
+
+        // Call the function when the page loads
+        document.addEventListener('DOMContentLoaded', fetchProfileData);
+    </script>
+</body>
+</html>
